@@ -6,7 +6,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: "Inter", sans-serif;
+    font-family: "switzer", serif;
     font-weight: medium;
 }
 
@@ -14,6 +14,18 @@
     --dark: #0b0f21;
     --light: #fafafa;
     --accent: #4c6cec;
+}
+
+@font-face {
+    font-family: 'switzer';
+    src: url('/fonts/switzer.woff2');
+    font-weight: medium;
+}
+
+@font-face {
+    font-family: 'switzer-bold';
+    src: url('/fonts/switzer-bold.woff2');
+    font-weight: bold;
 }
 
 a {
