@@ -7,7 +7,6 @@
     padding: 0;
     box-sizing: border-box;
     font-family: "switzer", serif;
-    font-weight: medium;
 }
 
 :root {
@@ -20,12 +19,6 @@
     font-family: 'switzer';
     src: url('/fonts/switzer.woff2');
     font-weight: medium;
-}
-
-@font-face {
-    font-family: 'switzer-bold';
-    src: url('/fonts/switzer-bold.woff2');
-    font-weight: bold;
 }
 
 a {
