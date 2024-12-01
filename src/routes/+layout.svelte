@@ -1,8 +1,8 @@
 <script lang="ts">
-    import Navbar from "$components/Navbar.svelte";
-    import Footer from "$components/Footer.svelte";
+    import Navbar from "$components/Navbar.svelte"
+    import Footer from "$components/Footer.svelte"
 
-    let { data, children } = $props();
+    let { children } = $props();
 
     import "../app.css";
 </script>
@@ -15,7 +15,7 @@
 </svelte:head>
 
 <div class="container">
-    <Navbar {data}/>
+    <Navbar/>
 
     <div class="content">
         {@render children()}
