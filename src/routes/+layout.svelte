@@ -2,13 +2,20 @@
     import Navbar from "$components/Navbar.svelte";
     import Footer from "$components/Footer.svelte";
 
-    let { children } = $props();
+    let { data, children } = $props();
 
     import "../app.css";
 </script>
 
+<svelte:head>
+  <link rel="preload" href="/marsden/marsden-bold.woff2" as="font" type="font/woff2"/>
+  <link rel="preload" href="/marsden/marsden-regular.woff2" as="font" type="font/woff2"/>
+  <meta name="keywords" content="bea, better esperia access, baratro e apocalisse"/>
+  <title>Bea 🔥</title>
+</svelte:head>
+
 <div class="container">
-    <Navbar />
+    <Navbar {data}/>
 
     <div class="content">
         {@render children()}
@@ -19,13 +26,13 @@
 
 <style>
     .container {
-        background-color: var(--light);
-        color: var(--dark);
+        background-color: var(--black);
+        color: var(--white);
         padding-inline: 40px;
-    }
+      }
 
     .content {
-        min-height: calc(100svh - 110px);
+        min-height: calc(100svh - 130px);
     }
 
     @media (max-width: 600px) {
