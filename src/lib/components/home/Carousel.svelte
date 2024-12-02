@@ -1,21 +1,37 @@
-<script>
+<script lang="ts">
   import { fade } from 'svelte/transition'
+  import { onMount } from 'svelte'
 
-  let currentSlide = $state(1)
+  let currentSlide = $state(-1)
   const slidesNumber = 6
+
+  let interval: number
+  const duration= 10000
 
   const images = [...Array(slidesNumber).keys()].map(i => `/images/home/carousel/${i}.jpg`)
 
-  $effect(() => {
+  onMount(() => {
     currentSlide = 0 // triggers the transition
 
     setInterval(() => {
       nextSlide()
     }, 5000)
+
+    return () => clearInterval(interval)
   })
+
+  function resetInterval() {
+    clearInterval(interval)
+
+    interval = setInterval(() => {
+      currentSlide = ++currentSlide % slidesNumber
+    }, duration)
+  }
 
   function nextSlide() {
     currentSlide = ++currentSlide % slidesNumber
+
+    resetInterval()
   }
 </script>
 
@@ -27,7 +43,11 @@
 
 <button class="container" onclick={nextSlide}>
     {#key currentSlide}
-        <img src={`/images/home/carousel/${currentSlide}.jpg`} alt={`Foto cogestione ${currentSlide}`} in:fade={{duration: 500}} />
+        <img
+            src={`/images/home/carousel/${currentSlide}.jpg`}
+            alt={`Immagine ${currentSlide}`}
+            in:fade={{duration: 500}}
+        />
     {/key}
 </button>
 
