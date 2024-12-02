@@ -2,9 +2,9 @@
     <div class="container">
         Copyright &copy {new Date().getFullYear()} all rights reserved |
         Made with love and anxiety by &ZeroWidthSpace;
-        <a href="github.com/branila">Branila</a>, &ZeroWidthSpace;
-        <a href="github.com/Vano2903">Vano</a> &ZeroWidthSpace; and &ZeroWidthSpace;
-        <a href="github.com/Alex-Loca">Slocax</a>
+        <a href="https://github.com/branila">Branila</a>, &ZeroWidthSpace;
+        <a href="https://github.com/Vano2903">Vano</a> &ZeroWidthSpace; and &ZeroWidthSpace;
+        <a href="https://github.com/Alex-Loca">Slocax</a>
     </div>
 </footer>
 
