@@ -73,7 +73,7 @@
 
     .links {
         display: flex;
-        gap: 15px;
+        gap: 20px;
         padding-right: 30px;
         font-size: max(16px, 10px + 0.5vw);
         transition: 0.2s;
@@ -92,7 +92,6 @@
     }
 
     .menu {
-        padding-right: 25px;
         background: 0;
         border: 0;
         cursor: pointer;

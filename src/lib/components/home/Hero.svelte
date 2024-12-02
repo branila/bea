@@ -39,7 +39,7 @@
         height: calc(100svh - 200px);
         width: 45%;
         border-radius: 15px;
-        padding: 35px;
+        padding: 40px;
         font-size: max(24px, 16px + 1vw);
         display: flex;
         flex-direction: column;
