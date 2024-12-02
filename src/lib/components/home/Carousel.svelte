@@ -1,7 +1,7 @@
 <script>
   import { fade } from 'svelte/transition'
 
-  let currentSlide = $state(-1)
+  let currentSlide = $state(1)
   const slidesNumber = 6
 
   const images = [...Array(slidesNumber).keys()].map(i => `/images/home/carousel/${i}.jpg`)
@@ -10,9 +10,13 @@
     currentSlide = 0 // triggers the transition
 
     setInterval(() => {
-        currentSlide = ++currentSlide % slidesNumber
+      nextSlide()
     }, 5000)
   })
+
+  function nextSlide() {
+    currentSlide = ++currentSlide % slidesNumber
+  }
 </script>
 
 <svelte:head>
@@ -21,17 +25,21 @@
   {/each}
 </svelte:head>
 
-<main>
+<button class="container" onclick={nextSlide}>
     {#key currentSlide}
         <img src={`/images/home/carousel/${currentSlide}.jpg`} alt={`Foto cogestione ${currentSlide}`} in:fade={{duration: 500}} />
     {/key}
-</main>
+</button>
 
 <style>
-    main {
+    .container {
         height: calc(100svh - 200px);
         width: 55%;
         border-radius: 15px;
+        overflow: hidden;
+        border: 0;
+        cursor: pointer;
+        background-color: transparent;
     }
 
     img {
@@ -39,5 +47,13 @@
         height: 100%;
         object-fit: cover;
         border-radius: 15px;
+        filter: brightness(0.9);
+        transition: 0.2s;
+    }
+
+    img:hover {
+        filter: brightness(1);
+        transform: scale(1.2);
+        transition: 0.2s;
     }
 </style>
