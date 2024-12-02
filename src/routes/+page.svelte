@@ -33,11 +33,11 @@
         />
 
         <Card
-            title="Amministrazione"
-            description="Sei un amministratore della piattaforma e vuoi accedere alla dashbaord?"
+            title="QR Code"
+            description="Vuoi visualizzare il qr code relativo alla tua iscrizione alla cogestione?"
             color="var(--green)"
-            buttonText="Contattaci"
-            href="/dashboard"
+            buttonText="Visualizza"
+            href="/cogestione/qrcode"
         />
     </div>
 </main>
