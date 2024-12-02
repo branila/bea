@@ -8,7 +8,7 @@
   let interval: number
   const duration = 10000
 
-  const images = [...Array(slidesNumber).keys()].map(i => `/images/home/carousel/${i}.jpg`)
+  const images = [...Array(slidesNumber).keys()].map(i => `/images/home/${i}.jpg`)
 
   onMount(() => {
     currentSlide = 0 // triggers the transition
@@ -44,7 +44,7 @@
 <button class="container" onclick={nextSlide}>
     {#key currentSlide}
         <img
-            src={`/images/home/carousel/${currentSlide}.jpg`}
+            src={`/images/home/${currentSlide}.jpg`}
             alt={`Immagine ${currentSlide}`}
             in:fade={{duration: 500}}
         />
