@@ -26,7 +26,7 @@
             per la gestione delle iscrizioni e degli accessi durante la
             <span class="description-accent">cogestione</span>
             del nostro istituto.
-            Come la facciamo noi non la fa nessuno.
+            Come lo facciamo noi non la fa nessuno.
         </div>
 
         <SimpleButton>Accedi alla piattaforma</SimpleButton>
@@ -55,6 +55,7 @@
         color: var(--red);
         font-size: max(48px, 32px + 3vw);
         margin-top: 15px;
+        filter: brightness(1.2)
     }
 
     .bottom {

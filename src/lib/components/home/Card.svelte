@@ -39,7 +39,6 @@
 
     h1 {
         font-size: max(24px, 16px + 1.5vw);
-        filter: sepia()
     }
 
     p {
