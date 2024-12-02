@@ -6,16 +6,16 @@
   const slidesNumber = 6
 
   let interval: number
-  const duration= 10000
+  const duration = 10000
 
   const images = [...Array(slidesNumber).keys()].map(i => `/images/home/carousel/${i}.jpg`)
 
   onMount(() => {
     currentSlide = 0 // triggers the transition
 
-    setInterval(() => {
+    interval = setInterval(() => {
       nextSlide()
-    }, 5000)
+    }, 10000)
 
     return () => clearInterval(interval)
   })
