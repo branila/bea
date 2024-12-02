@@ -28,11 +28,13 @@
         border-radius: 15px;
         background-color: var(--grey);
         font-size: max(16px, 10px + 0.5vw);
+    }
+
+    .inner-container {
         font-weight: normal;
     }
 
     @media (max-width: 900px) {
-
         .container {
             padding-inline: 20px;
         }
