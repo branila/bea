@@ -32,7 +32,7 @@
 
 <style>
     nav {
-        background-color: var(--black);
+        background-color: transparent;
         padding-block: 40px;
         position: sticky;
         top: 0;
