@@ -37,7 +37,7 @@
             description="Sei un amministratore della piattaforma e vuoi accedere alla dashbaord?"
             color="var(--green)"
             buttonText="Contattaci"
-            href="mailto:comitato.studentesco@itispaleocapa.it"
+            href="/dashboard"
         />
     </div>
 </main>

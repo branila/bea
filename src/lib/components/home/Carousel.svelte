@@ -43,11 +43,13 @@
 
 <button class="container" onclick={nextSlide}>
     {#key currentSlide}
-        <img
-            src={`/images/home/${currentSlide}.jpg`}
-            alt={`Immagine ${currentSlide}`}
-            in:fade={{duration: 500}}
-        />
+        {#if currentSlide >= 0}
+            <img
+                src={`/images/home/${currentSlide}.jpg`}
+                alt={`Immagine ${currentSlide}`}
+                in:fade={{duration: 500}}
+            />
+        {/if}
     {/key}
 </button>
 
