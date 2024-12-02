@@ -3,17 +3,26 @@
 
   let {
     href= '#',
+    accent = 'var(--red)',
     children,
     onclick = () => {}
   }: {
     href?: string
+    accent?: string
     onclick?: (() => void)
     children: Snippet<[]>
   } = $props()
+
+  let hovered = $state(false)
 </script>
 
 <a {href}>
-    <button {onclick}>
+    <button
+        {onclick}
+        onmouseenter={() => hovered = true}
+        onmouseleave={() => hovered = false}
+        style="border-color: {hovered ? accent : 'var(--white)'}; color: {hovered ? accent : 'var(--white)'}"
+    >
         {@render children()}
     </button>
 </a>
@@ -32,9 +41,6 @@
     }
 
     button:hover {
-        border-color: var(--red);
-        color: var(--red);
         filter: brightness(2)
     }
-
 </style>

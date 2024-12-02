@@ -1,6 +1,7 @@
 <script lang="ts">
   import Carousel from "$components/home/Carousel.svelte"
   import Hero from "$components/home/Hero.svelte"
+  import Card from "$components/home/Card.svelte"
 </script>
 
 <svelte:head>
@@ -15,7 +16,29 @@
     </div>
 
     <div class="cards">
-        CARDS
+        <Card
+            title="Problemi"
+            description="Vuoi contattarci per segnalare un problema o un malfunzionamento?"
+            color="var(--red)"
+            buttonText="Contattaci"
+            href="/contacts"
+        />
+
+        <Card
+            title="Sicurezza"
+            description="Sei un membro della sicurezza della cogestione e vuoi accedere all'area riservata?"
+            color="var(--blue)"
+            buttonText="Accedi"
+            href="/sicurezza"
+        />
+
+        <Card
+            title="Amministrazione"
+            description="Sei un amministratore della piattaforma e vuoi accedere alla dashbaord?"
+            color="var(--green)"
+            buttonText="Contattaci"
+            href="mailto:comitato.studentesco@itispaleocapa.it"
+        />
     </div>
 </main>
 
@@ -33,7 +56,7 @@
     }
 
     .cards {
-        height: 300px;
-        background-color: var(--red)
+        display: flex;
+        gap: 40px;
     }
 </style>
