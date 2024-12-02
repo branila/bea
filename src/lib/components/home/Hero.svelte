@@ -13,7 +13,13 @@
 
         {#key mounted}
             <div class="accent" in:typewriter={{ speed: 50 }}>
-                Better Esperia Access
+                Better Esperia
+
+                {#if mounted && window.innerWidth > 900}
+                    <br>
+                {/if}
+
+                Access
             </div>
         {/key}
     </div>
@@ -36,7 +42,7 @@
 <style>
     main {
         background-color: var(--grey);
-        height: calc(100svh - 200px);
+        min-height: calc(100svh - 200px);
         width: 45%;
         border-radius: 15px;
         padding: 40px;
@@ -48,12 +54,12 @@
     }
 
     .top {
-        font-size: max(24px, 16px + 1.5vw);
+        font-size: max(12px, 16px + 1.5vw);
     }
 
     .accent {
         color: var(--red);
-        font-size: max(48px, 32px + 3vw);
+        font-size: max(24px, 32px + 2.5vw);
         margin-top: 15px;
         filter: brightness(1.2)
     }
@@ -62,6 +68,7 @@
         display: flex;
         flex-direction: column;
         gap: 30px;
+        font-size: max(18px, 10px + 1vw);
     }
 
     .description {
@@ -71,5 +78,24 @@
     .description-accent {
         color: var(--red);
         filter: brightness(1.2);
+    }
+
+    @media (max-width: 900px) {
+        main {
+            width: 100%;
+            padding: 20px;
+            min-height: calc((100svh - 160px) * (1.75/3) - 40px);
+            gap: 10px;
+        }
+
+        .bottom {
+            gap: 20px;
+        }
+    }
+
+    @media (max-width: 600px) {
+        main {
+            min-height: calc((100svh - 120px) * (1.75/3) - 20px)
+        }
     }
 </style>

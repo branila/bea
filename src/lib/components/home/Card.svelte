@@ -45,4 +45,10 @@
         font-size: max(16px, 10px + 0.75vw);
         font-weight: normal;
     }
+
+    @media (max-width: 900px) {
+        .card {
+            width: 100%;
+        }
+    }
 </style>

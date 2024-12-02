@@ -59,4 +59,28 @@
         display: flex;
         gap: 40px;
     }
+
+    @media (max-width: 900px) {
+        main {
+            gap: 20px;
+        }
+
+        .header {
+            flex-direction: column;
+        }
+
+        .cards {
+            flex-direction: column;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .header {
+            gap: 20px;
+        }
+
+        .cards {
+            gap: 20px;
+        }
+    }
 </style>

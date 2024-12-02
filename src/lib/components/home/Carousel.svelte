@@ -83,4 +83,11 @@
         transform: scale(1.1);
         transition: 0.2s;
     }
+
+    @media (max-width: 900px) {
+        .container {
+            width: 100%;
+            height: calc((100svh - 160px) * (1.25/3))
+        }
+    }
 </style>

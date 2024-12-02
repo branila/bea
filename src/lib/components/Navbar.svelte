@@ -34,9 +34,6 @@
     nav {
         background-color: transparent;
         padding-block: 40px;
-        position: sticky;
-        top: 0;
-        z-index: 2;
     }
 
     nav a:hover {
@@ -67,7 +64,7 @@
     }
 
     .logo .name {
-        font-size: max(16px, 10px + 0.5vw);
+        font-size: max(15px, 10px + 0.5vw);
         padding-top: 2px; /* Center vertically */
     }
 
@@ -99,7 +96,7 @@
       }
 
     .menu img {
-        height: 25px;
+        height: 23px;
     }
 
     @media (max-width: 600px) {
@@ -109,6 +106,10 @@
 
         .container {
             flex-wrap: wrap;
+        }
+
+        .logo img {
+            height : 40px;
         }
 
         .links {
@@ -135,7 +136,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            padding-right: 30px;
+            padding-right: 20px;
         }
     }
 </style>
