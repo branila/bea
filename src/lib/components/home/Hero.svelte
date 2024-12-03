@@ -32,7 +32,7 @@
             per la gestione delle iscrizioni e degli accessi durante la
             <span class="description-accent">cogestione</span>
             del nostro istituto.
-            Come lo facciamo noi non la fa nessuno.
+            Come lo facciamo noi non lo fa nessuno.
         </div>
 
         <SimpleButton>Accedi alla piattaforma</SimpleButton>
