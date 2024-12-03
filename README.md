@@ -1,13 +1,3 @@
-## EsperiaHub
+## Bea: Better Esperia Access
 
-### Sitemap
-
-- Homepage -> /
-
-- Login -> /login
-
-- Cogestione -> /cogestione
-
-- Scanner -> /scanner
-
-- Dashboard -> /dashboard
+Coming Soon...
