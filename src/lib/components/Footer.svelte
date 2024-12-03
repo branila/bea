@@ -1,11 +1,7 @@
 <footer>
     <div class="container">
         <span class="inner-container">
-            Copyright &copy {new Date().getFullYear()} all rights reserved |
-            Made with love and anxiety by &ZeroWidthSpace;
-            <a href="https://github.com/branila">Branila</a>, &ZeroWidthSpace;
-            <a href="https://github.com/Vano2903">Vano</a> &ZeroWidthSpace; and &ZeroWidthSpace;
-            <a href="https://github.com/Alex-Loca">Slocax</a>
+            Copyright &copy {new Date().getFullYear()} all rights reserved | Made with love and anxiety by <a href="https://github.com/branila">Branila</a>, <a href="https://github.com/Vano2903">Vano</a> and <a href="https://github.com/Alex-Loca">Slocax</a>
         </span>
     </div>
 </footer>
