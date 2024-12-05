@@ -21,11 +21,9 @@
         <h1>{title}</h1>
     </div>
 
-    <div class="infos">
-        <p>{description}</p>
+    <p>{description}</p>
 
-        <a {href}>{contact}</a>
-    </div>
+    <a {href}>{contact}</a>
 </div>
 
 <style>
@@ -33,14 +31,14 @@
         display: flex;
         justify-content: space-between;
         flex-direction: column;
-        gap: 40px;
+        gap: 10px;
         padding: 30px;
         border-radius: 15px;
-        width: calc(100% / 4 - 20px);
-        min-height: calc((100svh / 2) - 140px);
-        width: 100%;
+        min-height: calc(50svh - 140px);
         background-color: var(--grey);
         color: var(--white);
+        width: 50%;
+        border: 1px solid var(--white);
     }
 
     .title {
@@ -59,17 +57,9 @@
         font-size: max(24px, 16px + 1.5vw);
     }
 
-    .infos {
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        gap: 30px;
-    }
-
 
     p {
-        font-size: max(12px, 16px + 0.75vw);
+        font-size: max(12px, 16px + 1vw);
         font-weight: normal;
     }
 
@@ -77,13 +67,25 @@
         font-size: max(12px, 16px + 0.75vw);
         word-wrap: break-word;
         overflow-wrap: break-word;
-        max-width: 100%;
-        flex-shrink: 1; /* magic fuckery because text wrap didn't work */
+        transition: 0.3s;
     }
 
-    @media (max-width: 900px) {
+    a:hover {
+        transition: 0.3s;
+        color: var(--yellow);
+        text-decoration: underline;
+    }
+
+    @media (max-width: 1300px) {
         .card {
+            min-height: calc(50svh - 60px);
             width: 100%;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .card {
+            padding: 15px;
         }
     }
 </style>

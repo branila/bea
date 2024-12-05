@@ -47,6 +47,7 @@
     @media (max-width: 600px) {
         header {
             gap: 10px;
+            padding: 20px;
         }
     }
 </style>
