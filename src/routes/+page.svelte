@@ -1,12 +1,12 @@
 <script lang="ts">
-  import Carousel from "$components/home/Carousel.svelte"
-  import Hero from "$components/home/Hero.svelte"
-  import Card from "$components/home/Card.svelte"
+  import Carousel from '$components/home/Carousel.svelte'
+  import Hero from '$components/home/Hero.svelte'
+  import Card from '$components/home/Card.svelte'
 </script>
 
 <svelte:head>
-    <title>Bea - Home 🔥</title>
     <meta name="description" content="Better Esperia Access homepage"/>
+    <title>Bea - Home 🔥</title>
 </svelte:head>
 
 <main>

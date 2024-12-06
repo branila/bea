@@ -1,7 +1,12 @@
 <script lang="ts">
-  import Header from "$components/contacts/Header.svelte"
-  import Cards from "$components/contacts/Cards.svelte"
+  import Header from '$components/contacts/Header.svelte'
+  import Cards from '$components/contacts/Cards.svelte'
 </script>
+
+<svelte:head>
+    <meta name="description" content="Better Esperia Access contact page"/>
+    <title>Bea - Contacts 🔗</title>
+</svelte:head>
 
 <main>
     <Header/>

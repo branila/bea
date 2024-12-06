@@ -21,5 +21,8 @@
     "typescript": "^5.0.0",
     "vite": "^5.0.3",
     "vitest": "^2.0.4"
+  },
+  "dependencies": {
+    "pocketbase": "^0.22.1"
   }
 }
