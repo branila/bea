@@ -1,0 +1,19 @@
+# typical files to ignore
+Dockerfile
+.dockerignore
+.git
+.gitignore
+.gitattributes
+README.md
+.npmrc
+.prettierrc
+.eslintrc.cjs
+.graphqlrc
+.editorconfig
+.svelte-kit
+.vscode
+.github
+node_modules
+build
+package
+**/.env
