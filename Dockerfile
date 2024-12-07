@@ -14,4 +14,4 @@ COPY --from=build /app/node_modules ./node_modules
 EXPOSE 3000
 ENV NODE_ENV=production
 RUN ulimit -c unlimited
-ENTRYPOINT [ "node", "build" ]
+ENTRYPOINT ["npm", "run", "serve"]
