@@ -1,1 +1,2 @@
-cogestione
+
+iscrizione, ticket, security
