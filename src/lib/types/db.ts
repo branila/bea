@@ -7,7 +7,7 @@ export enum Roles {
   Rappresentante = 'rappresentante',
   Organizzatore = 'organizzatore',
   Docente = 'docente',
-  Sizurezza = 'sicurezza',
+  Security = 'security',
   Admin = 'admin',
   Staff = 'staff',
 }
@@ -21,9 +21,9 @@ export interface User {
   verified: boolean,
   surname: string
   name: string
-  class: string,
-  studentId: string,
-  role: Roles[],
+  class?: string,
+  studentId?: string,
+  roles: Roles[],
   banned: boolean,
   created: IsoDateString,
   updated: IsoDateString,
