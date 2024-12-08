@@ -29,15 +29,15 @@
             description="Sei un membro della sicurezza della cogestione e vuoi accedere all'area riservata?"
             color="var(--blue)"
             buttonText="Accedi"
-            href="/sicurezza"
+            href="/cogestione/security"
         />
 
         <Card
-            title="QR Code"
-            description="Vuoi visualizzare il qr code relativo alla tua iscrizione alla cogestione?"
+            title="Ticket"
+            description="Vuoi visualizzare il tuo ticket personale per l'ingresso alla cogestione?"
             color="var(--green)"
             buttonText="Visualizza"
-            href="/cogestione/qrcode"
+            href="/cogestione/ticket"
         />
     </div>
 </main>
@@ -52,7 +52,7 @@
     .header {
         display: flex;
         gap: 40px;
-        min-height: calc (100svh - 80px);
+        min-height: calc(100svh - 200px);
     }
 
     .cards {

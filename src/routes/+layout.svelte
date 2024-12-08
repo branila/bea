@@ -29,10 +29,6 @@
         background-color: var(--black);
         color: var(--white);
         padding-inline: 40px;
-      }
-
-    .content {
-        min-height: calc(100svh - 130px);
     }
 
     @media (max-width: 600px) {

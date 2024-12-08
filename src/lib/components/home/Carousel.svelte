@@ -42,15 +42,13 @@
 </svelte:head>
 
 <button class="container" onclick={nextSlide}>
-    {#key currentSlide}
-        {#if currentSlide >= 0}
-            <img
-                src={`/images/home/${currentSlide}.jpg`}
-                alt={`Immagine ${currentSlide}`}
-                in:fade={{duration: 500}}
-            />
-        {/if}
-    {/key}
+    {#if currentSlide >= 0}
+        <img
+            src={`/images/home/${currentSlide}.jpg`}
+            alt={`Immagine ${currentSlide}`}
+            in:fade={{duration: 500}}
+        />
+    {/if}
 </button>
 
 <style>
