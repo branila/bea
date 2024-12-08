@@ -6,6 +6,7 @@
     "dev": "vite dev --port 5000 --host",
     "build": "vite build",
     "preview": "vite preview --port 4000",
+    "serve": "npm run build && node build",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "test:unit": "vitest",
