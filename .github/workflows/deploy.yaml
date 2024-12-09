@@ -4,8 +4,8 @@ on:
   push:
     branches: 
       - main
-    tags: 
-      - v*
+      - dev
+
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
@@ -19,6 +19,10 @@ jobs:
       packages: write
       attestations: write
       id-token: write
+
+    outputs:
+      imageName : ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+      imageDigest: ${{ steps.push.outputs.digest }}
 
     steps:
       - name: Checkout repository
@@ -38,6 +42,7 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
               type=raw,priority=1000,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
+              type=raw,priority=1000,value=dev,enable=${{ github.ref == format('refs/heads/{0}', 'dev') }}
               type=sha,enable=true,priority=100,prefix=sha-,suffix=,format=short
           
       - name: Build and push Docker image
@@ -55,8 +60,19 @@ jobs:
           subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}
           subject-digest: ${{ steps.push.outputs.digest }}
           push-to-registry: true
+        
 
-      - name: updating the deployment
+  deploy-prod:
+    runs-on: ubuntu-latest
+    if : github.ref == 'refs/heads/main'
+    permissions:
+      contents: read
+      packages: write
+      attestations: write
+      id-token: write
+
+    steps:
+      - name: updating prod deployment
         uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.SSH_SERVER_HOST }}
@@ -64,3 +80,22 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           port: 22
           script: cd containers/bea-fe/ && docker compose pull && docker rollout -f compose.yaml bea
+
+  deploy-dev:
+    runs-on: ubuntu-latest
+    if : github.ref == 'refs/heads/dev'
+    permissions:
+      contents: read
+      packages: write
+      attestations: write
+      id-token: write
+
+    steps:
+      - name: updating dev deployment
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.SSH_SERVER_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          port: 22
+          script: cd containers/bea-fe/ && docker compose pull && docker rollout -f compose.yaml bea-dev
