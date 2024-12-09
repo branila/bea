@@ -1,5 +1,7 @@
 <script lang="ts">
-  import { Roles, type Registration, type User, type Activity } from '$types/db'
+  import type { Registration, User, Activity } from '$types/db'
+  import { Roles } from '$types/db'
+  import hasRole from '$lib/utils/hasRole'
 
   let {
     user,
@@ -21,52 +23,48 @@
       name: 'Iscrizione',
       href: '/cogestione/registration',
       icon: '/images/cogestione/sidenav/registration.png',
-      allowed: !userHasRole(Roles.Staff)
+      allowed: !hasRole(user, Roles.Staff)
     },
     {
       name: 'Ticket',
       href: '/cogestione/ticket',
       icon: '/images/cogestione/sidenav/ticket.png',
-      allowed: !userHasRole(Roles.Staff)
+      allowed: !hasRole(user, Roles.Staff)
     },
     {
       name: 'Admin',
       href: '/cogestione/admin',
       icon: '/images/cogestione/sidenav/admin.png',
-      allowed: userHasRole(Roles.Admin)
+      allowed: hasRole(user, Roles.Admin)
     },
     {
       name: `Classe ${user.class}`,
-      href: `/cogestione/${user.class}`,
+      href: `/cogestione/classes/${user.class}`,
       icon: '/images/cogestione/sidenav/class.png',
-      allowed: userHasRole(Roles.Rappresentante, Roles.Admin)
+      allowed: hasRole(user, Roles.Rappresentante, Roles.Admin)
     },
     {
       name : activity?.name || '',
-      href: `/cogestione/${activity?.id}`,
+      href: `/cogestione/activities/${activity?.id}`,
       icon: '/images/cogestione/sidenav/activity.png',
-      allowed: !!activity && userHasRole(Roles.Organizzatore)
+      allowed: !!activity && hasRole(user, Roles.Organizzatore)
     },
     {
       name: 'Sicurezza',
       href: '/cogestione/security',
       icon: '/images/cogestione/sidenav/security.png',
-      allowed: userHasRole(Roles.Security, Roles.Admin, Roles.Staff)
+      allowed: hasRole(user, Roles.Security, Roles.Staff, Roles.Admin)
     },
     {
       name: 'Staff',
       href: '/cogestione/staff',
       icon: '/images/cogestione/sidenav/staff.png',
-      allowed: userHasRole(Roles.Staff, Roles.Admin)
+      allowed: hasRole(user, Roles.Staff, Roles.Admin)
     }
   ]
-
-  function userHasRole(...roles: Roles[]): boolean {
-    return roles.some(role => user.roles.includes(role))
-  }
 </script>
 
-{#snippet sidenavRoute(name: string, href: string, icon: string)}
+{#snippet route(name: string, href: string, icon: string)}
     <a {href} class="route">
         <img src={icon} alt="Route {name} icon">
         <div class="name">{name}</div>
@@ -80,13 +78,13 @@
         <div class="routes">
             {#each routes as { name, href, icon, allowed }}
                 {#if allowed}
-                    {@render sidenavRoute(name, href, icon)}
+                    {@render route(name, href, icon)}
                 {/if}
             {/each}
         </div>
     </div>
 
-    {@render sidenavRoute('Logout', '/logout', '/images/cogestione/sidenav/logout.png')}
+    {@render route('Logout', '/logout', '/images/cogestione/sidenav/logout.png')}
 </aside>
 
 <style>
