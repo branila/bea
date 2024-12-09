@@ -19,7 +19,7 @@
                     <br>
                 {/if}
 
-                Accessoooo (scusa devo testare)
+                Accessoooo (scusa devo testare ancora)
             </div>
         {/key}
     </div>
