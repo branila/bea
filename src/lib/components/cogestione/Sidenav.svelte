@@ -23,13 +23,13 @@
       name: 'Iscrizione',
       href: '/cogestione/registration',
       icon: '/images/cogestione/sidenav/registration.png',
-      allowed: !hasRole(user, Roles.Staff)
+      allowed: !hasRole(user, Roles.Staff, Roles.Docente)
     },
     {
       name: 'Ticket',
       href: '/cogestione/ticket',
       icon: '/images/cogestione/sidenav/ticket.png',
-      allowed: !hasRole(user, Roles.Staff)
+      allowed: !hasRole(user, Roles.Staff, Roles.Docente)
     },
     {
       name: 'Admin',
