@@ -37,7 +37,7 @@
         padding-top: 14px; /* For vertical alignment */
         font-size: max(16px, 10px + 0.5vw);
         cursor: pointer;
-        transition: 0.3s;
+        transition: 0.2s;
     }
 
     button:hover {

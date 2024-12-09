@@ -32,21 +32,27 @@ export default async function goCatch<
   errorsToCatch?: E[] | E
 ): Promise<[undefined, T] | [InstanceType<E>, undefined]> {
   try {
-      const data = await promise;
-      return [undefined, data] as [undefined, T];
+      const data = await promise
+
+      // If the promise resolves successfully, return the data
+      return [undefined, data] as [undefined, T]
   } catch (error) {
     if (!errorsToCatch) {
-      return [error, undefined] as [InstanceType<E>, undefined];
+      // If no error types are provided, return the error
+      return [error, undefined] as [InstanceType<E>, undefined]
     }
 
+    // If a single error type is provided, convert it to an array
     if (!Array.isArray(errorsToCatch)) {
-      errorsToCatch = [errorsToCatch];
+      errorsToCatch = [errorsToCatch]
     }
 
+    // If the error matches one of the provided error types, return the error
     if (Array.isArray(errorsToCatch) && errorsToCatch.some((E) => error instanceof E)) {
-      return [error, undefined] as [InstanceType<E>, undefined];
+      return [error, undefined] as [InstanceType<E>, undefined]
     }
 
-    throw error;
+    // If the error does not match any of the provided error types, re-throw the error
+    throw error
   }
 }
