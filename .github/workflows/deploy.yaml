@@ -63,6 +63,7 @@ jobs:
         
 
   deploy-prod:
+    needs: build-and-push-image
     runs-on: ubuntu-latest
     if : github.ref == 'refs/heads/main'
     permissions:
@@ -82,6 +83,7 @@ jobs:
           script: cd containers/bea-fe/ && docker compose pull && docker rollout -f compose.yaml bea
 
   deploy-dev:
+    needs: build-and-push-image
     runs-on: ubuntu-latest
     if : github.ref == 'refs/heads/dev'
     permissions:
