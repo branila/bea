@@ -153,11 +153,11 @@
         filter: invert();
     }
 
-    .active :global(img) {
+    .route:hover > img {
         filter: invert() brightness(50%) sepia(100) saturate(100);
     }
 
-    .route:hover > img {
+    .active :global(img) {
         filter: invert() brightness(50%) sepia(100) saturate(100);
     }
 
