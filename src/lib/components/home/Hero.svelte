@@ -19,7 +19,7 @@
                     <br>
                 {/if}
 
-                Accessoooo (scusa devo testare ancora)
+                Access
             </div>
         {/key}
     </div>
