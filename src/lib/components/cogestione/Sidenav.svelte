@@ -134,7 +134,7 @@
     .name {
         font-weight: normal;
         font-size: max(15px, 10px + 0.5vw);
-        padding-top: 2px; /* Center vertically */
+        padding-top: 2px; /* Centers vertically */
     }
 
     .route:hover {
@@ -154,10 +154,12 @@
     }
 
     .route:hover > img {
+        /* Changes the color of the icon to red */
         filter: invert() brightness(50%) sepia(100) saturate(100);
     }
 
     .active :global(img) {
+        /* Changes the color of the icon to red */
         filter: invert() brightness(50%) sepia(100) saturate(100);
     }
 
