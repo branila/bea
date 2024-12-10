@@ -21,7 +21,7 @@
 <style>
     main {
         display: flex;
-        height: calc(100svh - 200px);
+        min-height: calc(100svh - 200px);
         gap: 20px;
     }
 

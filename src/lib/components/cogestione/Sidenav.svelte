@@ -2,6 +2,7 @@
   import type { Registration, User, Activity } from '$types/db'
   import { Roles } from '$types/db'
   import hasRole from '$lib/utils/hasRole'
+  import { page } from '$app/stores'
 
   let {
     user,
@@ -19,6 +20,12 @@
   }
 
   const routes: Route[] = [
+    {
+      name: 'Home',
+      href: '/cogestione',
+      icon: '/images/cogestione/sidenav/home.png',
+      allowed: !!user
+    },
     {
       name: 'Iscrizione',
       href: '/cogestione/registration',
@@ -65,7 +72,7 @@
 </script>
 
 {#snippet route(name: string, href: string, icon: string)}
-    <a {href} class="route">
+    <a {href} class="route" class:active={$page.url.pathname === href}>
         <img src={icon} alt="Route {name} icon">
         <div class="name">{name}</div>
     </a>
@@ -92,7 +99,7 @@
         background-color: var(--grey);
         width: max(200px, 100px + 10vw);
         padding: 30px;
-        min-height: 100%;
+        min-height: max(100%, fit-content);
         border-radius: 15px;
         display: flex;
         flex-direction: column;
@@ -127,12 +134,31 @@
     .name {
         font-weight: normal;
         font-size: max(15px, 10px + 0.5vw);
+        padding-top: 2px; /* Center vertically */
+    }
+
+    .route:hover {
+        color: var(--red);
+        filter: brightness(1.4);
+    }
+
+    .active :global(.name) {
+        color: var(--red);
+        filter: brightness(1.4);
     }
 
     img {
         height: max(20px, 10px + 0.75vw);
         width: max(20px, 10px + 0.75vw);
         filter: invert();
+    }
+
+    .active :global(img) {
+        filter: invert() brightness(50%) sepia(100) saturate(100);
+    }
+
+    .route:hover > img {
+        filter: invert() brightness(50%) sepia(100) saturate(100);
     }
 
     @media (max-width: 600px) {
