@@ -1,5 +1,4 @@
-import { type BeaPocketBase } from '$types/db'
-import { type User } from '$types/db'
+import type { BeaPocketBase, User } from '$types/db'
 
 declare global {
   async function goCatch<
@@ -10,7 +9,7 @@ declare global {
   ): Promise<[undefined, T] | [InstanceType<E>, undefined]>
 
 	namespace App {
-		// interface Error {}
+	  // interface Error {}
 		// interface PageData {}
 		// interface PageState {}
 		// interface Platform {}

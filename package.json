@@ -25,6 +25,7 @@
     "vitest": "^2.0.4"
   },
   "dependencies": {
-    "pocketbase": "^0.22.1"
+    "pocketbase": "^0.22.1",
+    "telegraf": "^4.16.3"
   }
 }
