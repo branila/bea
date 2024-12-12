@@ -35,7 +35,7 @@
             Come lo facciamo noi non lo fa nessuno.
         </div>
 
-        <SimpleButton>Accedi alla piattaforma</SimpleButton>
+        <SimpleButton href="/cogestione">Accedi alla piattaforma</SimpleButton>
     </div>
 </main>
 
@@ -67,7 +67,7 @@
     .bottom {
         display: flex;
         flex-direction: column;
-        gap: 30px;
+        gap: 40px;
         font-size: max(18px, 10px + 1vw);
     }
 
