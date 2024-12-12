@@ -10,7 +10,6 @@ export const load: LayoutServerLoad = async ({ locals }) => {
   )
 
   if (error) {
-    console.error(error)
     registration = undefined
   }
 
@@ -22,7 +21,6 @@ export const load: LayoutServerLoad = async ({ locals }) => {
     )
 
     if (error) {
-      console.error(error)
       activities = []
     }
 
