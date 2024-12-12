@@ -1,79 +1,79 @@
 <script lang="ts">
-  import type { Registration, User, Activity } from '$types/db'
-  import { Roles } from '$types/db'
-  import hasRole from '$lib/utils/hasRole'
-  import { page } from '$app/stores'
+    import type { Registration, User, Activity } from "$types/db";
+    import { Roles } from "$types/db";
+    import hasRole from "$lib/utils/hasRole";
+    import { page } from "$app/stores";
 
-  let {
-    user,
-    activity
-  }: {
-    user: User,
-    activity: Activity | undefined
-  } = $props()
+    let {
+        user,
+        activity,
+    }: {
+        user: User;
+        activity: Activity | undefined;
+    } = $props();
 
-  interface Route {
-    name: string
-    href: string
-    icon: string
-    allowed: boolean
-  }
-
-  const routes: Route[] = [
-    {
-      name: 'Home',
-      href: '/cogestione',
-      icon: '/images/cogestione/sidenav/home.png',
-      allowed: !!user
-    },
-    {
-      name: 'Iscrizione',
-      href: '/cogestione/registration',
-      icon: '/images/cogestione/sidenav/registration.png',
-      allowed: !hasRole(user, Roles.Staff, Roles.Docente)
-    },
-    {
-      name: 'Ticket',
-      href: '/cogestione/ticket',
-      icon: '/images/cogestione/sidenav/ticket.png',
-      allowed: !hasRole(user, Roles.Staff, Roles.Docente)
-    },
-    {
-      name: 'Admin',
-      href: '/cogestione/admin',
-      icon: '/images/cogestione/sidenav/admin.png',
-      allowed: hasRole(user, Roles.Admin)
-    },
-    {
-      name: `Classe ${user.class}`,
-      href: `/cogestione/classes/${user.class}`,
-      icon: '/images/cogestione/sidenav/class.png',
-      allowed: hasRole(user, Roles.Rappresentante, Roles.Admin)
-    },
-    {
-      name : activity?.name || '',
-      href: `/cogestione/activities/${activity?.id}`,
-      icon: '/images/cogestione/sidenav/activity.png',
-      allowed: !!activity && hasRole(user, Roles.Organizzatore)
-    },
-    {
-      name: 'Sicurezza',
-      href: '/cogestione/security',
-      icon: '/images/cogestione/sidenav/security.png',
-      allowed: hasRole(user, Roles.Security, Roles.Staff, Roles.Admin)
-    },
-    {
-      name: 'Staff',
-      href: '/cogestione/staff',
-      icon: '/images/cogestione/sidenav/staff.png',
-      allowed: hasRole(user, Roles.Staff, Roles.Admin)
+    interface Route {
+        name: string;
+        href: string;
+        icon: string;
+        allowed: boolean;
     }
-  ]
+
+    const routes: Route[] = [
+        {
+            name: "Home",
+            href: "/cogestione",
+            icon: "/images/cogestione/sidenav/home.svg",
+            allowed: !!user,
+        },
+        {
+            name: "Iscrizione",
+            href: "/cogestione/registration",
+            icon: "/images/cogestione/sidenav/registration.svg",
+            allowed: !hasRole(user, Roles.Staff, Roles.Docente),
+        },
+        {
+            name: "Ticket",
+            href: "/cogestione/ticket",
+            icon: "/images/cogestione/sidenav/ticket.svg",
+            allowed: !hasRole(user, Roles.Staff, Roles.Docente),
+        },
+        {
+            name: "Admin",
+            href: "/cogestione/admin",
+            icon: "/images/cogestione/sidenav/admin.svg",
+            allowed: hasRole(user, Roles.Admin),
+        },
+        {
+            name: `Classe ${user.class}`,
+            href: `/cogestione/classes/${user.class}`,
+            icon: "/images/cogestione/sidenav/class.svg",
+            allowed: hasRole(user, Roles.Rappresentante, Roles.Admin),
+        },
+        {
+            name: activity?.name || "",
+            href: `/cogestione/activities/${activity?.id}`,
+            icon: "/images/cogestione/sidenav/activity.svg",
+            allowed: !!activity && hasRole(user, Roles.Organizzatore),
+        },
+        {
+            name: "Sicurezza",
+            href: "/cogestione/security",
+            icon: "/images/cogestione/sidenav/security.svg",
+            allowed: hasRole(user, Roles.Security, Roles.Staff, Roles.Admin),
+        },
+        {
+            name: "Staff",
+            href: "/cogestione/staff",
+            icon: "/images/cogestione/sidenav/staff.svg",
+            allowed: hasRole(user, Roles.Staff, Roles.Admin),
+        },
+    ];
 </script>
 
 {#snippet route(name: string, href: string, icon: string)}
     <a {href} class="route" class:active={$page.url.pathname === href}>
-        <img src={icon} alt="Route {name} icon">
+        <img src={icon} alt="Route {name} icon" />
         <div class="name">{name}</div>
     </a>
 {/snippet}
@@ -91,7 +91,11 @@
         </div>
     </div>
 
-    {@render route('Logout', '/logout', '/images/cogestione/sidenav/logout.png')}
+    {@render route(
+        "Logout",
+        "/logout",
+        "/images/cogestione/sidenav/logout.svg",
+    )}
 </aside>
 
 <style>
@@ -99,7 +103,6 @@
         background-color: var(--grey);
         width: max(200px, 100px + 10vw);
         padding: 30px;
-        min-height: max(100%, fit-content);
         border-radius: 15px;
         display: flex;
         flex-direction: column;
@@ -134,12 +137,10 @@
     .name {
         font-weight: normal;
         font-size: max(15px, 10px + 0.5vw);
-        padding-top: 2px; /* Centers vertically */
     }
 
     .route:hover {
         color: var(--red);
-        filter: brightness(1.4);
     }
 
     .active :global(.name) {
@@ -148,19 +149,23 @@
     }
 
     img {
-        height: max(20px, 10px + 0.75vw);
+        height: 20px;
         width: max(20px, 10px + 0.75vw);
         filter: invert();
+        user-select: none;
+        aspect-ratio: 1 / 1;
     }
 
     .route:hover > img {
         /* Changes the color of the icon to red */
-        filter: invert() brightness(50%) sepia(100) saturate(100);
+        filter: brightness(0) saturate(100%) invert(17%) sepia(32%)
+            saturate(6275%) hue-rotate(349deg) brightness(140%) contrast(90%);
     }
 
     .active :global(img) {
         /* Changes the color of the icon to red */
-        filter: invert() brightness(50%) sepia(100) saturate(100);
+        filter: brightness(0) saturate(100%) invert(17%) sepia(32%)
+            saturate(6275%) hue-rotate(349deg) brightness(140%) contrast(90%);
     }
 
     @media (max-width: 600px) {
@@ -174,7 +179,8 @@
             gap: 20px;
         }
 
-        .name, .title {
+        .name,
+        .title {
             display: none;
         }
     }
