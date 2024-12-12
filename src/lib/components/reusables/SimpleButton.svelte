@@ -42,12 +42,16 @@
         border: 0;
     }
 
+    button:hover {
+        filter: brightness(1.2);
+    }
+
     img {
         height: 20px;
     }
 
     button:hover > img {
         /* Changes the color of the icon to red */
-        filter: invert() brightness(50%) sepia(100) saturate(100);
+        filter: brightness(0) saturate(100%) invert(17%) sepia(32%) saturate(6275%) hue-rotate(349deg) brightness(100%) contrast(90%);
     }
 </style>

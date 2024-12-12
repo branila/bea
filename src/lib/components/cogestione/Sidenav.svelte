@@ -158,14 +158,12 @@
 
     .route:hover > img {
         /* Changes the color of the icon to red */
-        filter: brightness(0) saturate(100%) invert(17%) sepia(32%)
-            saturate(6275%) hue-rotate(349deg) brightness(140%) contrast(90%);
+        filter: brightness(0) saturate(100%) invert(17%) sepia(32%) saturate(6275%) hue-rotate(349deg) brightness(140%) contrast(90%);
     }
 
     .active :global(img) {
         /* Changes the color of the icon to red */
-        filter: brightness(0) saturate(100%) invert(17%) sepia(32%)
-            saturate(6275%) hue-rotate(349deg) brightness(140%) contrast(90%);
+        filter: brightness(0) saturate(100%) invert(17%) sepia(32%) saturate(6275%) hue-rotate(349deg) brightness(140%) contrast(90%);
     }
 
     @media (max-width: 600px) {
