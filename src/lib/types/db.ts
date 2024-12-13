@@ -65,16 +65,16 @@ export type RegistrationId = string
 export interface Registration {
   id: RegistrationId,
   user: UserId,
-  activity0: ActivityId,
-  activity1: ActivityId,
-  activity2: ActivityId,
+  firstActivity: ActivityId,
+  secondActivity: ActivityId,
+  thirdActivity: ActivityId,
   created: IsoDateString,
   updated: IsoDateString,
   expand?: {
     user?: User,
-    activity0?: Activity,
-    activity1?: Activity,
-    activity2?: Activity,
+    firstActivity?: Activity,
+    secondActivity?: Activity,
+    thirdActivity?: Activity,
   }
 }
 
