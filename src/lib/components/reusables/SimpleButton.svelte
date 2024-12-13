@@ -5,12 +5,14 @@
     href = '#',
     accent = 'var(--red)',
     children,
-    onclick = () => {}
+    onclick = () => {},
+    type = 'button',
   }: {
     href?: string
     accent?: string
     onclick?: (() => void)
     children: Snippet<[]>
+    type?: 'button' | 'submit' | 'reset'
   } = $props()
 
   let hovered = $state(false)
@@ -18,7 +20,7 @@
 
 <a {href}>
     <button
-        {onclick}
+        {type} {onclick}
         onmouseenter={() => hovered = true}
         onmouseleave={() => hovered = false}
         style:color={hovered ? accent : 'var(--black)'}
