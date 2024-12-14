@@ -38,7 +38,6 @@
 
     nav a:hover {
         color: var(--blue);
-        transition: 0.2s;
     }
 
     .container {
@@ -73,7 +72,6 @@
         gap: 20px;
         padding-right: 30px;
         font-size: max(16px, 10px + 0.5vw);
-        transition: 0.2s;
     }
 
     .links a {

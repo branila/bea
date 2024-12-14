@@ -1,14 +1,10 @@
 <script lang="ts">
     import Sidenav from '$components/cogestione/Sidenav.svelte'
 
-    let { children, data } = $props()
+    const { children, data } = $props()
 
     const { user, activity } = data
 </script>
-
-<svelte:head>
-    <title>Bea - Cogestione 🎈</title>
-</svelte:head>
 
 <main>
     <Sidenav {user} {activity} />
@@ -21,13 +17,23 @@
 <style>
     main {
         display: flex;
-        height: calc(100svh - 200px);
-        gap: 20px;
+        min-height: calc(100svh - 200px);
+        gap: 40px;
+    }
+
+    .container {
+        width: 100%;
+        min-height: calc(100svh - 200px);
     }
 
     @media (max-width: 600px) {
         main {
-            height: calc(100svh - 140px);
+            min-height: calc(100svh - 140px);
+            gap: 20px;
+        }
+
+        .container {
+            min-height: calc(100svh - 140px);
         }
     }
 </style>
