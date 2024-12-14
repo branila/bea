@@ -10,7 +10,6 @@ export const load: PageServerLoad = async ({ parent, locals }) => {
     activities = []
   }
 
-
   // Remove organizers from activities for safety reasons
   activities.forEach(activity => activity.organizers = [])
 
@@ -32,21 +31,38 @@ export const load: PageServerLoad = async ({ parent, locals }) => {
 export const actions = {
 	default: async ({ request, locals }) => {
 		const data = await request.formData()
-		const firstActivity = data.get('firstActivity')
-		const secondActivity = data.get('secondActivity')
-		const thirdActivity = data.get('thirdActivity')
 
-		const [error] = await goCatch(locals.pb.collection('registrations').create({
-      user: locals.user!.id,
-      firstActivity,
-      secondActivity,
-      thirdActivity,
-    }))
+		const firstActivity = await locals.pb.collection('activities').getOne(data.get('firstActivity') as string)
+		const secondActivity = await locals.pb.collection('activities').getOne(data.get('secondActivity') as string)
+		const thirdActivity = await locals.pb.collection('activities').getOne(data.get('thirdActivity') as string)
 
-		if (error) {
-		  return { status: 500 }
+		// Checks if the activities are still available
+		if (firstActivity.capacity.every(capacity => capacity === 0) ||
+      secondActivity.capacity.every(capacity => capacity === 0) ||
+      thirdActivity.capacity.every(capacity => capacity === 0)) {
+      return console.error('Una o più attività sono esaurite')
     }
 
-		return { status: 200 }
+		if (firstActivity.turns == 1) {
+		  firstActivity.capacity[0]--
+		} else {
+		  firstActivity.capacity[0]--
+      secondActivity.capacity[1]--
+      thirdActivity.capacity[2]--
+		}
+
+    const registration = await locals.pb.collection('registrations').create({
+      user: locals.user!.id,
+      firstActivity: firstActivity.id,
+      secondActivity: secondActivity.id,
+      thirdActivity: thirdActivity.id,
+    })
+
+    await locals.pb.collection('tickets').create({
+      user: locals.user!.id,
+      registration: registration.id,
+    })
+
+    await locals.pb.collection('activities').update(firstActivity.id, firstActivity)
 	}
 } satisfies Actions;
