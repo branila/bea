@@ -14,7 +14,7 @@
                     dark: '#000',
                     light: '#fff'
                 }
-            }, (error: Error | null) => {
+            }, (error: Error | null | undefined) => {
                 if (error) {
                   console.error('Errore nella generazione del QR Code:', error);
                 }
