@@ -11,8 +11,6 @@ export const load: LayoutServerLoad = async ({ locals }) => {
     })
   )
 
-  console.log(registration)
-
   if (error) {
     registration = undefined
   }
