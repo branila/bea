@@ -1,19 +1,17 @@
 import { MailerSend, EmailParams, Sender, Recipient, Attachment } from 'mailersend';
-import * as dotenv from 'dotenv';
+import { MAILERSEND_API_KEY, MAILERSEND_DOMAIN } from '$env/static/private'
 import * as QRCode from 'qrcode';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 
-dotenv.config();
-
 // Initialize MailerSend with your API key
 const mailerSend = new MailerSend({
-  apiKey: process.env.MAILERSEND_API_KEY || ''
+  apiKey: MAILERSEND_API_KEY || ''
 });
 
 // Define sender information
 // Make sure to use an email from your verified domain
-const sender = new Sender(`noreply@${process.env.MAILERSEND_DOMAIN}`, 'Better Esperia Access');
+const sender = new Sender(`noreply@${MAILERSEND_DOMAIN}`, 'Better Esperia Access');
 
 async function generateQRCodeImage(text: string): Promise<string> {
   try {
@@ -44,7 +42,7 @@ async function loadEmailTemplate(): Promise<string> {
   }
 }
 
-async function sendMail(userId: string, dest: string) {
+async function sendMail(userId: string, dest: string, role: string, username: string) {
   let qrCodePath: string | null = null;
 
   try {
@@ -54,8 +52,8 @@ async function sendMail(userId: string, dest: string) {
     // Load and populate template
     let htmlContent = await loadEmailTemplate();
     htmlContent = htmlContent
-      .replace('{{QR_CODE}}', 'cid:qrcode')
-      .replace('{{USER_ID}}', userId);
+      .replace('{{ROLE}}', role)
+      .replace('{{NAME}}', username)
 
     // Read the QR code file as base64
     const qrCodeBuffer = await fs.readFile(qrCodePath);

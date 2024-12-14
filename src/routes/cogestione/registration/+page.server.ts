@@ -1,5 +1,6 @@
 import type { PageServerLoad, Actions } from './$types'
 import type { User, Registration, Activity } from '$types/db'
+import { sendMail } from '$lib/server/scripts/emailService'
 
 export const load: PageServerLoad = async ({ parent, locals }) => {
   const parentData = await parent()
@@ -64,5 +65,13 @@ export const actions = {
     })
 
     await locals.pb.collection('activities').update(firstActivity.id, firstActivity)
+
+    let { id, email, surname, name } = locals.user!
+
+    await sendMail(
+      id, 
+      email, 
+      surname + name, 
+      locals.user!.roles[0])
 	}
 } satisfies Actions;
