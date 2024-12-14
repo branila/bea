@@ -1,22 +1,32 @@
-import { type Handle } from '@sveltejs/kit'
+import {type Handle} from "@sveltejs/kit";
 
 // TODO: Implement a real authentication system
-const authentication: Handle = async ({ event, resolve }) => {
-  const pb = event.locals.pb
+const authentication: Handle = async ({event, resolve}) => {
+  const pb = event.locals.pb;
 
-  const email = 'branila.claudiustefan.studente@itispaleocapa.it'
+  // const email = 'branila.claudiustefan.studente@itispaleocapa.it'
 
-  const [error, user] = await goCatch(
-    pb.collection('users').getFirstListItem(`email="${email}"`),
-  )
+  // const [error, user] = await goCatch(
+  //   pb.collection('users').getFirstListItem(`email="${email}"`),
+  // )
 
-  if (error) {
-    console.error(error)
-  }
+  // if (error) {
+  //   console.error(error)
+  // }
 
-  event.locals.user = user
+  const authData = await pb.collection("users").authWithOAuth2({
+    provider: "oidc",
+  });
 
-  return await resolve(event)
-}
+  pb.authStore.save(authData.token, {
+    ...authData.record,
+    collectionId: "users",
+    collectionName: "users",
+  });
 
-export default authentication
+  event.locals.user = authData.record;
+
+  return await resolve(event);
+};
+
+export default authentication;
