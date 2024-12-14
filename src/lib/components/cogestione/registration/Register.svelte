@@ -94,7 +94,7 @@
     h1 {
         font-size: max(30px, 12px + 2vw);
         color: var(--red);
-        filter: brightness(2);
+        filter: brightness(1.2);
         margin-bottom: 40px;
         width: min(600px, 100%);
     }
