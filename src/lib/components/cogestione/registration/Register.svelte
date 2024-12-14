@@ -121,6 +121,7 @@
         width: min(600px, 100%);
         border: 0;
         cursor: pointer;
+        font-size: max(16px, 10px + 0.5vw);
 
         /* Arrow */
         appearance: none;
