@@ -135,6 +135,10 @@
     }
 
     @media (max-width: 600px) {
+        .container {
+            justify-content: start
+        }
+
         h1 {
             margin-bottom: 20px;
         }
