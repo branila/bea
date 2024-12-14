@@ -3,7 +3,7 @@ import {type HandleServerError} from '@sveltejs/kit'
 
 export const errorsHandler: HandleServerError = async ({ error, status, event }) => {
   const user = event.locals.user?.email || 'Guest'
-  const err = false|| new Error('Unknown Error')
+  const err = (error as Error) || new Error('Unknown Error')
 
   const msg = `User: ${user}\n\n${err.stack}`
 
