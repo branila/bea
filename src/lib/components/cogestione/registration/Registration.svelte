@@ -2,13 +2,13 @@
     import type { Registration } from '$types/db'
 
     const { registration }: {
-        registration: Registration
+        registration: Registration | undefined
     } = $props()
 
     const activities = [
-        registration.expand!.firstActivity!.name,
-        registration.expand!.secondActivity!.name,
-        registration.expand!.thirdActivity!.name,
+        registration!.expand!.firstActivity!.name,
+        registration!.expand!.secondActivity!.name,
+        registration!.expand!.thirdActivity!.name,
     ]
 </script>
 
