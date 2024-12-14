@@ -2,15 +2,17 @@
   import { type Snippet } from 'svelte'
 
   let {
-    href= '#',
+    href = '#',
     accent = 'var(--red)',
     children,
-    onclick = () => {}
+    onclick = () => {},
+    type = 'button',
   }: {
     href?: string
     accent?: string
     onclick?: (() => void)
     children: Snippet<[]>
+    type?: 'button' | 'submit' | 'reset'
   } = $props()
 
   let hovered = $state(false)
@@ -18,29 +20,40 @@
 
 <a {href}>
     <button
-        {onclick}
+        {type} {onclick}
         onmouseenter={() => hovered = true}
         onmouseleave={() => hovered = false}
-        style="border-color: {hovered ? accent : 'var(--white)'}; color: {hovered ? accent : 'var(--white)'}"
+        style:color={hovered ? accent : 'var(--black)'}
     >
-        {@render children()}
+        <span>{@render children()}</span>
+        <img src="/images/cogestione/arrow-right.png" alt="Vai">
     </button>
 </a>
 
 <style>
     button {
-        background-color: transparent;
-        color: var(--white);
-        border: 1px solid var(--white);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background-color: var(--white);
+        padding: max(10px, 5px + 0.5vw);
+        padding-top: max(12px, 7px + 0.5vw); /* For vertical alignment */
         border-radius: 15px;
-        padding: 13px;
-        padding-top: 14px; /* For vertical alignment */
         font-size: max(16px, 10px + 0.5vw);
         cursor: pointer;
-        transition: 0.2s;
+        border: 0;
     }
 
     button:hover {
-        filter: brightness(2)
+        filter: brightness(1.2);
+    }
+
+    img {
+        height: 20px;
+    }
+
+    button:hover > img {
+        /* Changes the color of the icon to red */
+        filter: brightness(0) saturate(100%) invert(17%) sepia(32%) saturate(6275%) hue-rotate(349deg) brightness(100%) contrast(90%);
     }
 </style>

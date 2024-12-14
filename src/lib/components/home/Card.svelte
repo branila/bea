@@ -1,5 +1,5 @@
 <script lang="ts">
-  import SimpleButton from '$components/reusables/SimpleButton.svelte'
+  import OutlinedButton from '$components/reusables/OutlinedButton.svelte'
 
   let {
     title,
@@ -21,9 +21,9 @@
 
     <p>{description}</p>
 
-    <SimpleButton accent="var(--white)" {href}>
+    <OutlinedButton accent="var(--white)" {href}>
         {buttonText}
-    </SimpleButton>
+    </OutlinedButton>
 </div>
 
 <style>

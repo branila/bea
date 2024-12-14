@@ -60,8 +60,8 @@
       del nostro istituto. Come lo facciamo noi non lo fa nessuno.
     </div>
 
-    <SimpleButton>Accedi alla piattaforma</SimpleButton>
-  </div>
+        <SimpleButton href="/cogestione">Accedi alla piattaforma</SimpleButton>
+    </div>
 </main>
 
 <style>
@@ -89,12 +89,12 @@
     filter: brightness(1.2);
   }
 
-  .bottom {
-    display: flex;
-    flex-direction: column;
-    gap: 30px;
-    font-size: max(18px, 10px + 1vw);
-  }
+    .bottom {
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+        font-size: max(18px, 10px + 1vw);
+    }
 
   .description {
     font-weight: normal;

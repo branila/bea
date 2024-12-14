@@ -18,6 +18,7 @@
     "@sveltejs/adapter-node": "^5.2.9",
     "@sveltejs/kit": "^2.0.0",
     "@sveltejs/vite-plugin-svelte": "^4.0.0",
+    "@types/qrcode": "^1.5.5",
     "svelte": "^5.0.0",
     "svelte-check": "^4.0.0",
     "typescript": "^5.0.0",
@@ -26,6 +27,7 @@
   },
   "dependencies": {
     "pocketbase": "^0.22.1",
+    "qrcode": "^1.5.4",
     "telegraf": "^4.16.3"
   }
 }

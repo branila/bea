@@ -38,7 +38,6 @@
         background-color: var(--grey);
         color: var(--white);
         width: 50%;
-        border: 1px solid var(--white);
     }
 
     .title {
@@ -57,7 +56,6 @@
         font-size: max(24px, 16px + 1.5vw);
     }
 
-
     p {
         font-size: max(12px, 16px + 1vw);
         font-weight: normal;
@@ -67,11 +65,9 @@
         font-size: max(12px, 16px + 0.75vw);
         word-wrap: break-word;
         overflow-wrap: break-word;
-        transition: 0.3s;
     }
 
     a:hover {
-        transition: 0.3s;
         color: var(--yellow);
         text-decoration: underline;
     }

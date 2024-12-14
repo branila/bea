@@ -6,7 +6,9 @@ export const load: LayoutServerLoad = async ({ locals }) => {
   const user = locals.user
 
   let [error, registration] = await goCatch(
-    locals.pb.collection('registrations').getFirstListItem(`user="${user?.id}"`)
+    locals.pb.collection('registrations').getFirstListItem(`user="${user?.id}"`, {
+      expand: 'firstActivity,secondActivity,thirdActivity'
+    })
   )
 
   if (error) {
@@ -21,7 +23,6 @@ export const load: LayoutServerLoad = async ({ locals }) => {
     )
 
     if (error) {
-      console.error(error)
       activities = []
     }
 
