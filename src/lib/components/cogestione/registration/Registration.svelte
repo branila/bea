@@ -1,5 +1,7 @@
 <script lang="ts">
-   const { user, registration, activities } = $props()
+   const { registration } = $props()
 </script>
 
-Your registration
+<div class="container">
+    {registration.firstActivity}
+</div>

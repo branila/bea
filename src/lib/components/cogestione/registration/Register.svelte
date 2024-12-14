@@ -48,7 +48,9 @@
         required
     >
         <option value="">Seleziona un'attività</option>
-        {@render options(activities, turn)}
+
+        <!-- Renders the options sorted by the number of turns of the activity -->
+        {@render options(activities.sort((a, b) => b.turns - a.turns), turn)}
     </select>
 {/snippet}
 

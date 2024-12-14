@@ -10,6 +10,7 @@ export const load: PageServerLoad = async ({ parent, locals }) => {
     activities = []
   }
 
+
   // Remove organizers from activities for safety reasons
   activities.forEach(activity => activity.organizers = [])
 
