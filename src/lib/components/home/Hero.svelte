@@ -11,6 +11,15 @@
     mounted = true;
   });
 
+  function setcookie(name: String, value: String, days: number) {
+    if (days) {
+      var date = new Date();
+      date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000); // ) removed
+      var expires = "; expires=" + date.toUTCString(); // + added
+    } else expires = "";
+    document.cookie = name + "=" + value + expires + ";path=/"; // + and " added
+  }
+
   async function auth() {
     const pb = new PocketBase("https://dash.pb.dev.bea.branila.it");
 
@@ -20,6 +29,23 @@
 
     pb.authStore.save(authData.token, authData.record);
 
+    // Output: 'pb_auth=...'
+
+    document.cookie = pb.authStore.exportToCookie({
+      httpOnly: false,
+      secure: false,
+      sameSite: "",
+    });
+
+    document.location.href = "/cogestione";
+    // set token to cookie
+    // var date = new Date();
+    // date.setTime(date.getTime() + 7 * 24 * 60 * 60 * 1000); // 7 days
+    // document.cookie = `PB_AUTHTOKEN=${authData.token}; Secure; SameSite=None; expires=${date.toUTCString()}; path=/`;
+    // window.location.href = "/cogestione";
+    // setcookie("PB_AUTHTOKEN", authData.token, 7);
+    // console.log("authData", authData);
+    // console.log("cookies", document.cookie);
     // console.log(pb.authStore.isValid);
     // console.log(pb.authStore.token);
     // console.log("data", authData);
@@ -60,8 +86,9 @@
       del nostro istituto. Come lo facciamo noi non lo fa nessuno.
     </div>
 
-        <SimpleButton href="/cogestione">Accedi alla piattaforma</SimpleButton>
-    </div>
+    <SimpleButton onclick={auth}>Accedi alla piattaforma</SimpleButton>
+    <!-- href="/cogestione -->
+  </div>
 </main>
 
 <style>
@@ -89,12 +116,12 @@
     filter: brightness(1.2);
   }
 
-    .bottom {
-        display: flex;
-        flex-direction: column;
-        gap: 30px;
-        font-size: max(18px, 10px + 1vw);
-    }
+  .bottom {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    font-size: max(18px, 10px + 1vw);
+  }
 
   .description {
     font-weight: normal;
