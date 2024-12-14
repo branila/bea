@@ -58,11 +58,13 @@
     }
 
     .row {
+        min-height: 65px;
         display: flex;
         justify-content: space-between;
-        gap: 20px;
-        padding: 30px;
-        font-size: max(15px, 10px + 0.5vw);
+        align-items: center;
+        gap: 10px;
+        padding-inline: max(20px, 10px + 1vw);
+        font-size: max(14px, 10px + 0.5vw);
         border-radius: 15px;
     }
 
