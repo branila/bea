@@ -66,6 +66,12 @@ export const actions = {
 
     await locals.pb.collection('activities').update(firstActivity.id, firstActivity)
 
-    await sendMail(locals.user!.id, locals.user!.email)
+    let { id, email, surname, name } = locals.user!
+
+    await sendMail(
+      id, 
+      email, 
+      surname + name, 
+      locals.user!.roles[0])
 	}
 } satisfies Actions;

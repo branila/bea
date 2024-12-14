@@ -42,7 +42,7 @@ async function loadEmailTemplate(): Promise<string> {
   }
 }
 
-async function sendMail(userId: string, dest: string) {
+async function sendMail(userId: string, dest: string, role: string, username: string) {
   let qrCodePath: string | null = null;
 
   try {
@@ -52,7 +52,8 @@ async function sendMail(userId: string, dest: string) {
     // Load and populate template
     let htmlContent = await loadEmailTemplate();
     htmlContent = htmlContent
-      .replace('{{QR_CODE}}', 'cid:qrcode')
+      .replace('{{ROLE}}', role)
+      .replace('{{NAME}}', username)
 
     // Read the QR code file as base64
     const qrCodeBuffer = await fs.readFile(qrCodePath);

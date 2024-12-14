@@ -1,39 +1,120 @@
-<!-- template.html -->
 <!DOCTYPE html>
 <html>
-
 <head>
   <style>
-    .container {
-      font-family: Arial, sans-serif;
+    body {
+      font-family: 'Arial', sans-serif;
+      background: #f0f0f0;
+      margin: 0;
+      padding: 40px 20px;
+    }
+    .ticket {
+      background: white;
       max-width: 600px;
       margin: 0 auto;
-      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      overflow: hidden;
     }
-
+    .ticket-header {
+      background: #1a237e;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    .ticket-body {
+      padding: 30px;
+    }
+    .qr-section {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 20px 0;
+      padding: 20px;
+      background: #f8f9fa;
+      border-radius: 10px;
+    }
     .qr-code {
-      width: 300px;
-      height: 300px;
+      width: 200px;
+      height: 200px;
+      background: #e0e0e0;
+    }
+    .details {
+      flex: 1;
+      padding-left: 20px;
+    }
+    .warning {
+      background: #fff3cd;
+      border-left: 4px solid #ffc107;
+      padding: 15px;
       margin: 20px 0;
     }
-
-    .user-id {
-      background-color: #f5f5f5;
+    .ticket-footer {
+      background: #f8f9fa;
+      padding: 15px;
+      text-align: center;
+      font-size: 0.9em;
+      border-top: 1px dashed #dee2e6;
+    }
+    .event-details {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      margin: 20px 0;
+    }
+    .detail-item {
       padding: 10px;
+      background: #f8f9fa;
       border-radius: 5px;
-      display: inline-block;
     }
   </style>
 </head>
-
 <body>
-  <div class="container">
-    <h1>Iscrizione alla Cogestione effettuata!</h1>
-    <p>Ecco il tuo codice QR per l'iscrizione:</p>
-    <img src="cid:qrcode" alt="QR Code" class="qr-code" />
-    <p>Conserva questo codice QR, ti servirà per accedere alla cogestione.</p>
-    <u><b>Non condividerlo con amici / estranei, questo QR Code è personale e una volta scansionato dallo staff diventa invalido, evita di far brutte figure :)</b></u>
+  <div class="ticket">
+    <div class="ticket-header">
+      <h1 style="margin: 0;">Cogestione 2024</h1>
+      <p style="margin: 10px 0 0 0;">ITIS P. Paleocapa</p>
+    </div>
+    
+    <div class="ticket-body">
+      <h2>Iscrizione Confermata!</h2>
+      
+      <div class="event-details">
+        <div class="detail-item">
+          <strong>Data:</strong><br>
+          21 Dicembre 2024
+        </div>
+        <div class="detail-item">
+          <strong>Orario:</strong><br>
+          08:00 - 12:00
+        </div>
+        <div class="detail-item">
+          <strong>Partecipante:</strong><br>
+          {{NAME}}
+        </div>
+        <div class="detail-item">
+          <strong>Ruolo:</strong><br>
+          {{ROLE}}
+        </div>
+      </div>
+
+      <div class="qr-section">
+        <div class="details">
+          <h3>Il tuo QR Code personale</h3>
+          <p>Presenta questo codice all'ingresso per la registrazione</p>
+        </div>
+        <img src="cid:qrcode" alt="QR Code" class="qr-code" />
+      </div>
+
+      <div class="warning">
+        <strong>⚠️ Importante:</strong>
+        <p style="margin: 10px 0 0 0;">Questo QR Code è strettamente personale e diventa invalido dopo la scansione. Non condividerlo con altri per evitare problemi all'ingresso.</p>
+      </div>
+    </div>
+
+    <div class="ticket-footer">
+      <p style="margin: 0;">Per assistenza: comitato.studentesco@itispaleocapa.it • Telegram: @branilaa</p>
+    </div>
   </div>
 </body>
-
 </html>
