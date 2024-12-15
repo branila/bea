@@ -1,61 +1,31 @@
 <script lang="ts">
-  import typewriter from "$lib/utils/typewriter";
-  import {onMount} from "svelte";
-  //   import {type Handle} from "@sveltejs/kit";
-  import SimpleButton from "$components/reusables/SimpleButton.svelte";
-  //   import {PB_INSTANCE, PB_AUTHTOKEN} from "$env/static/private";
-  import PocketBase from "pocketbase";
+  import typewriter from '$lib/utils/typewriter'
 
-  let mounted = $state(false);
-  onMount(() => {
-    mounted = true;
-  });
+  import PocketBase from 'pocketbase'
 
-  function setcookie(name: String, value: String, days: number) {
-    if (days) {
-      var date = new Date();
-      date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000); // ) removed
-      var expires = "; expires=" + date.toUTCString(); // + added
-    } else expires = "";
-    document.cookie = name + "=" + value + expires + ";path=/"; // + and " added
-  }
+  import SimpleButton from '$components/reusables/SimpleButton.svelte'
+
+  import { onMount } from 'svelte'
+
+  let mounted = $state(false)
+  onMount(() =>  mounted = true)
 
   async function auth() {
-    const pb = new PocketBase("https://dash.pb.dev.bea.branila.it");
+    const pb = new PocketBase('https://dash.pb.dev.bea.branila.it')
 
-    const authData = await pb.collection("users").authWithOAuth2({
-      provider: "oidc",
-    });
+    const authData = await pb.collection('users').authWithOAuth2({
+      provider: 'oidc'
+    })
 
-    pb.authStore.save(authData.token, authData.record);
-
-    // Output: 'pb_auth=...'
+    pb.authStore.save(authData.token, authData.record)
 
     document.cookie = pb.authStore.exportToCookie({
-      httpOnly: false,
-      secure: false,
-      sameSite: "",
-    });
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
+    })
 
-    document.location.href = "/cogestione";
-    // set token to cookie
-    // var date = new Date();
-    // date.setTime(date.getTime() + 7 * 24 * 60 * 60 * 1000); // 7 days
-    // document.cookie = `PB_AUTHTOKEN=${authData.token}; Secure; SameSite=None; expires=${date.toUTCString()}; path=/`;
-    // window.location.href = "/cogestione";
-    // setcookie("PB_AUTHTOKEN", authData.token, 7);
-    // console.log("authData", authData);
-    // console.log("cookies", document.cookie);
-    // console.log(pb.authStore.isValid);
-    // console.log(pb.authStore.token);
-    // console.log("data", authData);
-    // console.log(pb.authStore.token);
-    // console.log(pb.authStore.record?.name);
-    // console.log(pb.authStore.record?.surname);
-    // console.log(pb.authStore.record?.studentid);
-
-    // console.log(pb.authStore.record?.email);
-    // console.log(pb.authStore.record);
+    window.location.href = '/cogestione'
   }
 </script>
 
@@ -64,11 +34,11 @@
     <div>Benvenuto su</div>
 
     {#key mounted}
-      <div class="accent" in:typewriter={{speed: 50}}>
+      <div class="accent" in:typewriter={{ speed: 50 }}>
         Better Esperia
 
         {#if mounted && window.innerWidth > 900}
-          <br />
+          <br>
         {/if}
 
         Access
@@ -87,7 +57,6 @@
     </div>
 
     <SimpleButton onclick={auth}>Accedi alla piattaforma</SimpleButton>
-    <!-- href="/cogestione -->
   </div>
 </main>
 

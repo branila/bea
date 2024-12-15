@@ -11,12 +11,6 @@ const pocketbase: Handle = async ({ event, resolve }) => {
 
   const pb = new PocketBase(PB_INSTANCE) as BeaPocketBase
 
-  if (!PB_AUTHTOKEN) {
-    error(500, 'Pocketbase authtoken not found')
-  }
-
-  pb.authStore.save(PB_AUTHTOKEN)
-
   event.locals.pb = pb
 
   return await resolve(event)
