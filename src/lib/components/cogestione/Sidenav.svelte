@@ -152,6 +152,7 @@
 
   .route:hover {
     color: var(--red);
+    filter: brightness(1.4);
   }
 
   .active :global(.name) {
