@@ -1,7 +1,7 @@
 import type { PageServerLoad, Actions } from './$types'
 import type { User, Registration, Activity } from '$types/db'
 import { sendMail } from '$lib/server/scripts/emailService'
-import notify from '$lib/server/utils/notify'
+import notify from '$lib/utils/notify'
 
 export const load: PageServerLoad = async ({ parent, locals }) => {
   const parentData = await parent()
