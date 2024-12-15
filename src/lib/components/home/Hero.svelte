@@ -19,11 +19,7 @@
 
     pb.authStore.save(authData.token, authData.record)
 
-    document.cookie = pb.authStore.exportToCookie({
-      httpOnly: false,
-      secure: true,
-      sameSite: 'strict',
-    })
+    document.cookie = pb.authStore.exportToCookie()
 
     window.location.href = '/cogestione'
   }

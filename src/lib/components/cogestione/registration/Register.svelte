@@ -58,9 +58,9 @@
     {#each activities.filter(activity => activity.capacity[turn] !== 0) as activity}
         <option value={activity.id}>
             {#if activity.turns == 1}
-                {activity.name} - (8:30 - 11:30)
+                    {activity.name} - ({activity.capacity[0]} posti)
             {:else}
-                {activity.name} - ({8 + turn}:30 - {8 + turn + 1}:30)
+                {activity.name} - ({activity.capacity[turn]} posti)
             {/if}
         </option>
     {/each}
@@ -72,13 +72,19 @@
     <form method="post" use:enhance>
         {#each Array(3) as _, turn}
             <div class="turn">
-                <h2>Turno {turn + 1}</h2>
+                <h2>
+                    Turno {turn + 1}
+
+                    <span class="hour"> - ({8 + turn}:30 - {8 + turn + 1}:30) </span>
+                </h2>
 
                 {@render select(turn)}
             </div>
         {/each}
 
-        <SimpleButton type="submit">Iscriviti</SimpleButton>
+            <SimpleButton disabled={registration.includes('')} type="submit">
+                Iscriviti
+            </SimpleButton>
     </form>
 </div>
 
@@ -114,8 +120,17 @@
         width: 100%;
     }
 
+    h2 {
+        font-size: max(20px, 10px + 1vw);
+    }
+
+    .hour {
+        font-weight: normal;
+    }
+
     select {
-        padding: max(13px, 5px + 0.75vw);
+        padding: max(15px, 5px + 1vw);
+        padding-right: 50px;
         background-color: var(--white);
         color: var(--black);
         border-radius: 15px;
@@ -123,7 +138,8 @@
         width: min(600px, 100%);
         border: 0;
         cursor: pointer;
-        font-size: max(16px, 10px + 0.5vw);
+        font-size: max(14px, 10px + 0.5vw);
+        transition: 0.2s;
 
         /* Arrow */
         appearance: none;
@@ -131,6 +147,11 @@
         background-repeat: no-repeat;
         background-position: right 20px top 50%;
         background-size: 10px auto;
+    }
+
+    select:hover {
+        color: var(--red);
+        transition: 0.2s;
     }
 
     form :global(button) {

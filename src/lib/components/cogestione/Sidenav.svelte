@@ -1,79 +1,79 @@
-<script lang="ts">
-  import type {Registration, User, Activity} from "$types/db";
-  import {Roles} from "$types/db";
-  import hasRole from "$lib/utils/hasRole";
-  import {page} from "$app/stores";
+<script lang='ts'>
+  import type {Registration, User, Activity} from '$types/db'
+  import {Roles} from '$types/db'
+  import hasRole from '$lib/utils/hasRole'
+  import {page} from '$app/stores'
 
   let {
     user,
     activity,
   }: {
-    user: User;
-    activity: Activity | undefined;
-  } = $props();
+    user: User
+    activity: Activity | undefined
+  } = $props()
 
   interface Route {
-    name: string;
-    href: string;
-    icon: string;
-    allowed: boolean;
+    name: string
+    href: string
+    icon: string
+    allowed: boolean
   }
 
   const routes: Route[] = [
     {
-      name: "Home",
-      href: "/cogestione",
-      icon: "/images/cogestione/sidenav/home.svg",
+      name: 'Home',
+      href: '/cogestione',
+      icon: '/images/cogestione/sidenav/home.svg',
       allowed: !!user,
     },
     {
-      name: "Iscrizione",
-      href: "/cogestione/registration",
-      icon: "/images/cogestione/sidenav/registration.svg",
+      name: 'Iscrizione',
+      href: '/cogestione/registration',
+      icon: '/images/cogestione/sidenav/registration.svg',
       allowed: !hasRole(user, Roles.Staff, Roles.Docente),
     },
     {
-      name: "Ticket",
-      href: "/cogestione/ticket",
-      icon: "/images/cogestione/sidenav/ticket.svg",
+      name: 'Ticket',
+      href: '/cogestione/ticket',
+      icon: '/images/cogestione/sidenav/ticket.svg',
       allowed: !hasRole(user, Roles.Staff, Roles.Docente),
     },
     {
-      name: "Admin",
-      href: "/cogestione/admin",
-      icon: "/images/cogestione/sidenav/admin.svg",
+      name: 'Admin',
+      href: '/cogestione/admin',
+      icon: '/images/cogestione/sidenav/admin.svg',
       allowed: hasRole(user, Roles.Admin),
     },
     {
       name: `Classe ${user.class}`,
       href: `/cogestione/classes/${user.class}`,
-      icon: "/images/cogestione/sidenav/class.svg",
+      icon: '/images/cogestione/sidenav/class.svg',
       allowed: hasRole(user, Roles.Rappresentante, Roles.Admin),
     },
     {
-      name: activity?.name || "",
+      name: activity?.name || '',
       href: `/cogestione/activities/${activity?.id}`,
-      icon: "/images/cogestione/sidenav/activity.svg",
+      icon: '/images/cogestione/sidenav/activity.svg',
       allowed: !!activity && hasRole(user, Roles.Organizzatore),
     },
     {
-      name: "Sicurezza",
-      href: "/cogestione/security",
-      icon: "/images/cogestione/sidenav/security.svg",
+      name: 'Sicurezza',
+      href: '/cogestione/security',
+      icon: '/images/cogestione/sidenav/security.svg',
       allowed: hasRole(user, Roles.Security, Roles.Staff, Roles.Admin),
     },
     {
-      name: "Staff",
-      href: "/cogestione/staff",
-      icon: "/images/cogestione/sidenav/staff.svg",
+      name: 'Staff',
+      href: '/cogestione/staff',
+      icon: '/images/cogestione/sidenav/staff.svg',
       allowed: hasRole(user, Roles.Staff, Roles.Admin),
     },
-  ];
+  ]
 
   function logout() {
-    // clear cookies
-    document.cookie =   "pb_auth=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    window.location.href = "/";
+    document.cookie = 'pb_auth=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'
+
+    window.location.href = '/'
   }
 </script>
 
@@ -97,7 +97,7 @@
     </div>
   </div>
 
-  <a onclick={logout} class="route">
+  <button onclick={logout} class="route">
     <img src="/images/cogestione/sidenav/logout.svg" alt="Logout icon" />
     <div class="name">Logout</div>
 
@@ -106,7 +106,7 @@
         "/logout",
         "/images/cogestione/sidenav/logout.svg",
     )} -->
-  </a>
+  </button>
 </aside>
 
 <style>
