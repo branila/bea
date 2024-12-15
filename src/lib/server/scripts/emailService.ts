@@ -143,11 +143,11 @@ const emailTemplate = `
     <div class="ticket">
       <div class="ticket-header">
         <h1 style="margin: 0;">Cogestione Invernale 2024</h1>
-        <p style="margin: 10px 0 0 0;">ITIS P. Paleocapa</p>
+        <p style="margin: 10px 0 0 0;">Whithout cogestione there is no esperia</p>
       </div>
 
       <div class="ticket-body">
-        <h2>Iscrizione Confermata!</h2>
+        <h2>Ce l'hai fatta!</h2>
 
         <div class="event-details">
           <div class="detail-item">
@@ -171,14 +171,14 @@ const emailTemplate = `
         <div class="qr-section">
           <div class="details">
             <h3>Il tuo QR Code personale</h3>
-            <p>Presenta questo codice all'ingresso per la registrazione</p>
+            <p>Il giorno della cogestione, presenta questo qrcode all'ingresso della scuola.</p>
           </div>
           <img src="cid:qrcode" alt="QR Code" class="qr-code" />
         </div>
 
         <div class="warning">
           <strong>⚠️ Importante:</strong>
-          <p style="margin: 10px 0 0 0;">Questo QR Code è strettamente personale e diventa invalido dopo la scansione. Non condividerlo con altri per evitare problemi all'ingresso.</p>
+          <p style="margin: 10px 0 0 0;">Questo QR Code è strettamente personale e diventa invalido dopo la scansione. Per evitare problemi, non condividetelo con altri. Fate i bravi.</p>
         </div>
       </div>
 
