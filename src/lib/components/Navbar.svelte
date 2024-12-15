@@ -1,15 +1,24 @@
 <script lang="ts">
   import { page } from '$app/stores'
   import { slide } from 'svelte/transition'
+  import { onMount } from 'svelte'
 
   let showLinks = $state(false)
+
+  let mounted = $state(false)
+  onMount(() => mounted = true)
 </script>
 
 <nav>
     <div class="container">
         <div class="logo">
             <img src="/images/navbar/logo.svg" alt="Logo comitato studentesco">
-            <a href="/" class="name">Better Esperia Access</a>
+
+            {#if mounted && window.outerWidth < 320}
+                <a href="/" class="name">Bea</a>
+            {:else if mounted}
+                <a href="/" class="name">Better Esperia Access</a>
+            {/if}
         </div>
 
         <button class="menu" onclick={() => showLinks = !showLinks }>
