@@ -19,7 +19,11 @@
 
     pb.authStore.save(authData.token, authData.record)
 
-    document.cookie = pb.authStore.exportToCookie()
+    document.cookie = pb.authStore.exportToCookie({
+      httpOnly: false,
+      secure: true,
+      sameSite: 'strict'
+    })
 
     window.location.href = '/cogestione'
   }
@@ -94,7 +98,7 @@
 
   .description-accent {
     color: var(--red);
-    filter: brightness(1.4);
+    filter: brightness(1.2);
   }
 
   @media (max-width: 900px) {

@@ -20,13 +20,17 @@ const authentication: Handle = async ({event, resolve}) => {
     }
 
     // Attach user information to the event locals
-    event.locals.user = pb.authStore.record as unknown as User
+    event.locals.user = pb.authStore.record as unknown as User || undefined
   }
 
   const response = await resolve(event)
 
   // Send back the pb_auth cookie with the latest store state
-  response.headers.append('set-cookie', pb.authStore.exportToCookie())
+  response.headers.append('set-cookie', pb.authStore.exportToCookie({
+    httpOnly: false,
+    secure: true,
+    sameSite: 'strict'
+  }))
 
   return response
 }
