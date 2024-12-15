@@ -14,7 +14,7 @@ export const load: PageServerLoad = async ({ parent, locals }) => {
   // Remove organizers from activities for safety reasons
   activities.forEach(activity => activity.organizers = [])
 
-  // Filters out sold out activities
+  // Filters out sold out activitiesa
   activities = activities.filter(activity => {
     return !activity.capacity.every(capacity => capacity === 0)
   })
@@ -38,19 +38,13 @@ export const actions = {
 		const thirdActivity = await locals.pb.collection('activities').getOne(data.get('thirdActivity') as string)
 
 		// Checks if the activities are still available
-		if (firstActivity.capacity.every(capacity => capacity === 0) ||
-      secondActivity.capacity.every(capacity => capacity === 0) ||
-      thirdActivity.capacity.every(capacity => capacity === 0)) {
-      return console.error('Una o più attività sono esaurite')
-    }
-
-		if (firstActivity.turns == 1) {
-		  firstActivity.capacity[0]--
-		} else {
-		  firstActivity.capacity[0]--
-      secondActivity.capacity[1]--
-      thirdActivity.capacity[2]--
-		}
+		// if (
+    //   firstActivity.capacity.every(capacity => capacity === 0) ||
+    //   secondActivity.capacity.every(capacity => capacity === 0) ||
+    //   thirdActivity.capacity.every(capacity => capacity === 0))
+    // {
+    //   return console.error('Una o più attività sono esaurite')
+    // }
 
     const registration = await locals.pb.collection('registrations').create({
       user: locals.user!.id,
@@ -64,14 +58,59 @@ export const actions = {
       registration: registration.id,
     })
 
-    await locals.pb.collection('activities').update(firstActivity.id, firstActivity)
+    firstActivity.capacity[0] = firstActivity.capacity[0] > 0 ? firstActivity.capacity[0] - 1 : 0
 
-    let { id, email, surname, name } = locals.user!
+    if (firstActivity.turns != 1) {
 
-    await sendMail(
-      id, 
-      email, 
-      surname + name, 
-      locals.user!.roles[0])
+      if (secondActivity.id == firstActivity.id) {
+        secondActivity.capacity = firstActivity.capacity
+      }
+
+      secondActivity.capacity[1] = secondActivity.capacity[1] > 0 ? secondActivity.capacity[1] - 1 : 0
+
+      if (thirdActivity.id == firstActivity.id) {
+        thirdActivity.capacity = firstActivity.capacity
+      }
+
+      if (thirdActivity.id == secondActivity.id) {
+        thirdActivity.capacity = secondActivity.capacity
+      }
+
+      thirdActivity.capacity[2] = thirdActivity.capacity[2] > 0 ? thirdActivity.capacity[2] - 1 : 0
+    }
+
+    let [error] = await goCatch(locals.pb.collection('activities').update(firstActivity.id, {
+      capacity: firstActivity.capacity
+    }))
+
+    if (error) {
+      return console.error(`Error updating activity ${firstActivity.name}: ${error}`)
+    }
+
+    if (firstActivity.turns != 1) {
+      [error] = await goCatch(locals.pb.collection('activities').update(secondActivity.id, {
+        capacity: secondActivity.capacity
+      }))
+
+      if (error) {
+        return console.error(`Error updating activity ${secondActivity.name}: ${error}`)
+      }
+
+      [error] = await goCatch(locals.pb.collection('activities').update(thirdActivity.id, {
+        capacity: thirdActivity.capacity
+      }))
+
+      if (error) {
+        return console.error(`Error updating activity ${thirdActivity.name}: ${error}`)
+      }
+    }
+
+   //  let { id, email, surname, name } = locals.user!
+
+   //  await sendMail(
+   //    id,
+   //    email,
+   //    surname + name,
+   //    locals.user!.roles[0])
 	}
-} satisfies Actions;
+} satisfies Actions
