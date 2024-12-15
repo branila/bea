@@ -30,15 +30,15 @@ export const load: PageServerLoad = async ({ parent, locals }) => {
 
 
 export const actions = {
-	default: async ({ request, locals }) => {
-		const data = await request.formData()
+  default: async ({ request, locals }) => {
+    const data = await request.formData()
 
-		const firstActivity = await locals.pb.collection('activities').getOne(data.get('firstActivity') as string)
-		const secondActivity = await locals.pb.collection('activities').getOne(data.get('secondActivity') as string)
-		const thirdActivity = await locals.pb.collection('activities').getOne(data.get('thirdActivity') as string)
+    const firstActivity = await locals.pb.collection('activities').getOne(data.get('firstActivity') as string)
+    const secondActivity = await locals.pb.collection('activities').getOne(data.get('secondActivity') as string)
+    const thirdActivity = await locals.pb.collection('activities').getOne(data.get('thirdActivity') as string)
 
-		// Checks if the activities are still available
-		// if (
+    // Checks if the activities are still available
+    // if (
     //   firstActivity.capacity.every(capacity => capacity === 0) ||
     //   secondActivity.capacity.every(capacity => capacity === 0) ||
     //   thirdActivity.capacity.every(capacity => capacity === 0))
@@ -105,12 +105,13 @@ export const actions = {
       }
     }
 
-   //  let { id, email, surname, name } = locals.user!
+    //TODO, GET TICKET ID INSTEAD OF USER ID
+    let { id, email, surname, name } = locals.user!
 
-   //  await sendMail(
-   //    id,
-   //    email,
-   //    surname + name,
-   //    locals.user!.roles[0])
-	}
+    await sendMail(
+      id,
+      email,
+      `${surname} ${name}`,
+      locals.user!.roles[0])
+  }
 } satisfies Actions
