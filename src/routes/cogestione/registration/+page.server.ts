@@ -129,10 +129,18 @@ export const actions = {
     //TODO, GET TICKET ID INSTEAD OF USER ID
     let { id, email, surname, name } = locals.user!
 
-    await sendMail(
+    const [emailSendError] = await goCatch(sendMail(
       id, email,
-      `${surname} ${name}`,
-      locals.user!.roles[0]
-    )
+      locals.user!.roles[0],
+      `${surname} ${name}`
+    ))
+
+    if (emailSendError) {
+      await notify(`Errore durante l'invio della mail a ${locals.user!.name} ${locals.user!.surname} (${locals.user!.email})`)
+
+      return {
+        error: 'Errore: si è verificato un errore durante l\'invio della mail di conferma. Contattaci al più presto per risolvere il problema.'
+      }
+    }
   }
 } satisfies Actions
