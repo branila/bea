@@ -2,9 +2,11 @@
   import { enhance } from '$app/forms'
   import type { Activity, ActivityId } from '$types/db'
   import SimpleButton from '$components/reusables/SimpleButton.svelte'
+  import type { ActionData } from '../../../../routes/cogestione/registration/$types';
 
-  let { activities }: {
+  let { activities, form }: {
     activities: Activity[],
+    form: ActionData
   } = $props()
 
   const activityTurns = ['firstActivity', 'secondActivity', 'thirdActivity']
@@ -69,6 +71,12 @@
 <div class="container">
     <h1>Iscriviti alla cogestione</h1>
 
+    {#if form?.error}
+        <div class="error">
+            {form.error}
+        </div>
+    {/if}
+
     <form method="post" use:enhance>
         {#each Array(3) as _, turn}
             <div class="turn">
@@ -90,7 +98,7 @@
 
 <style>
     .container {
-        height: calc(100svh - 200px);
+        min-height: calc(100svh - 200px);
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -103,6 +111,14 @@
         filter: brightness(1.4);
         margin-bottom: 40px;
         width: min(600px, 100%);
+    }
+
+    .error {
+        color: var(--red);
+        font-size: max(18px, 10px + 0.75vw);
+        filter: brightness(1.4);
+        width: min(600px, 100%);
+        margin-bottom: 40px;
     }
 
     form {
