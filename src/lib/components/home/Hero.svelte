@@ -20,7 +20,7 @@
     pb.authStore.save(authData.token, authData.record)
 
     document.cookie = pb.authStore.exportToCookie({
-      httpOnly: true,
+      httpOnly: false,
       secure: true,
       sameSite: 'strict',
     })
