@@ -13,7 +13,14 @@
 </script>
 
 <div class="container">
-    <h1>La tua iscrizione</h1>
+
+    <div class="heading">
+        <h1>La tua iscrizione</h1>
+
+        <div class="problems">
+            Ci sono problemi con la tua iscrizione? <a href="/contacts">Contattaci</a> e facciamo una magia.
+        </div>
+    </div>
 
     <div class="table">
         <div class="row">
@@ -44,12 +51,27 @@
         min-height: calc(100svh - 200px);
     }
 
+    .heading {
+        margin-bottom: 40px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
     h1 {
         font-size: max(30px, 12px + 2vw);
         color: var(--red);
-        filter: brightness(1.2);
-        margin-bottom: 40px;
+        filter: brightness(1.4);
         width: min(600px, 100%);
+    }
+
+    .problems {
+        font-size: max(18px, 10px + 0.75vw);
+    }
+
+    .problems a {
+        color: var(--yellow);
+        text-decoration: underline;
     }
 
     .table {

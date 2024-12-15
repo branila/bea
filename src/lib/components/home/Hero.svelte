@@ -78,7 +78,7 @@
     color: var(--red);
     font-size: max(24px, 32px + 2.5vw);
     margin-top: 15px;
-    filter: brightness(1.2);
+    filter: brightness(1.4);
   }
 
   .bottom {
@@ -94,7 +94,7 @@
 
   .description-accent {
     color: var(--red);
-    filter: brightness(1.2);
+    filter: brightness(1.4);
   }
 
   @media (max-width: 900px) {

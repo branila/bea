@@ -29,7 +29,7 @@
         justify-content: center;
         color: var(--red);
         font-size: max(24px, 32px + 2.5vw);
-        filter: brightness(1.2);
+        filter: brightness(1.4);
     }
 
     header p {
@@ -41,7 +41,7 @@
 
     .accent {
         color: var(--red);
-        filter: brightness(1.2);
+        filter: brightness(1.4);
     }
 
     @media (max-width: 600px) {
