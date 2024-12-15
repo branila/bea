@@ -1,8 +1,13 @@
 import { MailerSend, EmailParams, Sender, Recipient, Attachment } from 'mailersend';
 import { MAILERSEND_API_KEY, MAILERSEND_DOMAIN } from '$env/static/private'
 import * as QRCode from 'qrcode';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 import * as fs from 'fs/promises';
 import * as path from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 // Initialize MailerSend with your API key
 const mailerSend = new MailerSend({
@@ -10,13 +15,12 @@ const mailerSend = new MailerSend({
 });
 
 // Define sender information
-// Make sure to use an email from your verified domain
 const sender = new Sender(`noreply@${MAILERSEND_DOMAIN}`, 'Better Esperia Access');
 
 async function generateQRCodeImage(text: string): Promise<string> {
   try {
-    const filePath = path.join(__dirname, 'qrcode.png');
-    await QRCode.toFile(filePath, text, {
+    // Generate QR code directly as base64
+    return await QRCode.toDataURL(text, {
       width: 300,
       margin: 2,
       color: {
@@ -24,7 +28,6 @@ async function generateQRCodeImage(text: string): Promise<string> {
         light: '#ffffff'
       }
     });
-    return filePath;
   } catch (error) {
     console.error('Error generating QR code image:', error);
     throw error;
@@ -43,25 +46,21 @@ async function loadEmailTemplate(): Promise<string> {
 }
 
 async function sendMail(userId: string, dest: string, role: string, username: string) {
-  let qrCodePath: string | null = null;
-
   try {
-    // Generate QR code image
-    qrCodePath = await generateQRCodeImage(userId);
-
+    // Generate QR code as base64 data URL
+    const qrCodeDataUrl = await generateQRCodeImage(userId);
+    // Extract base64 data from data URL (remove the "data:image/png;base64," prefix)
+    const qrCodeBase64 = qrCodeDataUrl.split(',')[1];
+    
     // Load and populate template
     let htmlContent = await loadEmailTemplate();
     htmlContent = htmlContent
       .replace('{{ROLE}}', role)
       .replace('{{NAME}}', username)
 
-    // Read the QR code file as base64
-    const qrCodeBuffer = await fs.readFile(qrCodePath);
-    const qrCodeBase64 = qrCodeBuffer.toString('base64');
-
     // Create recipient
     const recipients = [new Recipient(dest)];
-
+    
     // Create attachment
     const attachments = [
       new Attachment(
@@ -83,22 +82,9 @@ async function sendMail(userId: string, dest: string, role: string, username: st
 
     // Send email
     await mailerSend.email.send(emailParams);
-
-    // Delete the QR code image after sending the email
-    if (qrCodePath) {
-      await fs.unlink(qrCodePath);
-    }
   } catch (error) {
     console.error('Failed to send email:', error);
-    // Ensure QR code is deleted even if email sending fails
-    if (qrCodePath) {
-      try {
-        await fs.unlink(qrCodePath);
-      } catch (deleteError) {
-        console.error('Failed to delete QR code image:', deleteError);
-      }
-    }
-    throw error; // Re-throw the original error
+    throw error;
   }
 }
 
