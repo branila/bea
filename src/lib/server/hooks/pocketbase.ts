@@ -1,8 +1,7 @@
-
 import { type Handle, error } from '@sveltejs/kit'
 import PocketBase from 'pocketbase'
 import type { BeaPocketBase } from '$types/db'
-import { PB_INSTANCE, PB_AUTHTOKEN } from '$env/static/private'
+import { PB_INSTANCE } from '$env/static/private'
 
 const pocketbase: Handle = async ({ event, resolve }) => {
   if (!PB_INSTANCE) {
