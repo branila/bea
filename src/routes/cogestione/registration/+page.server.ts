@@ -151,14 +151,16 @@ export const actions = {
     ))
 
     if (emailSendError) {
-      await errorsHandler({
-        error: emailSendError,
-        event: {
-          locals
-        } as RequestEvent,
-        status: 500,
-        message: 'Failed to send confirmation email'
-      })
+      await(notify(`Failed to send confirmation email: ${emailSendError}`))
+
+      // await errorsHandler({
+      //   error: emailSendError,
+      //   event: {
+      //     locals
+      //   } as RequestEvent,
+      //   status: 500,
+      //   message: 'Failed to send confirmation email'
+      // })
 
       return {
         error: 'Errore: si è verificato un errore durante l\'invio della mail di conferma. Contattaci al più presto per risolvere il problema.'
