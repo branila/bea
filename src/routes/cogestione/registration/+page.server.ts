@@ -1,7 +1,8 @@
-import type { PageServerLoad, Actions } from './$types'
+import type { PageServerLoad, Actions, RequestEvent } from './$types'
 import type { User, Registration, Activity } from '$types/db'
 import { sendMail } from '$lib/server/scripts/emailService'
 import notify from '$lib/utils/notify'
+import errorsHandler from '$lib/server/hooks/errors'
 
 export const load: PageServerLoad = async ({ parent, locals }) => {
   const parentData = await parent()
@@ -64,7 +65,14 @@ export const actions = {
     }))
 
     if (registrationError) {
-      await notify(`Errore durante la registrazione di ${locals.user!.name} ${locals.user!.surname} (${locals.user!.email})`)
+      await errorsHandler({
+        error: registrationError,
+        event: {
+          locals
+        } as RequestEvent,
+        status: 500,
+        message: 'Failed to create registration'
+      })
 
       return {
         error: 'Si è verificato un errore durante la registrazione della tua iscrizione. Contattaci al più presto per risolvere il problema.'
@@ -72,13 +80,20 @@ export const actions = {
     }
 
     // Creates a personal ticket for the user
-    const [ticketCreationError] = await goCatch(locals.pb.collection('tickets').create({
+    const [ticketCreationError, ticket] = await goCatch(locals.pb.collection('tickets').create({
       user: locals.user!.id,
       registration: registration!.id,
     }))
 
     if (ticketCreationError) {
-      await notify(`Errore durante la registrazione di ${locals.user!.name} ${locals.user!.surname} (${locals.user!.email})`)
+      await errorsHandler({
+        error: ticketCreationError,
+        event: {
+          locals
+        } as RequestEvent,
+        status: 500,
+        message: 'Failed to create ticket'
+      })
 
       return {
         error: 'Errore: si è verificato un errore durante la creazione del biglietto. Riprova più tardi.'
@@ -126,8 +141,8 @@ export const actions = {
       })
     }
 
-    //TODO, GET TICKET ID INSTEAD OF USER ID
-    let { id, email, surname, name } = locals.user!
+    let id = ticket.id
+    let { email, surname, name } = locals.user!
 
     const [emailSendError] = await goCatch(sendMail(
       id, email,
@@ -136,7 +151,16 @@ export const actions = {
     ))
 
     if (emailSendError) {
-      await notify(`Errore durante l'invio della mail a ${locals.user!.name} ${locals.user!.surname} (${locals.user!.email})`)
+      await notify(`Failed to send confirmation email: ${emailSendError.message}`)
+
+      // await errorsHandler({
+      //   error: emailSendError,
+      //   event: {
+      //     locals
+      //   } as RequestEvent,
+      //   status: 500,
+      //   message: 'Failed to send confirmation email'
+      // })
 
       return {
         error: 'Errore: si è verificato un errore durante l\'invio della mail di conferma. Contattaci al più presto per risolvere il problema.'
