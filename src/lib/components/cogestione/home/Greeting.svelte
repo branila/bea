@@ -21,7 +21,7 @@
 
     h1 {
         color: var(--red);
-        filter: brightness(1.2);
+        filter: brightness(1.4);
         font-size: max(30px, 18px + 1.5vw);
     }
 </style>

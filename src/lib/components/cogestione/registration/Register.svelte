@@ -2,9 +2,11 @@
   import { enhance } from '$app/forms'
   import type { Activity, ActivityId } from '$types/db'
   import SimpleButton from '$components/reusables/SimpleButton.svelte'
+  import type { ActionData } from '../../../../routes/cogestione/registration/$types';
 
-  let { activities }: {
+  let { activities, form }: {
     activities: Activity[],
+    form: ActionData
   } = $props()
 
   const activityTurns = ['firstActivity', 'secondActivity', 'thirdActivity']
@@ -58,9 +60,9 @@
     {#each activities.filter(activity => activity.capacity[turn] !== 0) as activity}
         <option value={activity.id}>
             {#if activity.turns == 1}
-                {activity.name} - (8:30 - 11:30)
+                    {activity.name} - ({activity.capacity[0]} posti)
             {:else}
-                {activity.name} - ({8 + turn}:30 - {8 + turn + 1}:30)
+                {activity.name} - ({activity.capacity[turn]} posti)
             {/if}
         </option>
     {/each}
@@ -69,22 +71,34 @@
 <div class="container">
     <h1>Iscriviti alla cogestione</h1>
 
+    {#if form?.error}
+        <div class="error">
+            {form.error}
+        </div>
+    {/if}
+
     <form method="post" use:enhance>
         {#each Array(3) as _, turn}
             <div class="turn">
-                <h2>Turno {turn + 1}</h2>
+                <h2>
+                    Turno {turn + 1}
+
+                    <span class="hour"> - ({8 + turn}:30 - {8 + turn + 1}:30) </span>
+                </h2>
 
                 {@render select(turn)}
             </div>
         {/each}
 
-        <SimpleButton type="submit">Iscriviti</SimpleButton>
+            <SimpleButton disabled={registration.includes('')} type="submit">
+                Iscriviti
+            </SimpleButton>
     </form>
 </div>
 
 <style>
     .container {
-        height: calc(100svh - 200px);
+        min-height: calc(100svh - 200px);
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -94,9 +108,17 @@
     h1 {
         font-size: max(30px, 12px + 2vw);
         color: var(--red);
-        filter: brightness(1.2);
+        filter: brightness(1.4);
         margin-bottom: 40px;
         width: min(600px, 100%);
+    }
+
+    .error {
+        color: var(--red);
+        font-size: max(18px, 10px + 0.75vw);
+        filter: brightness(1.4);
+        width: min(600px, 100%);
+        margin-bottom: 40px;
     }
 
     form {
@@ -114,8 +136,17 @@
         width: 100%;
     }
 
+    h2 {
+        font-size: max(20px, 10px + 1vw);
+    }
+
+    .hour {
+        font-weight: normal;
+    }
+
     select {
-        padding: max(13px, 5px + 0.75vw);
+        padding: max(15px, 5px + 1vw);
+        padding-right: 50px;
         background-color: var(--white);
         color: var(--black);
         border-radius: 15px;
@@ -123,7 +154,8 @@
         width: min(600px, 100%);
         border: 0;
         cursor: pointer;
-        font-size: max(16px, 10px + 0.5vw);
+        font-size: max(14px, 10px + 0.5vw);
+        transition: 0.2s;
 
         /* Arrow */
         appearance: none;
@@ -131,6 +163,11 @@
         background-repeat: no-repeat;
         background-position: right 20px top 50%;
         background-size: 10px auto;
+    }
+
+    select:hover {
+        color: var(--red);
+        transition: 0.2s;
     }
 
     form :global(button) {

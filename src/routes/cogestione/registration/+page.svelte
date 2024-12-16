@@ -2,25 +2,25 @@
   import Register from '$components/cogestione/registration/Register.svelte'
   import Registration from '$components/cogestione/registration/Registration.svelte'
 
-  const { data } = $props()
+  const { data, form } = $props()
 </script>
 
 <div class="container">
-    {#if data.registration}
+    {#if data.registration && !form?.error}
         <Registration {...data}/>
     {:else}
-        <Register {...data}/>
+        <Register activities={data.activities} {form}/>
     {/if}
 </div>
 
 <style>
     .container {
-        height: calc(100svh - 200px);
+        min-height: calc(100svh - 200px);
     }
 
     @media (max-width: 600px) {
         .container {
-            height: calc(100svh - 140px);
+            min-height: calc(100svh - 140px);
             padding-top: 15px;
         }
     }

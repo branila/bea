@@ -7,12 +7,14 @@
     children,
     onclick = () => {},
     type = 'button',
+    disabled = false,
   }: {
     href?: string
     accent?: string
     onclick?: (() => void)
     children: Snippet<[]>
     type?: 'button' | 'submit' | 'reset'
+    disabled?: boolean
   } = $props()
 
   let hovered = $state(false)
@@ -21,6 +23,7 @@
 <a {href}>
     <button
         {type} {onclick}
+        class:disabled
         onmouseenter={() => hovered = true}
         onmouseleave={() => hovered = false}
         style:color={hovered ? accent : 'var(--black)'}
@@ -44,15 +47,28 @@
         border: 0;
     }
 
+    .disabled {
+        cursor: not-allowed;
+        background-color: var(--grey);
+    }
+
+    .disabled span {
+        color: var(--white);
+    }
+
+    .disabled img {
+        filter: invert();
+    }
+
     button:hover {
-        filter: brightness(1.2);
+        filter: brightness(1.4);
     }
 
     img {
         height: 20px;
     }
 
-    button:hover > img {
+    button:not(.disabled):hover > img {
         /* Changes the color of the icon to red */
         filter: brightness(0) saturate(100%) invert(17%) sepia(32%) saturate(6275%) hue-rotate(349deg) brightness(100%) contrast(90%);
     }

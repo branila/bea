@@ -1,62 +1,12 @@
 <script lang="ts">
   import typewriter from "$lib/utils/typewriter";
-  import {onMount} from "svelte";
-  //   import {type Handle} from "@sveltejs/kit";
+
   import SimpleButton from "$components/reusables/SimpleButton.svelte";
-  //   import {PB_INSTANCE, PB_AUTHTOKEN} from "$env/static/private";
-  import PocketBase from "pocketbase";
+
+  import {onMount} from "svelte";
 
   let mounted = $state(false);
-  onMount(() => {
-    mounted = true;
-  });
-
-  function setcookie(name: String, value: String, days: number) {
-    if (days) {
-      var date = new Date();
-      date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000); // ) removed
-      var expires = "; expires=" + date.toUTCString(); // + added
-    } else expires = "";
-    document.cookie = name + "=" + value + expires + ";path=/"; // + and " added
-  }
-
-  async function auth() {
-    const pb = new PocketBase("https://dash.pb.dev.bea.branila.it");
-
-    const authData = await pb.collection("users").authWithOAuth2({
-      provider: "oidc",
-    });
-
-    pb.authStore.save(authData.token, authData.record);
-
-    // Output: 'pb_auth=...'
-
-    document.cookie = pb.authStore.exportToCookie({
-      httpOnly: false,
-      secure: false,
-      sameSite: "",
-    });
-
-    document.location.href = "/cogestione";
-    // set token to cookie
-    // var date = new Date();
-    // date.setTime(date.getTime() + 7 * 24 * 60 * 60 * 1000); // 7 days
-    // document.cookie = `PB_AUTHTOKEN=${authData.token}; Secure; SameSite=None; expires=${date.toUTCString()}; path=/`;
-    // window.location.href = "/cogestione";
-    // setcookie("PB_AUTHTOKEN", authData.token, 7);
-    // console.log("authData", authData);
-    // console.log("cookies", document.cookie);
-    // console.log(pb.authStore.isValid);
-    // console.log(pb.authStore.token);
-    // console.log("data", authData);
-    // console.log(pb.authStore.token);
-    // console.log(pb.authStore.record?.name);
-    // console.log(pb.authStore.record?.surname);
-    // console.log(pb.authStore.record?.studentid);
-
-    // console.log(pb.authStore.record?.email);
-    // console.log(pb.authStore.record);
-  }
+  onMount(() => (mounted = true));
 </script>
 
 <main>
@@ -86,8 +36,14 @@
       del nostro istituto. Come lo facciamo noi non lo fa nessuno.
     </div>
 
-    <SimpleButton onclick={auth}>Accedi alla piattaforma</SimpleButton>
-    <!-- href="/cogestione -->
+    <!-- <SimpleButton onclick={auth}> -->
+    <SimpleButton
+      onclick={() => {
+        document.location.href = "/cogestione";
+      }}
+    >
+      Accedi alla piattaforma</SimpleButton
+    >
   </div>
 </main>
 
@@ -113,7 +69,7 @@
     color: var(--red);
     font-size: max(24px, 32px + 2.5vw);
     margin-top: 15px;
-    filter: brightness(1.2);
+    filter: brightness(1.4);
   }
 
   .bottom {

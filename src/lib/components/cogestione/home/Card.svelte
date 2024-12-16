@@ -34,6 +34,8 @@
     h1 {
         font-size: max(30px, 18px + 1.25vw);
         width: 100%;
+        color: var(--red) !important;
+        filter: brightness(1.4);
     }
 
     .description {
