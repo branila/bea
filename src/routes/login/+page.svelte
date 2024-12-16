@@ -4,7 +4,7 @@
   const { data } = $props()
 
   async function auth() {
-    const pb = new PocketBase(data.pb_instance)
+    const pb = new PocketBase(data.pbInstance)
 
     const authData = await pb.collection('users').authWithOAuth2({
       provider: 'oidc',
