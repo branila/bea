@@ -127,17 +127,31 @@ export const actions = {
 
     /* Updates the activities in the database */
 
-    await locals.pb.collection('activities').update(firstActivity.id, {
+    let [capacityUpdateError1] = await goCatch(locals.pb.collection('activities').update(firstActivity.id, {
       capacity: firstActivity.capacity
-    })
+    }))
+
+    let capacityUpdateError2: Error | undefined = undefined
+    let capacityUpdateError3: Error | undefined = undefined
 
     if (firstActivity.turns != 1) {
-      await locals.pb.collection('activities').update(secondActivity.id, {
+      [capacityUpdateError2] = await goCatch(locals.pb.collection('activities').update(secondActivity.id, {
         capacity: secondActivity.capacity
-      })
+      }));
 
-      await locals.pb.collection('activities').update(thirdActivity.id, {
+      [capacityUpdateError3] = await goCatch(locals.pb.collection('activities').update(thirdActivity.id, {
         capacity: thirdActivity.capacity
+      }))
+    }
+
+    if (capacityUpdateError1 || capacityUpdateError2 || capacityUpdateError3) {
+      await errorsHandler({
+        error: capacityUpdateError1 || capacityUpdateError2 || capacityUpdateError3,
+        event: {
+          locals
+        } as RequestEvent,
+        status: 500,
+        message: 'Failed to update activities capacity'
       })
     }
 
