@@ -140,31 +140,5 @@ export const actions = {
         capacity: thirdActivity.capacity
       })
     }
-
-    let id = ticket.id
-    let { email, surname, name } = locals.user!
-
-    const [emailSendError] = await goCatch(sendMail(
-      id, email,
-      locals.user!.roles[0],
-      `${surname} ${name}`
-    ))
-
-    if (emailSendError) {
-      await notify(`Failed to send confirmation email: ${emailSendError.message}`)
-
-      // await errorsHandler({
-      //   error: emailSendError,
-      //   event: {
-      //     locals
-      //   } as RequestEvent,
-      //   status: 500,
-      //   message: 'Failed to send confirmation email'
-      // })
-
-      return {
-        error: 'Errore: si è verificato un errore durante l\'invio della mail di conferma. Contattaci al più presto per risolvere il problema.'
-      }
-    }
   }
 } satisfies Actions
