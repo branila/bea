@@ -151,7 +151,7 @@ export const actions = {
     ))
 
     if (emailSendError) {
-      await(notify(`Failed to send confirmation email: ${emailSendError}`))
+      await(notify(`Failed to send confirmation email: ${emailSendError.stack}`))
 
       // await errorsHandler({
       //   error: emailSendError,
