@@ -80,7 +80,7 @@ export const actions = {
     }
 
     // Creates a personal ticket for the user
-    const [ticketCreationError] = await goCatch(locals.pb.collection('tickets').create({
+    const [ticketCreationError, ticket] = await goCatch(locals.pb.collection('tickets').create({
       user: locals.user!.id,
       registration: registration!.id,
     }))
@@ -141,8 +141,8 @@ export const actions = {
       })
     }
 
-    //TODO, GET TICKET ID INSTEAD OF USER ID
-    let { id, email, surname, name } = locals.user!
+    let id = ticket.id
+    let { email, surname, name } = locals.user!
 
     const [emailSendError] = await goCatch(sendMail(
       id, email,
@@ -151,7 +151,7 @@ export const actions = {
     ))
 
     if (emailSendError) {
-      await(notify(`Failed to send confirmation email: ${emailSendError.stack}`))
+      await notify(`Failed to send confirmation email: ${emailSendError.message}`)
 
       // await errorsHandler({
       //   error: emailSendError,
