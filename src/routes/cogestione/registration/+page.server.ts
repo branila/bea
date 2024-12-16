@@ -1,7 +1,8 @@
-import type { PageServerLoad, Actions } from './$types'
+import type { PageServerLoad, Actions, RequestEvent } from './$types'
 import type { User, Registration, Activity } from '$types/db'
 import { sendMail } from '$lib/server/scripts/emailService'
 import notify from '$lib/utils/notify'
+import { handleError } from '../../../hooks.server'
 
 export const load: PageServerLoad = async ({ parent, locals }) => {
   const parentData = await parent()
@@ -64,7 +65,14 @@ export const actions = {
     }))
 
     if (registrationError) {
-      await notify(`Errore durante la registrazione di ${locals.user!.name} ${locals.user!.surname} (${locals.user!.email})`)
+      await handleError({
+        error: registrationError,
+        event: {
+          locals
+        } as RequestEvent,
+        status: 500,
+        message: 'Failed to create registration'
+      })
 
       return {
         error: 'Si è verificato un errore durante la registrazione della tua iscrizione. Contattaci al più presto per risolvere il problema.'
@@ -78,7 +86,14 @@ export const actions = {
     }))
 
     if (ticketCreationError) {
-      await notify(`Errore durante la registrazione di ${locals.user!.name} ${locals.user!.surname} (${locals.user!.email})`)
+      await handleError({
+        error: ticketCreationError,
+        event: {
+          locals
+        } as RequestEvent,
+        status: 500,
+        message: 'Failed to create ticket'
+      })
 
       return {
         error: 'Errore: si è verificato un errore durante la creazione del biglietto. Riprova più tardi.'
@@ -136,7 +151,14 @@ export const actions = {
     ))
 
     if (emailSendError) {
-      await notify(`Errore durante l'invio della mail a ${locals.user!.name} ${locals.user!.surname} (${locals.user!.email})`)
+      await handleError({
+        error: emailSendError,
+        event: {
+          locals
+        } as RequestEvent,
+        status: 500,
+        message: 'Failed to send confirmation email'
+      })
 
       return {
         error: 'Errore: si è verificato un errore durante l\'invio della mail di conferma. Contattaci al più presto per risolvere il problema.'
