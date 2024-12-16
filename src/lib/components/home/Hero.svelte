@@ -1,32 +1,12 @@
 <script lang="ts">
-  import typewriter from '$lib/utils/typewriter'
+  import typewriter from "$lib/utils/typewriter";
 
-  import PocketBase from 'pocketbase'
+  import SimpleButton from "$components/reusables/SimpleButton.svelte";
 
-  import SimpleButton from '$components/reusables/SimpleButton.svelte'
+  import {onMount} from "svelte";
 
-  import { onMount } from 'svelte'
-
-  let mounted = $state(false)
-  onMount(() =>  mounted = true)
-
-  async function auth() {
-    const pb = new PocketBase('https://dash.pb.dev.bea.branila.it')
-
-    const authData = await pb.collection('users').authWithOAuth2({
-      provider: 'oidc'
-    })
-
-    pb.authStore.save(authData.token, authData.record)
-
-    document.cookie = pb.authStore.exportToCookie({
-      httpOnly: false,
-      secure: true,
-      sameSite: 'strict'
-    })
-
-    window.location.href = '/cogestione'
-  }
+  let mounted = $state(false);
+  onMount(() => (mounted = true));
 </script>
 
 <main>
@@ -34,11 +14,11 @@
     <div>Benvenuto su</div>
 
     {#key mounted}
-      <div class="accent" in:typewriter={{ speed: 50 }}>
+      <div class="accent" in:typewriter={{speed: 50}}>
         Better Esperia
 
         {#if mounted && window.innerWidth > 900}
-          <br>
+          <br />
         {/if}
 
         Access
@@ -56,7 +36,14 @@
       del nostro istituto. Come lo facciamo noi non lo fa nessuno.
     </div>
 
-    <SimpleButton onclick={auth}>Accedi alla piattaforma</SimpleButton>
+    <!-- <SimpleButton onclick={auth}> -->
+    <SimpleButton
+      onclick={() => {
+        document.location.href = "/cogestione";
+      }}
+    >
+      Accedi alla piattaforma</SimpleButton
+    >
   </div>
 </main>
 
