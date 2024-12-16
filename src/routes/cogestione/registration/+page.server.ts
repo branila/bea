@@ -2,7 +2,7 @@ import type { PageServerLoad, Actions, RequestEvent } from './$types'
 import type { User, Registration, Activity } from '$types/db'
 import { sendMail } from '$lib/server/scripts/emailService'
 import notify from '$lib/utils/notify'
-import { handleError } from '../../../hooks.server'
+import errorsHandler from '$lib/server/hooks/errors'
 
 export const load: PageServerLoad = async ({ parent, locals }) => {
   const parentData = await parent()
@@ -65,7 +65,7 @@ export const actions = {
     }))
 
     if (registrationError) {
-      await handleError({
+      await errorsHandler({
         error: registrationError,
         event: {
           locals
@@ -86,7 +86,7 @@ export const actions = {
     }))
 
     if (ticketCreationError) {
-      await handleError({
+      await errorsHandler({
         error: ticketCreationError,
         event: {
           locals
@@ -151,7 +151,7 @@ export const actions = {
     ))
 
     if (emailSendError) {
-      await handleError({
+      await errorsHandler({
         error: emailSendError,
         event: {
           locals
