@@ -77,6 +77,8 @@
                 <h2>Il tuo qrcode personale</h2>
 
                 <canvas bind:this={qrcodeCanvas}></canvas>
+
+                <h2>{ticket.id}</h2>
             </div>
 
             <div class="warning">
