@@ -32,11 +32,6 @@ const authentication: Handle = async ({event, resolve}) => {
     sameSite: 'strict'
   }))
 
-  // if the uri is not /maintenance, redirect to /maintenance
-  if (event.route.id != '/maintenance') {
-    redirect(302, '/maintenance')
-  }
-
   return response
 }
 
