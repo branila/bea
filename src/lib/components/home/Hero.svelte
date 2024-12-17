@@ -1,12 +1,12 @@
 <script lang="ts">
-  import typewriter from "$lib/utils/typewriter";
+  import typewriter from '$lib/utils/typewriter'
 
-  import SimpleButton from "$components/reusables/SimpleButton.svelte";
+  import SimpleButton from '$components/reusables/SimpleButton.svelte'
 
-  import {onMount} from "svelte";
+  import {onMount} from 'svelte'
 
-  let mounted = $state(false);
-  onMount(() => (mounted = true));
+  let mounted = $state(false)
+  onMount(() => (mounted = true))
 </script>
 
 <main>
@@ -39,7 +39,7 @@
     <!-- <SimpleButton onclick={auth}> -->
     <SimpleButton
       onclick={() => {
-        document.location.href = "/cogestione";
+        document.location.href = "/cogestione"
       }}
     >
       Accedi alla piattaforma</SimpleButton
