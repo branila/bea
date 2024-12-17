@@ -185,7 +185,7 @@ const emailTemplate = `
       </div>
 
       <div class="ticket-footer">
-        <p style="margin: 0">Per assistenza: comitato.studentesco@itispaleocapa.it • Telegram: @branilaa</p>
+        <p style="margin: 0">Per assistenza: bea@branila.it • Telegram: @branilaa</p>
       </div>
     </div>
   </body>
