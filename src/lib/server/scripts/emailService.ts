@@ -163,7 +163,11 @@ const emailTemplate = `
         display: inline;
         margin-left: auto;
         margin-right: auto;
-        padding: 5px;
+        padding-top: 15px;
+        padding-bottom: 15px;
+        padding-left: 20px;
+        padding-right: 20px;
+        border-radius: 15px;
       }
     </style>
   </head>

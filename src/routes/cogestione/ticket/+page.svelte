@@ -72,10 +72,10 @@
                 <div class="box qr-box">
                     <h2>Il tuo qrcode personale</h2>
 
-                <canvas bind:this={qrcodeCanvas}></canvas>
+                    <canvas bind:this={qrcodeCanvas}></canvas>
 
-                <h2>{ticket.id}</h2>
-            </div>
+                    <h2 class="ticket-id">{ticket.id}</h2>
+                </div>
 
                 <div class="warning">
                     <h2>⚠️ Importante:</h2>
@@ -83,9 +83,9 @@
                 </div>
             </div>
 
-
-        <div class="footer">
-            Per assistenza: bea@branila.it • Telegram: @branilaa
+            <div class="footer">
+                Per assistenza: bea@branila.it • Telegram: @branilaa
+            </div>
         </div>
     {:else}
         <h1 class="loading">Caricamento...</h1>
