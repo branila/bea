@@ -35,9 +35,7 @@
 
             {#if error}
                 <h3 class="error">
-                    Soltanto gli studenti hanno accesso a questa piattaforma. Se
-                    sei uno studente e non riesci ad accedere, contatta subito
-                    l'assistenza.
+                    Ops, pare che ci sia stato un errore. <br/> Se il problema persiste, contatta l'assistenza.
                 </h3>
             {:else}
                 <h3>Accedi con il tuo account istituzionale</h3>
@@ -49,7 +47,7 @@
                 <button> contatta l'assistenza </button>
             </a>
         {:else}
-            <button onclick={auth}> Accedi con paleoid </button>
+            <button onclick={auth}>Accedi con paleoid</button>
         {/if}
     </div>
 </div>
@@ -107,6 +105,7 @@
         background-color: var(--white);
         border: 3px solid black;
         transition: 0.2s;
+        border-radius: 15px;
     }
 
     a {
