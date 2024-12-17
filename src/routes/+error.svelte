@@ -37,6 +37,7 @@
     flex-direction: column;
     align-items: center;
     gap: 30px;
+    padding: 40px;
   }
 
   .status {
@@ -50,6 +51,10 @@
   }
 
   @media (max-width: 600px) {
+    .container {
+      padding: 20px;
+    }
+
     .error {
         height: calc(100svh - 140px);
     }

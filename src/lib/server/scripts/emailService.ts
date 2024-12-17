@@ -1,14 +1,25 @@
-import { MailerSend, EmailParams, Sender, Recipient, Attachment } from 'mailersend'
-import { MAILERSEND_API_KEY, MAILERSEND_DOMAIN } from '$env/static/private'
+import * as nodemailer from 'nodemailer'
 import * as QRCode from 'qrcode'
+import {
+  SMTP_HOST,
+  SMTP_PORT,
+  SMTP_USER,
+  SMTP_PSW
+} from '$env/static/private'
 
-// Initialize MailerSend with your API key
-const mailerSend = new MailerSend({
-  apiKey: MAILERSEND_API_KEY || ''
+// Create a Nodemailer transporter
+const transporter = nodemailer.createTransport({
+  host: SMTP_HOST,
+  port: Number(SMTP_PORT),
+  secure: Number(SMTP_PORT) === 465,
+  auth: {
+    user: SMTP_USER,
+    pass: SMTP_PSW
+  },
+  tls: {
+    rejectUnauthorized: true
+  }
 })
-
-// Define sender information
-const sender = new Sender(`noreply@${MAILERSEND_DOMAIN}`, 'Better Esperia Access')
 
 async function generateQRCodeImage(text: string): Promise<string> {
   try {
@@ -31,38 +42,29 @@ async function sendMail(userId: string, dest: string, role: string, username: st
   try {
     // Generate QR code as base64 data URL
     const qrCodeDataUrl = await generateQRCodeImage(userId)
-    // Extract base64 data from data URL (remove the "data:image/png;base64," prefix)
-    const qrCodeBase64 = qrCodeDataUrl.split(',')[1]
 
     // Load and populate template
     let htmlContent = emailTemplate
       .replace('{{ROLE}}', role)
       .replace('{{NAME}}', username)
 
-    // Create recipient
-    const recipients = [new Recipient(dest)]
-
-    // Create attachment
-    const attachments = [
-      new Attachment(
-        qrCodeBase64,
-        "qrcode.png",
-        "inline",
-        "qrcode"
-      )
-    ]
-
-    // Prepare email parameters
-    const emailParams = new EmailParams()
-      .setFrom(sender)
-      .setTo(recipients)
-      .setSubject('Iscrizione alla Cogestione effettuata!')
-      .setHtml(htmlContent)
-      .setText(`Iscrizione completata! Il tuo ID utente è: ${userId}`)
-      .setAttachments(attachments)
-
-    // Send email
-    await mailerSend.email.send(emailParams)
+    // Send email using Nodemailer
+    await transporter.sendMail({
+      from: `"Better Esperia Access" <${SMTP_USER}>`,
+      to: dest,
+      subject: 'Iscrizione alla Cogestione effettuata!',
+      text: `Iscrizione completata! Il tuo ID utente è: ${userId}`,
+      html: htmlContent,
+      attachments: [
+        {
+          filename: 'qrcode.png',
+          content: qrCodeDataUrl.split(',')[1],
+          encoding: 'base64',
+          contentType: 'image/png',
+          cid: 'qrcode'
+        }
+      ]
+    })
   } catch (error) {
     console.error('Failed to send email:', error)
     throw error
@@ -142,8 +144,8 @@ const emailTemplate = `
   <body>
     <div class="ticket">
       <div class="ticket-header">
-        <h1 style="margin: 0;">Cogestione Invernale 2024</h1>
-        <p style="margin: 10px 0 0 0;">Whithout cogestione there is no esperia</p>
+        <h1 style="margin: 0">Cogestione Invernale 2024</h1>
+        <p style="margin: 10px 0 0 0">Without cogestione there is no esperia</p>
       </div>
 
       <div class="ticket-body">
@@ -178,12 +180,12 @@ const emailTemplate = `
 
         <div class="warning">
           <strong>⚠️ Importante:</strong>
-          <p style="margin: 10px 0 0 0;">Questo QR Code è strettamente personale e diventa invalido dopo la scansione. Per evitare problemi, non condividetelo con altri. Fate i bravi.</p>
+          <p style="margin: 10px 0 0 0">Questo QR Code è strettamente personale e diventa invalido dopo la scansione. Per evitare problemi, non condividetelo con altri. Fate i bravi.</p>
         </div>
       </div>
 
       <div class="ticket-footer">
-        <p style="margin: 0;">Per assistenza: comitato.studentesco@itispaleocapa.it • Telegram: @branilaa</p>
+        <p style="margin: 0">Per assistenza: bea@branila.it • Telegram: @branilaa</p>
       </div>
     </div>
   </body>

@@ -9,15 +9,14 @@
 <main>
   <div class="header">
     <h1 class="center">Siamo in manutenzione</h1>
+
     <h2>
-      Le iscrizioni apriranno domani, gli utenti che si sono già iscritti
-      saranno resettati e dovranno iscriversi nuovamente.
+      Le iscrizioni aprono alle 16. Andate via.
     </h2>
+
     <p class="inline">
-      Per eventuali problemiatiche contattare il <a
-        class="link"
-        href="/contacts">supporto</a
-      >.
+      Per eventuali problematiche contattare il
+      <a class="link" href="/contacts">supporto</a>.
     </p>
   </div>
 </main>
@@ -26,7 +25,14 @@
   main {
     display: flex;
     flex-direction: column;
+    align-items: center;
+    justify-content: center;
     gap: 40px;
+  }
+
+  h1 {
+    color: var(--red);
+    filter: brightness(1.4)
   }
 
   .inline {
@@ -42,6 +48,7 @@
     align-items: center;
     text-align: center;
     flex-direction: column;
+    width: min(600px, 100%)
   }
 
   .link {

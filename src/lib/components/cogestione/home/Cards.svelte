@@ -42,7 +42,7 @@
     <Card
         title="Assistenza"
         description="Hai urgente bisogno di aiuto? Contattaci subito e ti salviamo noi"
-        href="mailto:comitato.studentesco@itispaleocapa.it"
+        href="mailto:bea@branila.it"
         buttonText="Contattaci"
     />
 </div>

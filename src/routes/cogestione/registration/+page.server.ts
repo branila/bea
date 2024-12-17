@@ -29,6 +29,7 @@ export const load: PageServerLoad = async ({ parent, locals }) => {
 
 export const actions = {
   default: async ({ request, locals }) => {
+
     const data = await request.formData()
 
     // Ids os of the activities selected by the user
@@ -127,44 +128,44 @@ export const actions = {
 
     /* Updates the activities in the database */
 
-    await locals.pb.collection('activities').update(firstActivity.id, {
+    let [capacityUpdateError1] = await goCatch(locals.pb.collection('activities').update(firstActivity.id, {
       capacity: firstActivity.capacity
-    })
+    }))
+
+    let capacityUpdateError2: Error | undefined = undefined
+    let capacityUpdateError3: Error | undefined = undefined
 
     if (firstActivity.turns != 1) {
-      await locals.pb.collection('activities').update(secondActivity.id, {
+      [capacityUpdateError2] = await goCatch(locals.pb.collection('activities').update(secondActivity.id, {
         capacity: secondActivity.capacity
-      })
+      }));
 
-      await locals.pb.collection('activities').update(thirdActivity.id, {
+      [capacityUpdateError3] = await goCatch(locals.pb.collection('activities').update(thirdActivity.id, {
         capacity: thirdActivity.capacity
+      }))
+    }
+
+    if (capacityUpdateError1 || capacityUpdateError2 || capacityUpdateError3) {
+      await errorsHandler({
+        error: capacityUpdateError1 || capacityUpdateError2 || capacityUpdateError3,
+        event: {
+          locals
+        } as RequestEvent,
+        status: 500,
+        message: 'Failed to update activities capacity'
       })
     }
 
-    let id = ticket.id
-    let { email, surname, name } = locals.user!
+    /*  Email sending */
 
-    const [emailSendError] = await goCatch(sendMail(
-      id, email,
-      locals.user!.roles[0],
+    const { email, name, surname, roles } = locals.user!
+
+    sendMail(
+      ticket.id,
+      email,
+      roles.join(', '),
       `${surname} ${name}`
-    ))
+    )
 
-    if (emailSendError) {
-      await notify(`Failed to send confirmation email: ${emailSendError.message}`)
-
-      // await errorsHandler({
-      //   error: emailSendError,
-      //   event: {
-      //     locals
-      //   } as RequestEvent,
-      //   status: 500,
-      //   message: 'Failed to send confirmation email'
-      // })
-
-      return {
-        error: 'Errore: si è verificato un errore durante l\'invio della mail di conferma. Contattaci al più presto per risolvere il problema.'
-      }
-    }
   }
 } satisfies Actions
