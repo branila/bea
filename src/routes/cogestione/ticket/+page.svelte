@@ -9,28 +9,9 @@
 
     let qrcodeCanvas: HTMLCanvasElement | undefined = $state(undefined)
 
-    onMount(() => {
-        if (qrcodeCanvas) {
-            QRCode.toCanvas(qrcodeCanvas, ticket!.id, {
-                width: Math.min(innerWidth - 180, 250),
-                margin: 1,
-                color: {
-                    dark: '#000',
-                    light: '#fff'
-                }
-            }, (error: Error | undefined | null) => {
-                if (error) {
-                    console.error('Errore nella generazione del QR Code:', error)
-                }
-            })
-        }
-    })
-</script>
+    function setQR() {
+        console.log(innerWidth)
 
-<svelte:window
-    bind:innerWidth
-
-    onresize={(() => {
         QRCode.toCanvas(qrcodeCanvas, ticket!.id, {
             width: Math.min(innerWidth - 180, 250),
             margin: 1,
@@ -43,64 +24,72 @@
                 console.error('Errore nella generazione del QR Code:', error)
             }
         })
-    })}
+    }
+
+    $effect(() => {
+      console.log(innerWidth)
+
+      if (innerWidth != 0 && qrcodeCanvas) {
+        setQR()
+      }
+    })
+</script>
+
+<svelte:window
+    bind:innerWidth
+
+    onresize={setQR}
 ></svelte:window>
 
 <div class="container">
-    {#if ticket}
-        <div class="ticket">
-            <div class="header">
-                <h1>Cogestione Invernale 2024</h1>
-                <h3>Without cogestione there is no Esperia</h3>
-            </div>
+    <div class="ticket">
+        <div class="header">
+            <h1>Cogestione Invernale 2024</h1>
+            <h3>Without cogestione there is no Esperia</h3>
+        </div>
 
-            <div class="body">
-                <h2>Ce l'hai fatta!</h2>
+        <div class="body">
+            <h2>Ce l'hai fatta!</h2>
 
-                <div class="box top-box">
-                    <div class="info">
-                        <h3>Data:</h3>
-                        <p>21 Dicembre 2024</p>
-                    </div>
-
-                    <div class="info">
-                        <h3>Orario:</h3>
-                        <p>08:00 - 12:00</p>
-                    </div>
-
-                    <div class="info">
-                        <h3>Studente:</h3>
-                        <p>{`${user.surname} ${user.name}`}</p>
-                    </div>
-
-                    <div class="info">
-                        <h3>Ruolo:</h3>
-                        <p>{user.roles.join(', ')}</p>
-                    </div>
+            <div class="box top-box">
+                <div class="info">
+                    <h3>Data:</h3>
+                    <p>21 Dicembre 2024</p>
                 </div>
 
-                <div class="box qr-box">
-                    <h2>Il tuo qrcode personale</h2>
-
-                    <canvas bind:this={qrcodeCanvas}></canvas>
+                <div class="info">
+                    <h3>Orario:</h3>
+                    <p>08:00 - 12:00</p>
                 </div>
 
-                <div class="warning">
-                    <h2>⚠️ Importante:</h2>
-                    <p>Questo QR Code è strettamente personale e diventa invalido dopo la scansione. Per evitare problemi, non condividetelo con altri. Fate i bravi.</p>
+                <div class="info">
+                    <h3>Studente:</h3>
+                    <p>{`${user.surname} ${user.name}`}</p>
+                </div>
+
+                <div class="info">
+                    <h3>Ruolo:</h3>
+                    <p>{user.roles.join(', ')}</p>
                 </div>
             </div>
 
+            <div class="box qr-box">
+                <h2>Il tuo qrcode personale</h2>
 
-            <div class="footer">
-                Per assistenza: bea@branila.it • Telegram: @branilaa
+                <canvas bind:this={qrcodeCanvas}></canvas>
+            </div>
+
+            <div class="warning">
+                <h2>⚠️ Importante:</h2>
+                <p>Questo QR Code è strettamente personale e diventa invalido dopo la scansione. Per evitare problemi, non condividetelo con altri. Fate i bravi.</p>
             </div>
         </div>
-    {:else}
-        <div class="not-registered">
 
+
+        <div class="footer">
+            Per assistenza: bea@branila.it • Telegram: @branilaa
         </div>
-    {/if}
+    </div>
 </div>
 
 <style>
@@ -160,7 +149,7 @@
   .top-box {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: calc(10px + 1vw);
+    gap: calc(15px + 1.5vw);
   }
 
   .box p {
