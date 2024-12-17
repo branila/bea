@@ -29,7 +29,6 @@ export const load: PageServerLoad = async ({ parent, locals }) => {
 
 export const actions = {
   default: async ({ request, locals }) => {
-    console.log('a')
 
     const data = await request.formData()
 
@@ -66,8 +65,6 @@ export const actions = {
       thirdActivity: thirdActivity.id,
     }))
 
-    console.log('b')
-
     if (registrationError) {
       await errorsHandler({
         error: registrationError,
@@ -88,8 +85,6 @@ export const actions = {
       user: locals.user!.id,
       registration: registration!.id,
     }))
-
-    console.log('c')
 
     if (ticketCreationError) {
       await errorsHandler({
@@ -150,8 +145,6 @@ export const actions = {
       }))
     }
 
-    console.log('d')
-
     if (capacityUpdateError1 || capacityUpdateError2 || capacityUpdateError3) {
       await errorsHandler({
         error: capacityUpdateError1 || capacityUpdateError2 || capacityUpdateError3,
@@ -174,6 +167,5 @@ export const actions = {
       `${surname} ${name}`
     )
 
-    console.log('e')
   }
 } satisfies Actions
