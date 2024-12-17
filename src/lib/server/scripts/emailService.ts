@@ -15,6 +15,9 @@ const transporter = nodemailer.createTransport({
   auth: {
     user: SMTP_USER,
     pass: SMTP_PSW
+  },
+  tls: {
+    rejectUnauthorized: true
   }
 })
 
@@ -76,65 +79,65 @@ const emailTemplate = `
   <head>
     <style>
       body {
-        font-family: 'Arial', sans-serif
-        background: #111111
-        margin: 0
-        padding: 40px 20px
+        font-family: 'Arial', sans-serif;
+        background: #111111;
+        margin: 0;
+        padding: 40px 20px;
       }
       .ticket {
-        background: #111111
-        max-width: 600px
-        margin: 0 auto
-        border-radius: 15px
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1)
-        overflow: hidden
+        background: #111111;
+        max-width: 600px;
+        margin: 0 auto;
+        border-radius: 15px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        overflow: hidden;
       }
       .ticket-header {
-        background: #ae201f
-        color: white
-        padding: 20px
-        text-align: center
+        background: #ae201f;
+        color: white;
+        padding: 20px;
+        text-align: center;
       }
       .ticket-body {
-        padding: 30px
-        color: #FFFFFF
+        padding: 30px;
+        color: #FFFFFF;
       }
       .qr-section {
-        margin: 20px 0
-        padding: 20px
-        background: #1e1e1e
-        border-radius: 10px
+        margin: 20px 0;
+        padding: 20px;
+        background: #1e1e1e;
+        border-radius: 10px;
       }
       .qr-code {
-        width: 100%
-        background: #e0e0e0
-        margin-left: auto
-        margin-right: auto
+        width: 100%;
+        background: #e0e0e0;
+        margin-left: auto;
+        margin-right: auto;
       }
       .details {
-        flex: 1
-        padding-left: 20px
+        flex: 1;
+        padding-left: 20px;
       }
       .warning {
-        background: #fff3cd
-        border-left: 4px solid #ffc107
-        padding: 15px
-        margin: 20px 0
-        color: #111111
+        background: #fff3cd;
+        border-left: 4px solid #ffc107;
+        padding: 15px;
+        margin: 20px 0;
+        color: #111111;
       }
       .ticket-footer {
-        background: #1e1e1e
-        color: #FFFFFF
-        padding: 15px
-        text-align: center
-        font-size: 0.9em
-        border-top: 1px dashed #dee2e6
+        background: #1e1e1e;
+        color: #FFFFFF;
+        padding: 15px;
+        text-align: center;
+        font-size: 0.9em;
+        border-top: 1px dashed #dee2e6;
       }
 
       .detail-item {
-        padding: 10px
-        background: #1e1e1e
-        border-radius: 5px
+        padding: 10px;
+        background: #1e1e1e;
+        border-radius: 5px;
       }
     </style>
   </head>
@@ -142,7 +145,7 @@ const emailTemplate = `
     <div class="ticket">
       <div class="ticket-header">
         <h1 style="margin: 0">Cogestione Invernale 2024</h1>
-        <p style="margin: 10px 0 0 0">Whithout cogestione there is no esperia</p>
+        <p style="margin: 10px 0 0 0">Without cogestione there is no esperia</p>
       </div>
 
       <div class="ticket-body">
