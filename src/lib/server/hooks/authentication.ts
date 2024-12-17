@@ -1,4 +1,4 @@
-import type { Handle } from '@sveltejs/kit'
+import { redirect, type Handle } from '@sveltejs/kit'
 import type { User } from '$types/db'
 
 // Authentication middleware for handling user sessions
@@ -31,6 +31,11 @@ const authentication: Handle = async ({event, resolve}) => {
     secure: true,
     sameSite: 'strict'
   }))
+
+  // if the uri is not /maintenance, redirect to /maintenance
+  if (event.route.id != '/maintenance') {
+    redirect(302, '/maintenance')
+  }
 
   return response
 }
