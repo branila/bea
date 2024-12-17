@@ -68,7 +68,6 @@ async function sendMail(userId: string, dest: string, role: string, username: st
     })
   } catch (error) {
     console.error('Failed to send email:', error)
-    throw error
   }
 }
 
