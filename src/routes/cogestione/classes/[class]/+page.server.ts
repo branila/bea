@@ -4,7 +4,7 @@ import { type User, type Registration, Roles } from '$types/db'
 import hasRole from '$lib/utils/hasRole'
 
 export const load: PageServerLoad = async ({ locals, params }) => {
-  const queriedClass = params.class
+  const queriedClass = params.class.toUpperCase()
 
   if (queriedClass != locals.user?.class && !hasRole(locals.user!, Roles.Admin, Roles.Staff)) {
     error(403, 'Non hai accesso a questa classe')
