@@ -47,6 +47,7 @@ async function sendMail(userId: string, dest: string, role: string, username: st
     let htmlContent = emailTemplate
       .replace('{{ROLE}}', role)
       .replace('{{NAME}}', username)
+      .replace('{{CODE}}',userId)
 
     // Send email using Nodemailer
     await transporter.sendMail({
@@ -76,6 +77,7 @@ export { sendMail }
 const emailTemplate = `
   <!DOCTYPE html>
   <html>
+
   <head>
     <style>
       body {
@@ -84,40 +86,48 @@ const emailTemplate = `
         margin: 0;
         padding: 40px 20px;
       }
+
       .ticket {
         background: #111111;
         max-width: 600px;
         margin: 0 auto;
         border-radius: 15px;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         overflow: hidden;
       }
+
       .ticket-header {
         background: #ae201f;
         color: white;
         padding: 20px;
         text-align: center;
       }
+
       .ticket-body {
         padding: 30px;
         color: #FFFFFF;
       }
+
       .qr-section {
         margin: 20px 0;
         padding: 20px;
         background: #1e1e1e;
         border-radius: 10px;
       }
+
       .qr-code {
         width: 100%;
         background: #e0e0e0;
         margin-left: auto;
         margin-right: auto;
+        margin-bottom: 20px;
       }
+
       .details {
         flex: 1;
         padding-left: 20px;
       }
+
       .warning {
         background: #fff3cd;
         border-left: 4px solid #ffc107;
@@ -125,6 +135,7 @@ const emailTemplate = `
         margin: 20px 0;
         color: #111111;
       }
+
       .ticket-footer {
         background: #1e1e1e;
         color: #FFFFFF;
@@ -134,13 +145,29 @@ const emailTemplate = `
         border-top: 1px dashed #dee2e6;
       }
 
+      .code-section {
+        text-align: center;
+      }
+
       .detail-item {
         padding: 10px;
         background: #1e1e1e;
         border-radius: 5px;
       }
+
+      .text-code {
+        text-align: center;
+        font-weight: bold;
+        font-size: 32px;
+        background-color: #3b3b3b;
+        display: inline;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 5px;
+      }
     </style>
   </head>
+
   <body>
     <div class="ticket">
       <div class="ticket-header">
@@ -176,11 +203,15 @@ const emailTemplate = `
             <p>Il giorno della cogestione, presenta questo qrcode all'ingresso della scuola.</p>
           </div>
           <img src="cid:qrcode" alt="QR Code" class="qr-code" />
+          <div class="code-section">
+            <p class="text-code">{{CODE}}</p>
+          </div>
         </div>
 
         <div class="warning">
           <strong>⚠️ Importante:</strong>
-          <p style="margin: 10px 0 0 0">Questo QR Code è strettamente personale e diventa invalido dopo la scansione. Per evitare problemi, non condividetelo con altri. Fate i bravi.</p>
+          <p style="margin: 10px 0 0 0">Questo QR Code è strettamente personale e diventa invalido dopo la scansione. Per
+            evitare problemi, non condividetelo con altri. Fate i bravi.</p>
         </div>
       </div>
 
@@ -189,5 +220,6 @@ const emailTemplate = `
       </div>
     </div>
   </body>
+
   </html>
 `

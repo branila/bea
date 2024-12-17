@@ -72,8 +72,10 @@
                 <div class="box qr-box">
                     <h2>Il tuo qrcode personale</h2>
 
-                    <canvas bind:this={qrcodeCanvas}></canvas>
-                </div>
+                <canvas bind:this={qrcodeCanvas}></canvas>
+
+                <h2>{ticket.id}</h2>
+            </div>
 
                 <div class="warning">
                     <h2>⚠️ Importante:</h2>
@@ -82,12 +84,8 @@
             </div>
 
 
-            <div class="footer">
-                Per assistenza:
-                <a href="mailto:bea@branila.it">bea@branila.it</a>
-                Telegram:
-                <a href="https://t.me/branilaa">branila</a>
-            </div>
+        <div class="footer">
+            Per assistenza: bea@branila.it • Telegram: @branilaa
         </div>
     {:else}
         <h1 class="loading">Caricamento...</h1>
@@ -176,6 +174,13 @@
     margin-bottom: 40px;
   }
 
+  .ticket-id {
+    padding-inline: 20px;
+    padding-block: 15px;
+    border-radius: 15px;
+    background-color: #333333;
+  }
+
   .warning {
     background-color: #fff3cd;
     border-left: 4px solid var(--yellow);
@@ -185,6 +190,10 @@
     display: flex;
     flex-direction: column;
     gap: 15px;
+  }
+
+  .warning p {
+    font-weight: normal;
   }
 
   .footer {
