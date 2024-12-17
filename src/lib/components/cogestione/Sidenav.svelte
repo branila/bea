@@ -97,15 +97,9 @@
     </div>
   </div>
 
-  <button onclick={logout} class="route">
+  <button onclick={logout} class="route logout">
     <img src="/images/cogestione/sidenav/logout.svg" alt="Logout icon" />
     <div class="name">Logout</div>
-
-    <!-- {@render route(
-        "Logout",
-        "/logout",
-        "/images/cogestione/sidenav/logout.svg",
-    )} -->
   </button>
 </aside>
 
@@ -143,6 +137,12 @@
     gap: 15px;
     font-size: max(12px, 6px + 1vw);
     color: var(--white);
+  }
+
+  .logout {
+    background-color: transparent;
+    border: 0;
+    cursor: pointer;
   }
 
   .name {
