@@ -12,7 +12,7 @@
     onMount(() => {
         if (qrcodeCanvas) {
             QRCode.toCanvas(qrcodeCanvas, ticket!.id, {
-                width: 250,
+                width: Math.min(innerWidth - 180, 250),
                 margin: 1,
                 color: {
                     dark: '#000',
