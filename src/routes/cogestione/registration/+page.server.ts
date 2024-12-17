@@ -29,6 +29,8 @@ export const load: PageServerLoad = async ({ parent, locals }) => {
 
 export const actions = {
   default: async ({ request, locals }) => {
+    console.log('a')
+
     const data = await request.formData()
 
     // Ids os of the activities selected by the user
@@ -64,6 +66,8 @@ export const actions = {
       thirdActivity: thirdActivity.id,
     }))
 
+    console.log('b')
+
     if (registrationError) {
       await errorsHandler({
         error: registrationError,
@@ -84,6 +88,8 @@ export const actions = {
       user: locals.user!.id,
       registration: registration!.id,
     }))
+
+    console.log('c')
 
     if (ticketCreationError) {
       await errorsHandler({
@@ -144,6 +150,8 @@ export const actions = {
       }))
     }
 
+    console.log('d')
+
     if (capacityUpdateError1 || capacityUpdateError2 || capacityUpdateError3) {
       await errorsHandler({
         error: capacityUpdateError1 || capacityUpdateError2 || capacityUpdateError3,
@@ -155,28 +163,17 @@ export const actions = {
       })
     }
 
+    /*  Email sending */
+
     const { email, name, surname, roles } = locals.user!
 
-    const [emailSendError] = await goCatch(sendMail(
+    sendMail(
       ticket.id,
       email,
-      roles[0],
+      roles.join(', '),
       `${surname} ${name}`
-    ))
+    )
 
-    if (emailSendError) {
-      await errorsHandler({
-        error: emailSendError,
-        event: {
-          locals
-        } as RequestEvent,
-        status: 500,
-        message: 'Failed to send email'
-      })
-
-      return {
-        error: `Errore: si è verificato un errore durante l'invio della mail di conferma. Contattaci al più presto per risolvere il problema.`
-      }
-    }
+    console.log('e')
   }
 } satisfies Actions
