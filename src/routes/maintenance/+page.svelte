@@ -11,7 +11,7 @@
     <h1 class="center">Siamo in manutenzione</h1>
 
     <h2>
-      Le iscrizioni aprono alle 16. Andate via.
+      Le iscrizioni aprono alle 18. Andate via.
     </h2>
 
     <p class="inline">
