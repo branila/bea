@@ -60,6 +60,7 @@
         background-color: var(--grey);
         gap: 20px;
         width: min(400px, 100%);
+        border-radius: 15px;
     }
 
     .info {
