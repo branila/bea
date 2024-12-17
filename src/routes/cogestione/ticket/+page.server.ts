@@ -1,5 +1,5 @@
 import type { PageServerLoad } from './$types'
-import { error } from '@sveltejs/kit'
+import { error, redirect } from '@sveltejs/kit'
 
 export const load: PageServerLoad = async ({ parent, locals }) => {
   let [ticketQueryError, ticket] = await goCatch(
@@ -7,7 +7,7 @@ export const load: PageServerLoad = async ({ parent, locals }) => {
   )
 
   if (ticketQueryError || !ticket) {
-    ticket = undefined
+    redirect(302, '/cogestione/registration')
   }
 
   return {
