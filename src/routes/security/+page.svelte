@@ -91,6 +91,8 @@
         )
 
         scanner.start()
+
+        alert('dai')
     })
 </script>
 
