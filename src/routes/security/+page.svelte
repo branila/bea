@@ -55,13 +55,11 @@
             return
         }
 
-        if (!response) {
+        if (!response || response?.ticket.authenticator) {
           popupColor = 'var(--red)'
         }
 
-        if (response?.ticket.authenticator) {
-          popupColor = 'var(--red)'
-        }
+        popupColor = 'var(--green)'
     }
 
     function markPresence() {
@@ -157,7 +155,7 @@
                 </div>
 
                 <div class=".popup-btn">
-                    {#if !response.ticket.authenticator}
+                    {#if response.ticket.authenticator}
                         <SimpleButton onclick={markPresence}>Segna presente</SimpleButton>
                     {/if}
                 </div>
