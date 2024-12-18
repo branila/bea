@@ -5,7 +5,6 @@
     import type { Ticket, User, Registration } from '$types/db'
 
     const { data } = $props()
-    const { user } = data
 
     let videoElement: HTMLVideoElement | undefined = $state(undefined)
 
@@ -92,8 +91,6 @@
         )
 
         scanner.start()
-
-        handleScan('B93')
     })
 </script>
 
