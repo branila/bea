@@ -91,17 +91,8 @@
         )
 
         scanner.start()
-
-        alert('dai')
     })
 </script>
-
-<!--
-    Nome utente
-    Classe
-    Ruolo
-    Attività
--->
 
 <div class="container">
     {#if showPopup}
