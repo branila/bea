@@ -157,7 +157,9 @@
                 </div>
 
                 <div class=".popup-btn">
-                    <SimpleButton onclick={markPresence}>Segna presente</SimpleButton>
+                    {#if !response.ticket.authenticator}
+                        <SimpleButton onclick={markPresence}>Segna presente</SimpleButton>
+                    {/if}
                 </div>
             {/if}
 
