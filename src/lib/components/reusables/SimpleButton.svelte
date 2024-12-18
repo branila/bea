@@ -8,13 +8,15 @@
     onclick = () => {},
     type = 'button',
     disabled = false,
+    action,
   }: {
     href?: string
     accent?: string
     onclick?: (() => void)
     children: Snippet<[]>
     type?: 'button' | 'submit' | 'reset'
-    disabled?: boolean
+    disabled?: boolean,
+    action?: string
   } = $props()
 
   let hovered = $state(false)
