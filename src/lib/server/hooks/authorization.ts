@@ -9,7 +9,7 @@ const authorization: Handle = async ({event, resolve}) => {
   const path = event.url.pathname
 
   if (user?.banned) {
-    error(403, 'You are banned from the system')
+    error(403, `You don't have access to the system :(`)
   }
 
   const publicPaths = ['/', '/contacts', '/login', '/maintenance']
