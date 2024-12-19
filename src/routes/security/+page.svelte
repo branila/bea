@@ -58,7 +58,7 @@
 
             scanResponse = await data.json()
         } catch (error) {
-            alert('Errore durante la ricerca del ticket. Se il problema persiste vai a cercare Branila. ${error}')
+            alert(`Errore durante la ricerca del ticket. Se il problema persiste vai a cercare Branila. ${error}`)
 
             closePopup()
         }
