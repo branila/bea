@@ -52,8 +52,8 @@
         alert(ticketId)
 
         try {
-            const data = await fetch('/api/mark', {
-                method: 'POSt',
+            const data = await fetch('/api/fetch-infos', {
+                method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ ticketId })
             })
@@ -88,7 +88,7 @@
 
     async function markPresence() {
         try {
-            const data = await fetch('/api/fetch-infos', {
+            const data = await fetch('/api/mark-presence', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ ticketId: scanResponse?.ticket!.id })
