@@ -1,7 +1,7 @@
 import {type Handle, redirect} from '@sveltejs/kit'
 import {Roles} from '$types/db'
 import hasRole from '$lib/utils/hasRole'
-import {error} from '$lib/utils/error'
+import { error } from '@sveltejs/kit'
 
 // Authorization middleware for route access control
 const authorization: Handle = async ({event, resolve}) => {
