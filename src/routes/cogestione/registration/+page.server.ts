@@ -174,7 +174,7 @@ export const actions = {
     const { email, name, surname, roles } = locals.user!
 
     sendMail(
-      ticket.id,
+      ticket!.id,
       email,
       roles.join(', '),
       `${surname} ${name}`
