@@ -51,7 +51,7 @@
 
         try {
             const data = await fetch('/api/mark', {
-                method: 'GET',
+                method: 'POSt',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ ticketId })
             })
