@@ -1,11 +1,16 @@
 import {type Handle, redirect} from '@sveltejs/kit'
 import {Roles} from '$types/db'
 import hasRole from '$lib/utils/hasRole'
+import {error} from '$lib/utils/error'
 
 // Authorization middleware for route access control
 const authorization: Handle = async ({event, resolve}) => {
   const user = event.locals.user
   const path = event.url.pathname
+
+  if (user?.banned) {
+    error(403, 'You are banned from the system')
+  }
 
   const publicPaths = ['/', '/contacts', '/login', '/maintenance']
 
