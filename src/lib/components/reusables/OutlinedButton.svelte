@@ -16,7 +16,7 @@
   let hovered = $state(false)
 </script>
 
-<a {href}>
+<a {href} data-sveltekit-reload>
     <button
         {onclick}
         onmouseenter={() => hovered = true}

@@ -47,7 +47,7 @@
         <button> contatta l'assistenza </button>
       </a>
     {:else}
-      <button onclick={auth}>Accedi con paleoid</button>
+      <button onclick={auth}>Accedi con google</button>
     {/if}
   </div>
 </div>
