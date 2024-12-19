@@ -50,7 +50,7 @@
         popup.show = true
 
         try {
-            const data = await fetch('/api/scanner', {
+            const data = await fetch('/api/mark', {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ ticketId })
@@ -86,7 +86,7 @@
 
     async function markPresence() {
         try {
-            const data = await fetch('/api/scanner', {
+            const data = await fetch('/api/fetch-infos', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ ticketId: scanResponse?.ticket!.id })
