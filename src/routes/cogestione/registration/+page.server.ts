@@ -1,5 +1,5 @@
 import type { PageServerLoad, Actions, RequestEvent } from './$types'
-import type { User, Registration, Activity } from '$types/db'
+import type { User, Registration, Activity, Ticket } from '$types/db'
 import { sendMail } from '$lib/server/scripts/emailService'
 import notify from '$lib/utils/notify'
 import errorsHandler from '$lib/server/hooks/errors'
@@ -135,11 +135,24 @@ export const actions = {
       })
     }
 
-    // Creates a personal ticket for the user
-    const [ticketCreationError, ticket] = await goCatch(locals.pb.collection('tickets').create({
-      user: locals.user!.id,
-      registration: registration!.id,
-    }))
+    let ticketCreationError: Error | undefined = undefined
+    let ticket: Ticket | undefined = undefined
+
+    let attempts = 0
+
+    while (attempts < 5) {
+      // Creates a personal ticket for the user
+      [ticketCreationError, ticket] = await goCatch(locals.pb.collection('tickets').create({
+        user: locals.user!.id,
+        registration: registration!.id,
+      }))
+
+      if (!ticketCreationError) {
+        break
+      }
+
+      attempts++
+    }
 
     if (ticketCreationError) {
       await errorsHandler({
