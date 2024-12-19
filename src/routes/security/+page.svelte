@@ -66,10 +66,10 @@
         if (scanResponse?.success) {
             if (scanResponse?.ticket?.authenticator) {
                 popup.color = 'var(--blue)'
+                return
             }
 
             popup.color = 'var(--green)'
-
             return
         }
 
