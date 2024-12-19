@@ -80,27 +80,6 @@ export const actions = {
       }
     }
 
-    // Creates a personal ticket for the user
-    const [ticketCreationError, ticket] = await goCatch(locals.pb.collection('tickets').create({
-      user: locals.user!.id,
-      registration: registration!.id,
-    }))
-
-    if (ticketCreationError) {
-      await errorsHandler({
-        error: ticketCreationError,
-        event: {
-          locals
-        } as RequestEvent,
-        status: 500,
-        message: 'Failed to create ticket'
-      })
-
-      return {
-        error: 'Errore: si è verificato un errore durante la creazione del biglietto. Riprova più tardi.'
-      }
-    }
-
     /* Activities capacity decrement */
 
     firstActivity.capacity[0]--
@@ -154,6 +133,27 @@ export const actions = {
         status: 500,
         message: 'Failed to update activities capacity'
       })
+    }
+
+    // Creates a personal ticket for the user
+    const [ticketCreationError, ticket] = await goCatch(locals.pb.collection('tickets').create({
+      user: locals.user!.id,
+      registration: registration!.id,
+    }))
+
+    if (ticketCreationError) {
+      await errorsHandler({
+        error: ticketCreationError,
+        event: {
+          locals
+        } as RequestEvent,
+        status: 500,
+        message: 'Failed to create ticket'
+      })
+
+      return {
+        error: 'Errore: si è verificato un errore durante la creazione del biglietto. Riprova più tardi.'
+      }
     }
 
     /*  Email sending */
