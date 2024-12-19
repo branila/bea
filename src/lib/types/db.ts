@@ -61,6 +61,7 @@ export interface Ticket {
   expand?: {
     user?: User;
     registration?: Registration;
+    authenticator?: User;
   };
 }
 

@@ -58,7 +58,7 @@
     },
     {
       name: 'Sicurezza',
-      href: '/cogestione/security',
+      href: '/security',
       icon: '/images/cogestione/sidenav/security.svg',
       allowed: hasRole(user, Roles.Security, Roles.Staff, Roles.Admin),
     },

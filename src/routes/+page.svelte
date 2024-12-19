@@ -29,7 +29,7 @@
             description="Sei un membro della sicurezza della cogestione e vuoi accedere all'area riservata?"
             color="var(--blue)"
             buttonText="Accedi"
-            href="/cogestione/security"
+            href="/security"
         />
 
         <Card
