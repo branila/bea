@@ -49,6 +49,8 @@
 
         popup.show = true
 
+        alert(ticketId)
+
         try {
             const data = await fetch('/api/mark', {
                 method: 'POSt',
