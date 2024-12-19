@@ -49,8 +49,6 @@
 
         popup.show = true
 
-        alert(ticketId)
-
         try {
             const data = await fetch('/api/fetch-infos', {
                 method: 'POST',
@@ -66,7 +64,12 @@
         }
 
         if (scanResponse?.success) {
+            if (scanResponse?.ticket?.authenticator) {
+                popup.color = 'var(--blue)'
+            }
+
             popup.color = 'var(--green)'
+
             return
         }
 
