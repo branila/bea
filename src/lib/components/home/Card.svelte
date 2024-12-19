@@ -16,7 +16,7 @@
   } = $props()
 </script>
 
-<div class="card" style:background-color={color}>
+<div  class="card" style:background-color={color}>
     <h1>{title}</h1>
 
     <p>{description}</p>

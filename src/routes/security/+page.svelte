@@ -4,8 +4,6 @@
     import SimpleButton from '$components/reusables/SimpleButton.svelte'
     import type { Ticket, User, Registration } from '$types/db'
 
-    const { data } = $props()
-
     let videoElement: HTMLVideoElement | undefined = $state(undefined)
 
     let scanner: QrScanner
