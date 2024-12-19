@@ -55,11 +55,11 @@
             return
         }
 
+        popupColor = 'var(--green)'
+
         if (!response || response?.ticket.authenticator) {
           popupColor = 'var(--red)'
         }
-
-        popupColor = 'var(--green)'
     }
 
     function markPresence() {
