@@ -19,7 +19,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
   if (ticketUpdateError) {
     return json({
       success: false,
-      error: `Non è stato possibile aggiornare lo stato del ticket`
+      error: `Non è stato possibile aggiornare lo stato del ticket.`
     })
   }
 
