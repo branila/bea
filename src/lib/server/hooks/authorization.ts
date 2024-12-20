@@ -31,7 +31,7 @@ const authorization: Handle = async ({event, resolve}) => {
     '/cogestione/admin': hasRole(user, Roles.Admin),
     '/cogestione/classes': hasRole(user, Roles.Rappresentante, Roles.Admin),
     '/cogestione/activities': hasRole(user, Roles.Organizzatore, Roles.Admin, Roles.Docente),
-    '/security': hasRole(user, Roles.Security, Roles.Staff, Roles.Admin),
+    '/security': hasRole(user, Roles.Security, Roles.Staff, Roles.Admin, Roles.Docente),
     '/cogestione/staff': hasRole(user, Roles.Staff, Roles.Admin),
   })
 
