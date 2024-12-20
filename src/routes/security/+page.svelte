@@ -64,24 +64,26 @@
         if (scanResponse?.success) {
             if (scanResponse?.ticket?.authenticator) {
                 popup.color = 'var(--blue)'
+                popup.show = true
                 return
             }
 
             popup.color = 'var(--green)'
+            popup.show = true
             return
         }
 
         if (scanResponse?.error) {
             popup.color = 'var(--red)'
+            popup.show = true
             return
         }
 
         if (scanResponse?.ticket?.authenticator) {
             popup.color = 'var(--blue)'
+            popup.show = true
             return
         }
-
-        popup.show = true
     }
 
     let presenceResponse: {
@@ -123,6 +125,10 @@
         )
 
         scanner.start()
+
+        return () => {
+            scanner.stop()
+        }
     })
 </script>
 
