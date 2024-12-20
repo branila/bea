@@ -5,12 +5,12 @@
     import type { Ticket, User, Registration } from '$types/db'
 
     let videoElement: HTMLVideoElement | undefined = $state(undefined)
-
     let scanner: QrScanner
 
-    let showPopup = $state(false)
-
-    let popupColor = $state('var(--green)')
+    let popup = $state({
+        show: false,
+        color: 'var(--green)'
+    })
 
     function handleSubmit() {
         const ticketId = document.querySelector('input')!.value
@@ -18,11 +18,19 @@
         handleScan(ticketId)
     }
 
-    let response: {
-      ticket: Ticket
-      user: User,
-      registration: Registration
-    } | undefined | null = $state(undefined)
+    function isTicketValid(ticketId: string) {
+        const regexp = /^[A-Z1-9]{3}$/
+
+        return regexp.test(ticketId)
+    }
+
+    let scanResponse: {
+      success: boolean,
+      error?: string,
+      ticket?: Ticket,
+      user?: User,
+      registration?: Registration
+    } | undefined = $state()
 
     async function handleScan(ticketId: string) {
         // Stops the scanner from scassare il cazzo
@@ -31,52 +39,80 @@
         ticketId = ticketId.toUpperCase()
 
         // Ticket validation
-        const regexp = /^[A-Z1-9]{3}$/
-        if (!regexp.test(ticketId)) {
-            alert("Codice QR non valido.")
+        if (!isTicketValid(ticketId)) {
+            alert(`Il codice ${ticketId} non è valido. Se pensi che questo sia un errore contatta Branila.`)
+
+            await scanner.start()
+
             return
         }
 
-        showPopup = true
+        popup.show = true
 
         try {
-            const data = await fetch('/api/get-ticket', {
+            const data = await fetch('/api/fetch-infos', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ ticketId })
             })
 
-            response = await data.json()
+            scanResponse = await data.json()
         } catch (error) {
-            popupColor = 'var(--red)'
-            alert(`Errore durante la richiesta. Vai a cercare Branila. ${error}`)
+            alert(`Errore durante la ricerca del ticket. Se il problema persiste vai a cercare Branila. ${error}`)
+
+            closePopup()
+        }
+
+        if (scanResponse?.success) {
+            if (scanResponse?.ticket?.authenticator) {
+                popup.color = 'var(--blue)'
+                return
+            }
+
+            popup.color = 'var(--green)'
             return
         }
 
-        popupColor = 'var(--green)'
+        if (scanResponse?.error) {
+            popup.color = 'var(--red)'
+            return
+        }
 
-        if (!response || response?.ticket.authenticator) {
-          popupColor = 'var(--red)'
+        if (scanResponse?.ticket?.authenticator) {
+            popup.color = 'var(--blue)'
+            return
         }
     }
 
-    function markPresence() {
-        fetch('/api/mark-presence', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ ticketId: response!.ticket.id })
-        })
+    let presenceResponse: {
+      success: boolean,
+      error?: string
+    } | undefined = $state()
 
-        response = undefined
+    async function markPresence() {
+        try {
+            const data = await fetch('/api/mark-presence', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ticketId: scanResponse?.ticket!.id })
+            })
 
-        showPopup = false
+            presenceResponse = await data.json()
+        } catch (error) {
+            alert(`Errore durante l'impostazione della presenza. Se il problema persiste vai a cercare Branila. ${error}`)
+        }
 
-        scanner.start()
+        if (!presenceResponse?.success) {
+            alert(`Errore durante l'impostazione della presenza. Se il problema persiste vai a cercare Branila. ${presenceResponse!.error}`)
+        }
+
+        closePopup()
     }
 
     function closePopup() {
-        response = undefined
-        showPopup = false
+        popup.show = false
+        scanResponse = undefined
+        presenceResponse = undefined
         scanner.start()
     }
 
@@ -87,21 +123,25 @@
         )
 
         scanner.start()
+
+        return () => {
+            scanner.stop()
+        }
     })
 </script>
 
 <div class="container">
-    {#if showPopup}
+    {#if popup.show}
         <div class="popup"
-            style:background-color={popupColor}
+            style:background-color={popup.color}
         >
-            {#if response == undefined}
+            {#if scanResponse == undefined}
                 <div>Caricamento...</div>
-            {:else if response.ticket == null}
-                <div>Sembra che l'utente non esista.</div>
+            {:else if !scanResponse.success}
+                <div>{scanResponse.error}</div>
             {:else}
                 <div class="heading">
-                    {#if response.ticket.authenticator}
+                    {#if scanResponse.ticket!.authenticator}
                         <h1>
                             Ticket già scannerizzato!
                         </h1>
@@ -118,42 +158,42 @@
                     <div class="info">
                         <span class="name">Cognome e nome:</span> <br>
 
-                        {response.user.surname} {response.user.name}
+                        {scanResponse.user!.surname} {scanResponse.user!.name}
                     </div>
 
                     <div class="info">
                         <span class="name">Classe:</span>
 
-                        {response.user.class}
+                        {scanResponse.user!.class}
                     </div>
 
                     <div class="info">
                         <span class="name">Ruolo:</span> <br>
-                        {response.user.roles.join(', ')}
+                        {scanResponse.user!.roles.join(', ')}
                     </div>
 
                     <div class="info">
                         <span class="name">Attività:</span> <br>
 
-                        {#if response.registration.expand!.firstActivity!.turns == 1}
-                            {response.registration.expand!.firstActivity!.name}
+                        {#if scanResponse.registration!.expand!.firstActivity!.turns == 1}
+                            {scanResponse.registration!.expand!.firstActivity!.name}
                         {:else}
-                            {response.registration.expand!.firstActivity!.name},
-                            {response.registration.expand!.secondActivity!.name} e
-                            {response.registration.expand!.thirdActivity!.name}
+                            {scanResponse.registration!.expand!.firstActivity!.name},
+                            {scanResponse.registration!.expand!.secondActivity!.name} e
+                            {scanResponse.registration!.expand!.thirdActivity!.name}
                         {/if}
                     </div>
 
-                    {#if response.ticket.authenticator}
+                    {#if scanResponse.ticket?.authenticator}
                         <div class="info">
                             <span class="name">Scannerizzato da:</span> <br>
-                            {response.ticket.expand!.authenticator!.name}
+                            {scanResponse.ticket.expand!.authenticator!.name}
                         </div>
                     {/if}
                 </div>
 
                 <div class=".popup-btn">
-                    {#if !response.ticket.authenticator}
+                    {#if !scanResponse.ticket?.authenticator}
                         <SimpleButton onclick={markPresence}>Segna presente</SimpleButton>
                     {/if}
                 </div>

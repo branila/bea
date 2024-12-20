@@ -3,7 +3,7 @@
   import { onMount } from 'svelte'
 
   let currentSlide = $state(-1)
-  const slidesNumber = 6
+  const slidesNumber = 8
 
   let interval: number
   const duration = 10000
