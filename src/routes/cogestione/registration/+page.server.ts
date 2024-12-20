@@ -148,7 +148,6 @@ export const actions = {
       }))
 
       if (!ticketCreationError) {
-        ticketCreationError = undefined
         break
       }
 

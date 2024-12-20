@@ -212,6 +212,14 @@
                             <span class="name">Scannerizzato da:</span> <br>
                             {scanResponse.ticket.expand!.authenticator!.surname} {scanResponse.ticket.expand!.authenticator!.name}
                         </div>
+
+                        <div class="info">
+                            <span class="name">Alle ore:</span> <br>
+                            {new Date(scanResponse.ticket!.scanned!).toLocaleTimeString('it-IT', {
+                                hour: '2-digit',
+                                minute: '2-digit'
+                            })}
+                        </div>
                     {/if}
                 </div>
 
