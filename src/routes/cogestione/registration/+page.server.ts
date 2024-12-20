@@ -154,7 +154,7 @@ export const actions = {
       attempts++
     }
 
-    if (ticketCreationError) {
+    if (!ticket && ticketCreationError) {
       await errorsHandler({
         error: ticketCreationError,
         event: {

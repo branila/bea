@@ -34,7 +34,7 @@
 
     async function handleScan(ticketId: string) {
         // Stops the scanner from scassare il cazzo
-        scanner.stop()
+        scanner.pause()
 
         ticketId = ticketId.toUpperCase()
 
@@ -61,27 +61,30 @@
             closePopup()
         }
 
-        if (scanResponse?.success) {
-            if (scanResponse?.ticket?.authenticator) {
-                popup.color = 'var(--blue)'
-                return
-            }
+        if (!scanResponse) {
+            alert(`Errore durante la ricerca del ticket. Se il problema persiste vai a cercare Branila.`)
 
-            popup.color = 'var(--green)'
-            return
-        }
-
-        if (scanResponse?.error) {
-            popup.color = 'var(--red)'
-            return
+            closePopup()
         }
 
         if (scanResponse?.ticket?.authenticator) {
             popup.color = 'var(--blue)'
+            popup.show = true
+
+            return
+        }
+
+        if (scanResponse?.success) {
+            popup.color = 'var(--green)'
+            popup.show = true
+
             return
         }
 
         popup.show = true
+        popup.color = 'var(--red)'
+
+        return
     }
 
     let presenceResponse: {
@@ -136,9 +139,29 @@
             style:background-color={popup.color}
         >
             {#if scanResponse == undefined}
-                <div>Caricamento...</div>
+                <div class="heading">
+                    <h1>Caricamento...</h1>
+
+                    <button class="close" onclick={closePopup}>
+                        <img src="/images/navbar/close.svg" alt="Close">
+                    </button>
+                </div>
+
             {:else if !scanResponse.success}
-                <div>{scanResponse.error}</div>
+                <div class="error">
+                    <div class="heading">
+                        <h1>Ops!</h1>
+
+                        <button class="close" onclick={closePopup}>
+                            <img src="/images/navbar/close.svg" alt="Close">
+                        </button>
+
+                    </div>
+
+                    <div class="error-message">
+                        {scanResponse.error}
+                    </div>
+                </div>
             {:else}
                 <div class="heading">
                     {#if scanResponse.ticket!.authenticator}
@@ -187,7 +210,7 @@
                     {#if scanResponse.ticket?.authenticator}
                         <div class="info">
                             <span class="name">Scannerizzato da:</span> <br>
-                            {scanResponse.ticket.expand!.authenticator!.email}
+                            {scanResponse.ticket.expand!.authenticator!.surname} {scanResponse.ticket.expand!.authenticator!.name}
                         </div>
                     {/if}
                 </div>
@@ -198,7 +221,6 @@
                     {/if}
                 </div>
             {/if}
-
         </div>
     {/if}
 
@@ -212,6 +234,12 @@
 </div>
 
 <style>
+    .error {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
     .container {
         height: calc(100svh - 200px);
         width: 100%;
