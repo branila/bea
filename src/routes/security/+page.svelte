@@ -47,8 +47,6 @@
             return
         }
 
-        popup.show = true
-
         try {
             const data = await fetch('/api/fetch-infos', {
                 method: 'POST',
@@ -82,6 +80,8 @@
             popup.color = 'var(--blue)'
             return
         }
+
+        popup.show = true
     }
 
     let presenceResponse: {
@@ -187,7 +187,7 @@
                     {#if scanResponse.ticket?.authenticator}
                         <div class="info">
                             <span class="name">Scannerizzato da:</span> <br>
-                            {scanResponse.ticket.expand!.authenticator!.name}
+                            {scanResponse.ticket.expand!.authenticator!.email}
                         </div>
                     {/if}
                 </div>
