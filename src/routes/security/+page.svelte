@@ -234,6 +234,12 @@
 </div>
 
 <style>
+    .error {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
     .container {
         height: calc(100svh - 200px);
         width: 100%;
