@@ -123,10 +123,6 @@
         )
 
         scanner.start()
-
-        return () => {
-            scanner.stop()
-        }
     })
 </script>
 
