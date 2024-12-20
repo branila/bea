@@ -148,20 +148,20 @@
                 </div>
 
             {:else if !scanResponse.success}
-                <div class="heading">
-                    <h1>Ops!</h1>
+                <div class="error">
+                    <div class="heading">
+                        <h1>Ops!</h1>
 
-                    <button class="close" onclick={closePopup}>
-                        <img src="/images/navbar/close.svg" alt="Close">
-                    </button>
-                </div>
+                        <button class="close" onclick={closePopup}>
+                            <img src="/images/navbar/close.svg" alt="Close">
+                        </button>
 
-                <div class="infos">
-                    <div class="infos">
-                    {scanResponse.error}
+                    </div>
+
+                    <div class="error-message">
+                        {scanResponse.error}
                     </div>
                 </div>
-
             {:else}
                 <div class="heading">
                     {#if scanResponse.ticket!.authenticator}
