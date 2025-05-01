@@ -13,8 +13,8 @@
     "test": "npm run test:unit -- --run",
     "coverage": "vitest --coverage",
     "db:push": "drizzle-kit push",
-		"db:migrate": "drizzle-kit migrate",
-		"db:studio": "drizzle-kit studio"
+    "db:migrate": "drizzle-kit migrate",
+    "db:studio": "drizzle-kit studio"
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "^3.0.0",
@@ -33,12 +33,13 @@
     "vitest": "^2.0.4"
   },
   "dependencies": {
+    "arctic": "^3.6.0",
     "dotenv": "^16.5.0",
     "drizzle-orm": "^0.43.1",
     "mailersend": "^2.3.0",
     "nodemailer": "^6.9.16",
-    "pg": "^8.15.6",
     "pocketbase": "^0.22.1",
+    "postgres": "^3.4.5",
     "qr-scanner": "^1.4.2",
     "qrcode": "^1.5.4",
     "telegraf": "^4.16.3"
