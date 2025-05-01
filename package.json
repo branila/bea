@@ -11,7 +11,10 @@
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "test:unit": "vitest",
     "test": "npm run test:unit -- --run",
-    "coverage": "vitest --coverage"
+    "coverage": "vitest --coverage",
+    "db:push": "drizzle-kit push",
+		"db:migrate": "drizzle-kit migrate",
+		"db:studio": "drizzle-kit studio"
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "^3.0.0",
@@ -19,16 +22,22 @@
     "@sveltejs/kit": "^2.0.0",
     "@sveltejs/vite-plugin-svelte": "^4.0.0",
     "@types/nodemailer": "^6.4.17",
+    "@types/pg": "^8.11.14",
     "@types/qrcode": "^1.5.5",
+    "drizzle-kit": "^0.31.0",
     "svelte": "^5.0.0",
     "svelte-check": "^4.0.0",
+    "tsx": "^4.19.3",
     "typescript": "^5.0.0",
     "vite": "^5.0.3",
     "vitest": "^2.0.4"
   },
   "dependencies": {
+    "dotenv": "^16.5.0",
+    "drizzle-orm": "^0.43.1",
     "mailersend": "^2.3.0",
     "nodemailer": "^6.9.16",
+    "pg": "^8.15.6",
     "pocketbase": "^0.22.1",
     "qr-scanner": "^1.4.2",
     "qrcode": "^1.5.4",
