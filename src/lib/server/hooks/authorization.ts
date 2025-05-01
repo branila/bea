@@ -12,7 +12,7 @@ const authorization: Handle = async ({event, resolve}) => {
     error(403, `You don't have access to the system :(`)
   }
 
-  const publicPaths = ['/', '/contacts', '/login', '/maintenance']
+  const publicPaths = ['/', '/contacts', '/login', '/maintenance', '/login/callback']
 
   // Allow access to public paths without authentication
   if (publicPaths.includes(path)) {

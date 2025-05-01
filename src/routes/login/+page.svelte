@@ -1,30 +1,5 @@
-<script lang="ts">
-  import PocketBase, {type RecordModel} from "pocketbase";
-
-  const {data} = $props();
-
-  let error = $state(false);
-
-  async function auth() {
-    const pb = new PocketBase(data.pbInstance);
-    try {
-      const authData = await pb.collection("users").authWithOAuth2({
-        provider: "google",
-      });
-
-      pb.authStore.save(authData!.token, authData!.record);
-
-      document.cookie = pb.authStore.exportToCookie({
-        httpOnly: false,
-        secure: true,
-        sameSite: "strict",
-      });
-
-      window.location.href = "/cogestione";
-    } catch {
-      error = true;
-    }
-  }
+<script>
+  import { enhance } from '$app/forms'
 </script>
 
 <div class="container">
@@ -32,23 +7,13 @@
     <div class="heading">
       <h1>Login</h1>
 
-      {#if error}
-        <h3 class="error">
-          Ops, pare che ci sia stato un errore. <br /> Se il problema persiste, contatta
-          l'assistenza.
-        </h3>
-      {:else}
-        <h3>Accedi con il tuo account istituzionale</h3>
-      {/if}
+      <h3>Accedi con il tuo account istituzionale</h3>
     </div>
 
-    {#if error}
-      <a href="/contacts">
-        <button> contatta l'assistenza </button>
-      </a>
-    {:else}
-      <button onclick={auth}>Accedi con google</button>
-    {/if}
+    <form method="POST" action="?/google" use:enhance>
+      <button type="submit">
+        Accedi con Google
+      </button>
   </div>
 </div>
 
@@ -91,9 +56,9 @@
     line-height: 1.2;
   }
 
-  .error {
-    color: var(--red);
-    filter: brightness(1.4);
+  form {
+    display: flex;
+    flex-direction: column;
   }
 
   button {
@@ -106,12 +71,6 @@
     border: 3px solid black;
     transition: 0.2s;
     border-radius: 15px;
-  }
-
-  a {
-    width: 100%;
-    display: flex;
-    justify-content: center;
   }
 
   button:hover {

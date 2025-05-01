@@ -1,5 +1,4 @@
 import { pgEnum, pgTable, text, boolean, timestamp, primaryKey, date, time, integer, smallint, varchar } from 'drizzle-orm/pg-core'
-import { relations } from 'drizzle-orm'
 
 const timestamps = {
   createdAt: timestamp('created_at').defaultNow().notNull(),
@@ -13,6 +12,14 @@ export const users = pgTable('users', {
   class: text('class'),
   verified: boolean('verified').default(false).notNull(),
   banned: boolean('banned').default(false).notNull(),
+  googleId: text('google_id'),
+  ...timestamps
+})
+
+export const sessions = pgTable('sessions', {
+  id: text('id').primaryKey().notNull(),
+  user: text('user').references(() => users.email).notNull(),
+  expiration: timestamp('expiration').notNull(),
   ...timestamps
 })
 

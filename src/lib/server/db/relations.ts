@@ -2,6 +2,7 @@ import { relations } from 'drizzle-orm'
 
 import {
   users,
+  sessions,
   roles,
   userRoles,
   permissions,
@@ -26,6 +27,13 @@ export const usersRelations = relations(users, ({ many, one }) => ({
     references: [tickets.user],
   }),
   authenticatedTickets: many(tickets),
+}))
+
+export const sessionsRelations = relations(sessions, ({ one }) => ({
+  user: one(users, {
+    fields: [sessions.user],
+    references: [users.email],
+  }),
 }))
 
 export const rolesRelations = relations(roles, ({ many }) => ({
