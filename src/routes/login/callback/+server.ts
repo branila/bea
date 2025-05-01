@@ -14,7 +14,12 @@ type UserData = {
   email: string
 }
 
-function validateOAuthParams(code: string | null, state: string | null, storedState: string | null, codeVerifier: string | null) {
+function validateOAuthParams(
+  code: string | null,
+  state: string | null,
+  storedState: string | null,
+  codeVerifier: string | null
+) {
   if (!code || !state || !storedState || !codeVerifier) {
     error(400, 'Parametri di autenticazione OAuth mancanti o invalidi')
   }

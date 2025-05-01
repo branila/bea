@@ -1,4 +1,4 @@
-import { fail, redirect } from '@sveltejs/kit'
+import { redirect } from '@sveltejs/kit'
 import type { Actions } from './$types'
 import { generateState, generateCodeVerifier } from 'arctic'
 import { google } from '$lib/server/auth'
@@ -30,6 +30,6 @@ export const actions: Actions = {
       sameSite: 'lax'
     })
 
-    throw redirect(302, url.toString())
+    redirect(302, url.toString())
   }
 }
