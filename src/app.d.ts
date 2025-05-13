@@ -1,5 +1,4 @@
-import type {BeaPocketBase, User} from '$types/db'
-import { AuthModel } from 'pocketbase'
+import type { User } from '$types'
 
 declare global {
   async function goCatch<T, E extends new (message?: string) => Error>(
@@ -14,7 +13,6 @@ declare global {
     // interface Platform {}
 
     interface Locals {
-      pb: BeaPocketBase;
       user: User | undefined
     }
   }
