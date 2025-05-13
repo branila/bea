@@ -1,5 +1,5 @@
 import { eq } from 'drizzle-orm'
-import { tickets } from '../../schema'
+import { tickets } from '$lib/schema'
 import { db } from './index'
 
 export async function generateUniqueTicketId() {
