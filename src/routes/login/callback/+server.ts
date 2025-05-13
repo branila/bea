@@ -4,63 +4,64 @@ import { google } from '$lib/server/auth'
 import { ENV } from '$env/static/private'
 import { randomBytes } from 'crypto'
 import { db } from '$lib/server/db'
-import { sessions, users } from '$db/schema'
+import { sessions, users } from '$lib/schema'
 import { eq } from 'drizzle-orm'
 
 type UserData = {
-  sub: string
-  given_name: string
-  family_name: string
+  googleId: string
+  name: string
+  surname: string
   email: string
 }
 
-function validateOAuthParams(
-  code: string | null,
-  state: string | null,
-  storedState: string | null,
-  codeVerifier: string | null
-) {
-  if (!code || !state || !storedState || !codeVerifier) {
-    error(400, 'Parametri di autenticazione OAuth mancanti o invalidi')
-  }
-
-  if (state !== storedState) {
-    error(400, 'Intercettato possibile attacco CSRF')
-  }
+type GoogleUserData = {
+  sub: string,
+  given_name: string,
+  family_name: string,
+  email: string
 }
 
-async function getOrCreateUser(userData: UserData) {
-  let user = ( await db.select()
+async function getOrCreateUser({ email, name, surname, googleId }: UserData) {
+  let [user] = await db.select()
     .from(users)
-    .where(eq(users.email, userData.email))
+    .where(eq(users.email, email))
     .limit(1)
-  )[0]
 
   if (!user) {
-    user = (await db.insert(users).values({
-      email: userData.email,
-      name: userData.given_name,
-      surname: userData.family_name,
-      googleId: userData.sub,
-      verified: true
-    }).returning())[0]
+    [user] = await db.insert(users)
+      .values({
+        email, name, surname, googleId,
+        roles: email.includes('studente') ? ['studente'] : ['docente']
+      })
+      .returning()
   }
 
   return user
 }
 
-async function createSession(userEmail: string, cookies: Cookies) {
-  const sessionId = randomBytes(64).toString('hex')
-  const expiration = new Date()
-  expiration.setDate(expiration.getDate() + 7) // 7 days expiration
+async function getOrCreateSession(user: string, cookies: Cookies) {
+  let [session] = await db.select()
+    .from(sessions)
+    .where(eq(sessions.user, user))
 
-  const session = (await db.insert(sessions).values({
-    id: sessionId,
-    user: userEmail,
-    expiration
-  }).returning())[0]
+  const sevenDays = 7 * 24 * 60 * 60 * 1000
+  const expiration = new Date(Date.now() + sevenDays)
 
-  cookies.set('session_id', sessionId, {
+  if (session) {
+    // Refresh session expiration
+    await db.update(sessions)
+      .set({ expiration })
+      .where(eq(sessions.id, session.id))
+  } else {
+    const id = randomBytes(64).toString('hex');
+
+    // Create new session for the user
+    [session] = await db.insert(sessions)
+      .values({ id, user, expiration })
+      .returning()
+  }
+
+  cookies.set('session_id', session.id, {
     path: '/',
     httpOnly: true,
     secure: ENV === 'production',
@@ -70,13 +71,18 @@ async function createSession(userEmail: string, cookies: Cookies) {
 }
 
 export async function GET({ cookies, url }: RequestEvent) {
-  // Validate OAuth parameters
   const code = url.searchParams.get('code')
   const state = url.searchParams.get('state')
   const storedState = cookies.get('google_oauth_state') ?? null
   const codeVerifier = cookies.get('google_code_verifier') ?? null
 
-  validateOAuthParams(code, state, storedState, codeVerifier)
+  if (!code || !state || !storedState || !codeVerifier) {
+    error(400, 'Parametri di autenticazione OAuth mancanti o invalidi')
+  }
+
+  if (state !== storedState) {
+    error(400, 'Intercettato possibile attacco CSRF')
+  }
 
   // Exchange authorization code for OAuth tokens
   const [invalidAuthCodeError, tokens] = await goCatch(
@@ -87,15 +93,56 @@ export async function GET({ cookies, url }: RequestEvent) {
     error(400, 'Impossibile validare il codice di autorizzazione google')
   }
 
-  const userData = decodeIdToken(tokens.idToken()) as UserData
+  const {
+    sub: googleId, given_name: name, family_name: surname, email
+  } = decodeIdToken(tokens.idToken()) as GoogleUserData
 
-  if (!userData.sub || !userData.given_name || !userData.family_name || !userData.email) {
+  if (!googleId || !name || !surname || !email) {
     error(400, 'Invalid or incomplete ID token claims')
   }
 
-  const user = await getOrCreateUser(userData)
+  let [user] = await db.select()
+    .from(users)
+    .where(eq(users.email, email))
+    .limit(1)
 
-  await createSession(user.email, cookies)
+  if (!user) {
+    [user] = await db.insert(users)
+      .values({
+        email, name, surname, googleId,
+        roles: email.includes('studente') ? ['studente'] : ['docente']
+      })
+      .returning()
+  }
+
+  let [session] = await db.select()
+    .from(sessions)
+    .where(eq(sessions.user, user.email))
+
+  const sevenDays = 7 * 24 * 60 * 60 * 1000
+  const expiration = new Date(Date.now() + sevenDays)
+
+  if (session) {
+    // Refresh session expiration
+    await db.update(sessions)
+      .set({ expiration })
+      .where(eq(sessions.id, session.id))
+  } else {
+    const id = randomBytes(64).toString('hex');
+
+    // Create new session for the user
+    [session] = await db.insert(sessions)
+      .values({ id, user: user.email, expiration })
+      .returning()
+  }
+
+  cookies.set('session_id', session.id, {
+    path: '/',
+    httpOnly: true,
+    secure: ENV === 'production',
+    sameSite: 'strict',
+    expires: session.expiration
+  })
 
   redirect(302, '/cogestione')
 }
