@@ -1,6 +1,6 @@
-import { pgTable, text, integer, timestamp, date, time, smallint, varchar, primaryKey } from 'drizzle-orm/pg-core'
+import { timestamps } from './timestamps'
+import { pgTable, text, timestamp, smallint, varchar, primaryKey } from 'drizzle-orm/pg-core'
 import { relations } from 'drizzle-orm'
-import { timestamps } from './time'
 import { users } from './users'
 import { turns } from './activities'
 
@@ -32,14 +32,14 @@ export const tickets = pgTable('tickets', {
 })
 
 export const ticketsRelations = relations(tickets, ({ one }) => ({
-  user: one(users, {
+  owner: one(users, {
     fields: [tickets.user],
     references: [users.email],
-    relationName: 'user',
+    relationName: 'ticketOwner',
   }),
   authenticator: one(users, {
     fields: [tickets.authenticator],
     references: [users.email],
-    relationName: 'authenticator',
+    relationName: 'ticketAuthenticator',
   }),
 }))

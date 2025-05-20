@@ -1,6 +1,6 @@
 import { pgTable, pgEnum, text, boolean, timestamp } from 'drizzle-orm/pg-core'
 import { relations } from 'drizzle-orm'
-import { timestamps } from './time'
+import { timestamps } from './timestamps'
 import { organizers } from './activities'
 import { registrations, tickets } from './registrations'
 
@@ -27,11 +27,14 @@ export const users = pgTable('users', {
 export const usersRelations = relations(users, ({ many, one }) => ({
   organizers: many(organizers),
   registrations: many(registrations),
-  ticket: one(tickets, {
+  ticketOwner: one(tickets, {
     fields: [users.email],
     references: [tickets.user],
+    relationName: 'ticketOwner'
   }),
-  authenticatedTickets: many(tickets),
+  ticketAuthenticator: many(tickets, {
+    relationName: 'ticketAuthenticator'
+  }),
 }))
 
 export const sessions = pgTable('sessions', {

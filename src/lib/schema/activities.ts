@@ -1,18 +1,18 @@
 import { pgTable, pgEnum, primaryKey, text, time, date, smallint, integer } from 'drizzle-orm/pg-core'
 import { relations } from 'drizzle-orm'
-import { timestamps } from './time'
+import { timestamps } from './timestamps'
 import { users } from './users'
 import { registrations } from './registrations'
 
 // Contains information on the dates of the event days
-export const days = pgTable('event_days', {
+export const eventDays = pgTable('event_days', {
   date: date('date').primaryKey().notNull(),
   start: time('start').notNull(),
   end: time('end').notNull(),
   ...timestamps
 })
 
-export const daysRelations = relations(days, ({ many }) => ({
+export const daysRelations = relations(eventDays, ({ many }) => ({
   turns: many(turns),
 }))
 
@@ -81,9 +81,9 @@ export const teamMembersRelations = relations(teamMembers, ({ one }) => ({
   }),
 }))
 
-export const turns = pgTable('activities_turns', {
+export const turns = pgTable('turns', {
   id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
-  day: date('day').references(() => days.date).notNull(),
+  day: date('day').references(() => eventDays.date).notNull(),
   activity: text('activity').references(() => activities.name).notNull(),
   start: time('start').notNull(),
   end: time('end').notNull(),
@@ -92,9 +92,9 @@ export const turns = pgTable('activities_turns', {
 })
 
 export const turnsRelations = relations(turns, ({ one, many }) => ({
-  day: one(days, {
+  day: one(eventDays, {
     fields: [turns.day],
-    references: [days.date],
+    references: [eventDays.date],
   }),
   activity: one(activities, {
     fields: [turns.activity],

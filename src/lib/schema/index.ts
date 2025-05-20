@@ -1,11 +1,13 @@
-export { users, roles, sessions } from './users'
+import { timestamp } from 'drizzle-orm/pg-core'
 
-export { registrations, tickets } from './registrations'
+export { users, roles, sessions, usersRelations, sessionsRelations } from './users'
 
-export { timespan, timestamps } from './time'
+export { registrations, tickets, registrationsRelations, ticketsRelations } from './registrations'
+
+export { registrationTimespan } from './timespan'
 
 export {
-  days,
+  eventDays,
   activities,
   tournaments,
   teams,
@@ -13,4 +15,11 @@ export {
   turns,
   organizers,
   activityType,
+  daysRelations,
+  activitiesRelations,
+  tournamentsRelations,
+  teamsRelations,
+  teamMembersRelations,
+  turnsRelations,
+  organizersRelations,
 } from './activities'
