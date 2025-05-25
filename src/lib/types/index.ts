@@ -12,7 +12,7 @@ import {
   organizers,
   registrations,
   tickets,
-  registrationTimespan,
+  opening,
   activityType,
 } from '$lib/schema'
 
@@ -27,7 +27,7 @@ export type Turn = InferSelectModel<typeof turns>
 export type Organizer = InferSelectModel<typeof organizers>
 export type Registration = InferSelectModel<typeof registrations>
 export type Ticket = InferSelectModel<typeof tickets>
-export type Timespan = InferSelectModel<typeof registrationTimespan>
+export type Opening = InferSelectModel<typeof opening>
 
 export type NewUser = InferInsertModel<typeof users>
 export type NewSession = InferInsertModel<typeof sessions>
