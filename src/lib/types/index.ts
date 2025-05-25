@@ -40,7 +40,7 @@ export type NewTurn = InferInsertModel<typeof turns>
 export type NewOrganizer = InferInsertModel<typeof organizers>
 export type NewRegistration = InferInsertModel<typeof registrations>
 export type NewTicket = InferInsertModel<typeof tickets>
-export type NewTimespan = InferInsertModel<typeof registrationTimespan>
+export type NewTimespan = InferInsertModel<typeof opening>
 
 export type Role = typeof roles.enumValues[number]
 export type ActivityType = typeof activityType.enumValues[number]
