@@ -13,6 +13,10 @@ const authorization: Handle = async ({ event, resolve }) => {
 
   const publicPaths = ['/', '/contacts', '/login', '/maintenance', '/login/callback']
 
+  if (user && path == '/login') {
+    redirect(302, '/cogestione')
+  }
+
   // Allow access to public paths without authentication
   if (publicPaths.includes(path)) {
     return await resolve(event)

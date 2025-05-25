@@ -4,7 +4,7 @@ export { users, roles, sessions, usersRelations, sessionsRelations } from './use
 
 export { registrations, tickets, registrationsRelations, ticketsRelations } from './registrations'
 
-export { registrationTimespan } from './timespan'
+export { opening } from './opening'
 
 export {
   eventDays,

@@ -14,6 +14,10 @@ export const actions: Actions = {
       ['openid', 'profile', 'email']
     )
 
+    cookies.delete('google_oauth_state', { path: '/' })
+    cookies.delete('google_code_verifier', { path: '/' })
+    cookies.delete('session_id', { path: '/' })
+
     cookies.set('google_oauth_state', state, {
       path: '/',
       httpOnly: true,
