@@ -2,6 +2,7 @@ import { redirect, type Handle } from '@sveltejs/kit'
 import { sessions, users } from '$lib/schema'
 import { db } from '$db'
 import { eq } from 'drizzle-orm'
+import type { Session, User } from '$types'
 
 // Authentication middleware for handling user sessions
 const authentication: Handle = async ({ event, resolve }) => {
@@ -13,14 +14,17 @@ const authentication: Handle = async ({ event, resolve }) => {
     return await resolve(event)
   }
 
-  const [{ user, session }] = await db.select({
-    user: users,
-    session: sessions,
-  })
-  .from(sessions)
-  .innerJoin(users, eq(sessions.user, users.email))
-  .where(eq(sessions.id, sessionId))
-  .limit(1)
+  const [userWithSession] =
+    await db.select({
+      user: users,
+      session: sessions,
+    })
+    .from(sessions)
+    .innerJoin(users, eq(sessions.user, users.email))
+    .where(eq(sessions.id, sessionId))
+    .limit(1) as [{ user: User, session: Session }]
+
+  const { user, session } = userWithSession || {}
 
   // If the session is invalid or expired
   if (!user || !session || session.expiration < new Date()) {
