@@ -68,7 +68,7 @@
     {
       name: 'Classi',
       href: '/cogestione/classes',
-      icon: '/staff.svg',
+      icon: '/classes.svg',
       allowed: hasRoles(user, 'amministratore', 'docente'),
     },
   ]
