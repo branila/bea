@@ -2,6 +2,11 @@
   import { enhance } from '$app/forms'
 </script>
 
+<svelte:head>
+    <meta name="description" content="Better Esperia Access login page"/>
+    <title>Bea - Login 🔑</title>
+</svelte:head>
+
 <div class="container">
   <div class="inner-container">
     <div class="heading">

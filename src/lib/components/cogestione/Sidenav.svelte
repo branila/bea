@@ -80,7 +80,7 @@
     })
 
     if (response.ok) {
-      window.location.href = '/cogestione/login'
+      window.location.href = '/login'
     }
   }
 </script>
