@@ -1,15 +1,12 @@
 <script lang="ts">
   import Card from '$components/cogestione/home/Card.svelte'
-  import { type Registration } from '$types/db'
 
-  const { registration }: {
-    registration: Registration | undefined
-  } = $props()
+  const { isRegistered }: { isRegistered: boolean } = $props()
 </script>
 
 <div class="cards">
 
-    {#if registration}
+    {#if isRegistered}
         <Card
             title="Iscrizione"
             description="Visualizza le attività a cui ti sei iscritto alla cogestione"
@@ -19,7 +16,7 @@
     {:else}
         <Card
             title="Iscriviti"
-            description="Iscriviti alle attività della cogestione. È gratis, lo giuriamo"
+            description="A nessuno piace dover rimanere in classe durante la cogestione. Iscriviti dai."
             href="/cogestione/registration"
             buttonText="Iscriviti"
         />

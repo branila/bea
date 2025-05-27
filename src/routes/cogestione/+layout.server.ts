@@ -7,7 +7,14 @@ import type { Activity } from '$types'
 export const load: LayoutServerLoad = async ({ locals }) => {
   const user = locals.user!
 
+  // Activity organized by the user (if they are an organizer)
   let organizerActivity: Activity | undefined
+
+  const isRegistered = await db
+    .select()
+    .from(registrations)
+    .where(eq(registrations.user, user.email))
+    .then(rows => rows.length > 0)
 
   if (user.roles.includes('organizzatore')) {
     organizerActivity = await db
@@ -20,6 +27,7 @@ export const load: LayoutServerLoad = async ({ locals }) => {
 
   return {
     user,
-    organizerActivity
+    organizerActivity,
+    isRegistered
   }
 }

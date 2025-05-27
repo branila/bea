@@ -1,11 +1,11 @@
 <script lang="ts">
-   const { user } = $props()
+   const { name } = $props()
 </script>
 
 <header>
-    <h2>Ciao {user.name},</h2>
+    <h2>Ciao {name},</h2>
 
-    <h1>Ti stavamo aspettando</h1>
+    <h1>Ci sei proprio mancato un sacco</h1>
 </header>
 
 <style>

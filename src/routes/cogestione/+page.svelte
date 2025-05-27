@@ -1,5 +1,11 @@
-<script lang="ts">
 
+<script lang="ts">
+  import Greeting from '$components/cogestione/home/Greeting.svelte'
+  import Cards from '$components/cogestione/home/Cards.svelte'
+
+  const { data } = $props()
+  const { user, isRegistered } = data
+  const { name } = user
 </script>
 
 <svelte:head>
@@ -7,7 +13,9 @@
 </svelte:head>
 
 <div class="container">
-    Anche sta parte da reimplementare, un casino guarda
+    <Greeting {name}/>
+
+    <Cards {isRegistered}/>
 </div>
 
 <style>
