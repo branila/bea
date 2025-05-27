@@ -66,10 +66,10 @@
       allowed: hasRoles(user, 'sicurezza', 'amministratore'),
     },
     {
-      name: 'Staff',
-      href: '/cogestione/staff',
+      name: 'Classi',
+      href: '/cogestione/classes',
       icon: '/staff.svg',
-      allowed: hasRoles(user, 'amministratore'),
+      allowed: hasRoles(user, 'amministratore', 'docente'),
     },
   ]
 
