@@ -5,10 +5,6 @@ import authentication from '$lib/server/hooks/authentication'
 import authorization from '$lib/server/hooks/authorization'
 import errorsHandler from '$lib/server/hooks/errors'
 
-import goCatch from '$lib/utils/goCatch'
-
-globalThis.goCatch = goCatch
-
 export const handle: Handle = sequence(
   authentication, authorization
 )
