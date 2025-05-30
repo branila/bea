@@ -14,6 +14,8 @@ async function pingTest() {
   console.log(DATABASE_URL)
 }
 
+pingTest()
+
 export const handle: Handle = sequence(
   authentication, authorization
 )
