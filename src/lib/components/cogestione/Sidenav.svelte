@@ -87,7 +87,7 @@
 
 {#snippet route(name: string, href: string, icon: string)}
   <a {href} class="route" class:active={$page.url.pathname === href}>
-    <img src={`/images/cogestione/sidenav/${icon}`} alt="Route {name} icon" />
+    <img src={`/images/cogestione/sidenav${icon}`} alt="Route {name} icon" />
     <div class="name">{name}</div>
   </a>
 {/snippet}
