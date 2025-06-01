@@ -1,5 +1,3 @@
-import { timestamp } from 'drizzle-orm/pg-core'
-
 export { users, roles, sessions, usersRelations, sessionsRelations } from './users'
 
 export { registrations, tickets, registrationsRelations, ticketsRelations } from './registrations'

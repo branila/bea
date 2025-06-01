@@ -1,10 +1,9 @@
-import { pgTable, pgEnum, primaryKey, text, time, date, smallint, integer } from 'drizzle-orm/pg-core'
+import { pgTable, pgEnum, primaryKey, text, time, date, smallint, integer, uniqueIndex } from 'drizzle-orm/pg-core'
 import { relations } from 'drizzle-orm'
 import { timestamps } from './timestamps'
 import { users } from './users'
 import { registrations } from './registrations'
 
-// Contains information on the dates of the event days
 export const eventDays = pgTable('event_days', {
   date: date('date').primaryKey().notNull(),
   start: time('start').notNull(),
@@ -38,7 +37,6 @@ export const activitiesRelations = relations(activities, ({ many, one }) => ({
 
 export const tournaments = pgTable('tournaments', {
   activity: text('name').references(() => activities.name).primaryKey().notNull(),
-  maxTeams: smallint('max_teams').notNull(),
   minTeamMembers: smallint('min_team_members').notNull(),
   maxTeamMembers: smallint('max_team_members').notNull(),
   ...timestamps
