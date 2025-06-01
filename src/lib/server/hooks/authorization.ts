@@ -1,5 +1,4 @@
 import { type Handle, redirect } from '@sveltejs/kit'
-import hasRoles from '$lib/utils/hasRoles'
 import { error } from '@sveltejs/kit'
 
 // Authorization middleware for route access control
