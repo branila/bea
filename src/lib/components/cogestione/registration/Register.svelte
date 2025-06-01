@@ -666,10 +666,8 @@
             Attività {getVisibleSlotIndices(day).indexOf(slotIndex) + 1}
             <span class="unbold">
                 ({formatTime(timeSlot)}{#if selectedActivities[day][slotIndex]}
-                    - {formatTime(
-                        getSelectedTurn(selectedActivities[day][slotIndex])!
-                            .end,
-                    )}
+                  &nbsp;-
+                    {formatTime(getSelectedTurn(selectedActivities[day][slotIndex])!.end)}
                 {/if}):
             </span>
         </h3>
