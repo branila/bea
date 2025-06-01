@@ -233,7 +233,7 @@
 
         {#if isTeamActivity(selectedActivities[day][slotIndex])}
             <div class="tournament-registration">
-
+                Qua ci piazza il form dei tornei
             </div>
         {/if}
     </div>
