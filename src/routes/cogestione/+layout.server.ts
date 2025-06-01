@@ -1,20 +1,45 @@
 import type { LayoutServerLoad } from './$types'
 import { db } from '$db'
-import { activities, organizers, registrations, users } from '$schema'
-import { eq } from 'drizzle-orm'
+import { activities, eventDays, organizers, registrations, tournaments, turns, users } from '$schema'
+import { eq, gt } from 'drizzle-orm'
 import type { Activity } from '$types'
+import { isRegistered } from '$lib/utils/is-registered'
 
 export const load: LayoutServerLoad = async ({ locals }) => {
   const user = locals.user!
 
-  // Activity organized by the user (if they are an organizer)
-  let organizerActivity: Activity | undefined
+  const eventDaysList = await db
+    .select()
+    .from(eventDays)
 
-  const isRegistered = await db
+  // The turns of the activities that already registered users have signed up for
+  const userRegistrations = await db
     .select()
     .from(registrations)
     .where(eq(registrations.user, user.email))
-    .then(rows => rows.length > 0)
+
+  // Retrieves activity turns including the type of activity (individual or team)
+  // and, if it is a tournament, the minimum and maximum number of participants
+  const activitiesTurns = await db
+    .select({
+      id: turns.id,
+      day: turns.day,
+      activity: turns.activity,
+      start: turns.start,
+      end: turns.end,
+      capacity: turns.capacity,
+      type: activities.type,
+      minTeamMembers: tournaments.minTeamMembers,
+      maxTeamMembers: tournaments.maxTeamMembers,
+    })
+    .from(turns)
+    .innerJoin(activities, eq(turns.activity, activities.name))
+    .leftJoin(tournaments, eq(turns.activity, tournaments.activity))
+    .where(gt(turns.capacity, 0))
+    .orderBy(turns.start, turns.day)
+
+  // Activity organized by the user (if they are an organizer)
+  let organizerActivity: Activity | undefined
 
   if (user.roles.includes('organizzatore')) {
     organizerActivity = await db
@@ -28,6 +53,9 @@ export const load: LayoutServerLoad = async ({ locals }) => {
   return {
     user,
     organizerActivity,
-    isRegistered
+    userRegistrations,
+    activitiesTurns,
+    eventDays: eventDaysList,
+    isRegistered: isRegistered(userRegistrations, activitiesTurns, eventDaysList)
   }
 }
