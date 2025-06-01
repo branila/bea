@@ -18,7 +18,7 @@ import {
 
 export type User = InferSelectModel<typeof users>
 export type Session = InferSelectModel<typeof sessions>
-export type Day = InferSelectModel<typeof eventDays>
+export type EventDay = InferSelectModel<typeof eventDays>
 export type Activity = InferSelectModel<typeof activities>
 export type Tournament = InferSelectModel<typeof tournaments>
 export type Team = InferSelectModel<typeof teams>
@@ -31,7 +31,7 @@ export type Opening = InferSelectModel<typeof opening>
 
 export type NewUser = InferInsertModel<typeof users>
 export type NewSession = InferInsertModel<typeof sessions>
-export type NewDay = InferInsertModel<typeof eventDays>
+export type NewEventDay = InferInsertModel<typeof eventDays>
 export type NewActivity = InferInsertModel<typeof activities>
 export type NewTournament = InferInsertModel<typeof tournaments>
 export type NewTeam = InferInsertModel<typeof teams>
