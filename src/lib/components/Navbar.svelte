@@ -33,6 +33,7 @@
             <div class="links" class:show-links={showLinks} transition:slide={{ duration: 150 }}>
                 <a class:accent={$page.url.pathname == '/'} href="/">Home</a>
                 <a class:accent={$page.url.pathname == '/contacts'} href="/contacts">Contatti</a>
+                <a class:accent={$page.url.pathname == '/activities'} href="/activities">Attività</a>
                 <a class:accent={$page.url.pathname == '/cogestione'} href="/cogestione">Cogestione</a>
             </div>
         {/key}

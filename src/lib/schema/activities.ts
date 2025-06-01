@@ -23,6 +23,7 @@ export const activities = pgTable('activities', {
   name: text('name').primaryKey().notNull(),
   description: text('description').notNull(),
   type: activityType().notNull(),
+  image: text('image'),
   ...timestamps
 })
 
