@@ -1,4 +1,4 @@
-<script lang="ts">
+<!-- <script lang="ts">
     import type { Registration } from '$types/db'
     import SimpleButton from '$components/reusables/SimpleButton.svelte'
 
@@ -116,4 +116,4 @@
             gap: 20px;
         }
     }
-</style>
+</style> -->

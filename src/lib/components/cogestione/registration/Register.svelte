@@ -1,194 +1,284 @@
 <script lang="ts">
-  import { enhance } from '$app/forms'
-  import type { Activity, ActivityId } from '$types/db'
+  import type { PageData } from '../../../../routes/cogestione/registration/$types'
   import SimpleButton from '$components/reusables/SimpleButton.svelte'
-  import type { ActionData } from '../../../../routes/cogestione/registration/$types';
+  import { isRegistered } from '$lib/utils/is-registered'
 
-  let { activities, form }: {
-    activities: Activity[],
-    form: ActionData
+  const { activitiesTurns, eventDays, userRegistrations }: {
+    activitiesTurns: PageData['activitiesTurns']
+    eventDays: PageData['eventDays']
+    userRegistrations: PageData['userRegistrations']
   } = $props()
 
-  const activityTurns = ['firstActivity', 'secondActivity', 'thirdActivity']
+  // Turn start time type
+  type StartTime = typeof activitiesTurns[number]['start']
 
-  let registration: ActivityId[] = $state(['', '', ''])
+  // Group of turns by start time
+  type TurnsByStartTime = Record<StartTime, typeof activitiesTurns>
 
-  function handleChange(event: Event) {
-    const target = event.target as HTMLSelectElement
-    const turn = +target.dataset.turn!
-    const activity = target.value
+  // Event day date type
+  type EventDay = typeof eventDays[number]['date']
 
-    // If the user selects the default option, we don't need to do anything
-    if (!target.value) return
+  // Turns grouped by start time for each event day
+  type GroupedTurns = Record<EventDay, TurnsByStartTime>
 
-    if (getActivity(activity).turns == 1) {
-      // If the activity is a single-turn activity, we need to set the same activity for all turns
-      registration = registration.map((_, i) => activity)
-    } else {
-      registration[turn] = activity
+  // Groups turns by their start time for each event day
+  function getGroupedTurns(): GroupedTurns {
+    // Maps each date to its corresponding turns grouped by start time
+    const groupedTurns: GroupedTurns = {}
 
-      // If the activity is a multi-turn activity, we need to remove the single-turn activities from the other turns
-      registration = registration.map(activity => {
-        if (activity == '') return ''
-        return getActivity(activity).turns == 1 ? '' : activity
+    eventDays.forEach(eventDay => {
+      // Filters turns for the current event day
+      const turnsForDay = activitiesTurns.filter(turn => turn.day === eventDay.date)
+
+      // Groups turns by their start time
+      const turnsByStart: TurnsByStartTime = {}
+
+      turnsForDay.forEach(turn => {
+        // If the start time does not exist in the object
+        if (!turnsByStart[turn.start]) {
+          // Initializes an empty array for that start time
+          turnsByStart[turn.start] = []
+        }
+
+        turnsByStart[turn.start].push(turn)
       })
+
+      // Assigns the grouped turns to the corresponding date
+      groupedTurns[eventDay.date] = turnsByStart
+    })
+
+    return groupedTurns
+  }
+
+  function formatTime(time: string): string {
+    return time.slice(0, -3)
+  }
+
+  function formatDate(date: string): string {
+    return new Date(date).toLocaleDateString('it-IT', {
+      day: 'numeric',
+      month: 'long',
+    })
+  }
+
+  // Calculate activity duration in hours
+  function getActivityDuration(start: string, end: string): number {
+    const startTime = new Date(`1970-01-01T${start}`)
+    const endTime = new Date(`1970-01-01T${end}`)
+    return (endTime.getTime() - startTime.getTime()) / (1000 * 60 * 60)
+  }
+
+  // Get all available time slots for a day
+  function getTimeSlots(day: EventDay): string[] {
+    return Object.keys(groupedTurns[day])
+  }
+
+  // Get the list of visible slot indices for a day based on current selections
+  function getVisibleSlotIndices(day: EventDay): number[] {
+    const timeSlots = getTimeSlots(day)
+    const visibleSlots: number[] = []
+    let currentSlotIndex = 0
+
+    while (currentSlotIndex < timeSlots.length) {
+      visibleSlots.push(currentSlotIndex)
+
+      const selectedTurnId = selectedActivities[day][currentSlotIndex]
+      if (selectedTurnId === undefined) {
+        // If no activity is selected, we can't determine what comes next
+        break
+      }
+
+      // Find the selected turn to get its duration
+      const selectedTurn = activitiesTurns.find(turn => turn.id === selectedTurnId)
+      if (selectedTurn) {
+        const duration = getActivityDuration(selectedTurn.start, selectedTurn.end)
+        currentSlotIndex += duration
+      } else {
+        currentSlotIndex += 1
+      }
+    }
+
+    return visibleSlots
+  }
+
+  // Check if a time slot should be visible based on current selections
+  function shouldShowTimeSlot(day: EventDay, slotIndex: number): boolean {
+    const visibleSlots = getVisibleSlotIndices(day)
+    return visibleSlots.includes(slotIndex)
+  }
+
+  // Clear selections that are no longer valid due to duration changes
+  function clearInvalidSelections(day: EventDay, changedSlotIndex: number) {
+    const selectedTurnId = selectedActivities[day][changedSlotIndex]
+
+    if (selectedTurnId === undefined) {
+      // If deselecting, clear all subsequent selections
+      for (let i = changedSlotIndex + 1; i < selectedActivities[day].length; i++) {
+        selectedActivities[day][i] = undefined
+      }
+      return
+    }
+
+    // Clear all selections in slots that would be occupied by this activity
+    // and all subsequent selections
+    for (let i = changedSlotIndex + 1; i < selectedActivities[day].length; i++) {
+      selectedActivities[day][i] = undefined
     }
   }
 
-  function getActivity(id: string): Activity {
-    return activities.find(activity => activity.id === id)!
+  function isTeamActivity(turnId: typeof activitiesTurns[number]['id'] | undefined) {
+    if (!turnId) return false
+    return activitiesTurns.find(turn => turn.id === turnId)?.type === 'team'
   }
+
+  function handleSelectionChange(day: EventDay, slotIndex: number) {
+    clearInvalidSelections(day, slotIndex)
+  }
+
+  const groupedTurns = getGroupedTurns()
+
+  let canSubmit = $state(false)
+
+  let selectedActivities: Record<EventDay, (number | undefined)[]> = $state({})
+
+  eventDays.forEach(day => {
+    const timeSlots = getTimeSlots(day.date)
+    // Initialize with enough slots for all possible time slots
+    selectedActivities[day.date] = new Array(timeSlots.length).fill(undefined)
+  })
+
+  $effect(() => {
+    console.log('Selected activities: ' + JSON.stringify(selectedActivities))
+  })
 </script>
-
-{#snippet select(turn: number)}
-    <select
-        name={activityTurns[turn]}
-        id={activityTurns[turn]}
-        bind:value={registration[turn]}
-        data-turn={turn}
-        onchange={handleChange}
-        required
-    >
-        <option value="">Seleziona un'attività</option>
-
-        <!-- Renders the options sorted by the number of turns of the activity -->
-        {@render options(activities.sort((a, b) => b.turns - a.turns), turn)}
-    </select>
-{/snippet}
-
-{#snippet options(activities: Activity[], turn: number)}
-    {#each activities.filter(activity => activity.capacity[turn] !== 0) as activity}
-        <option value={activity.id}>
-            {#if activity.turns == 1}
-                    {activity.name} - ({activity.capacity[0]} posti)
-            {:else}
-                {activity.name} - ({activity.capacity[turn]} posti)
-            {/if}
-        </option>
-    {/each}
-{/snippet}
 
 <div class="container">
     <h1>Iscriviti alla cogestione</h1>
 
-    {#if form?.error}
-        <div class="error">
-            {form.error}
-        </div>
-    {/if}
+    <div class="registrations">
+        {#each eventDays as eventDay, i}
+            {console.log(activitiesTurns)}
 
-    <form method="post" use:enhance>
-        {#each Array(3) as _, turn}
-            <div class="turn">
-                <h2>
-                    Turno {turn + 1}
+            {#if !isRegistered(userRegistrations, activitiesTurns, [eventDays[i]])}
+                <div class="registration">
+                    {@render registrationTitle(eventDay)}
 
-                    <span class="hour"> - ({8 + turn}:30 - {8 + turn + 1}:30) </span>
-                </h2>
-
-                {@render select(turn)}
-            </div>
+                    {#each getTimeSlots(eventDay.date) as timeSlot, slotIndex}
+                        {#if shouldShowTimeSlot(eventDay.date, slotIndex)}
+                            {@render turnRegistration(
+                                groupedTurns[eventDay.date][timeSlot],
+                                slotIndex,
+                                eventDay.date,
+                                timeSlot
+                            )}
+                        {/if}
+                    {/each}
+                </div>
+            {/if}
         {/each}
+    </div>
 
-            <SimpleButton disabled={registration.includes('')} type="submit">
-                Iscriviti
-            </SimpleButton>
-    </form>
+    <div class="submission">
+        <SimpleButton
+            type="submit"
+            disabled={!canSubmit}
+            title={canSubmit ? '' : 'Compila tutti i campi per inviare la registrazione'}
+        >
+            Registrati
+        </SimpleButton>
+    </div>
 </div>
 
+{#snippet registrationTitle(eventDay: typeof eventDays[number])}
+    <h2>
+        {formatDate(eventDay.date)}
+
+        <span class="unbold">
+            ({formatTime(eventDay.start)} - {formatTime(eventDay.end)})
+        </span>
+    </h2>
+{/snippet}
+
+{#snippet turnRegistration(
+    possibleTurns: typeof activitiesTurns,
+    slotIndex: number,
+    day: EventDay,
+    timeSlot: string
+)}
+    <div class="turn-registration">
+        <h3>
+            Attività {getVisibleSlotIndices(day).indexOf(slotIndex) + 1}
+            <span class="unbold">
+                ({formatTime(timeSlot)}):
+            </span>
+        </h3>
+
+        <select
+            data-turn={slotIndex}
+            data-day={day}
+            bind:value={selectedActivities[day][slotIndex]}
+            onchange={() => handleSelectionChange(day, slotIndex)}
+        >
+            {#if selectedActivities[day][slotIndex] === undefined}
+                <option value={undefined}>Seleziona un'attività</option>
+            {/if}
+
+            {#each possibleTurns as turn}
+                <option value={turn.id}>
+                    {turn.activity}
+                    (durata: {getActivityDuration(turn.start, turn.end)}h)
+                </option>
+            {/each}
+        </select>
+
+        {#if isTeamActivity(selectedActivities[day][slotIndex])}
+            <div class="tournament-registration">
+
+            </div>
+        {/if}
+    </div>
+{/snippet}
+
 <style>
-    .container {
-        min-height: calc(100svh - 200px);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
+   .container {
+       min-height: calc(100svh - 200px);
+       display: flex;
+       flex-direction: column;
     }
 
     h1 {
-        font-size: max(30px, 12px + 2vw);
+        font-size: max(20px, 12px + 1.25vw);
+        height: 70px;
         color: var(--red);
-        filter: brightness(1.4);
-        margin-bottom: 40px;
-        width: min(600px, 100%);
+        filter: brightness(1.2);
     }
 
-    .error {
-        color: var(--red);
-        font-size: max(18px, 10px + 0.75vw);
-        filter: brightness(1.4);
-        width: min(600px, 100%);
-        margin-bottom: 40px;
-    }
-
-    form {
+    .submission {
+        height: 70px;
         display: flex;
-        flex-direction: column;
         align-items: end;
-        gap: 40px;
-        width: min(600px, 100%);
+        justify-content: flex-end;
     }
 
-    .turn {
+    .registrations {
+        display: flex;
+        gap: 40px;
+        width: 100%;
+        height: calc(100svh - 340px);
+    }
+
+    .registration {
+        height: 100%;
+        width: 100%;
+        padding: 40px;
         display: flex;
         flex-direction: column;
-        gap: 20px;
-        width: 100%;
+        background-color: var(--grey);
+        border-radius: 15px;
     }
 
-    h2 {
-        font-size: max(20px, 10px + 1vw);
-    }
-
-    .hour {
+    .unbold {
         font-weight: normal;
     }
 
-    select {
-        padding: max(15px, 5px + 1vw);
-        padding-right: 50px;
-        background-color: var(--white);
-        color: var(--black);
-        border-radius: 15px;
-        font-weight: bold;
-        width: min(600px, 100%);
-        border: 0;
-        cursor: pointer;
-        font-size: max(14px, 10px + 0.5vw);
-        transition: 0.2s;
-
-        /* Arrow */
-        appearance: none;
-        background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23131313%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
-        background-repeat: no-repeat;
-        background-position: right 20px top 50%;
-        background-size: 10px auto;
-    }
-
-    select:hover {
-        color: var(--red);
-        transition: 0.2s;
-    }
-
-    form :global(button) {
-        margin-top: 10px;
-    }
-
-    @media (max-width: 600px) {
-        .container {
-            justify-content: start
-        }
-
-        h1 {
-            margin-bottom: 20px;
-        }
-
-        form {
-            gap: 30px;
-        }
-
-        .turn {
-            gap: 20px;
-        }
-    }
 </style>
