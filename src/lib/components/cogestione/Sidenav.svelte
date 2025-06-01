@@ -1,6 +1,6 @@
 <script lang='ts'>
   import type {User, Activity} from '$types'
-  import hasRoles from '$lib/utils/hasRoles'
+  import hasRoles from '$lib/utils/has-roles'
   import {page} from '$app/stores'
 
   let {
@@ -16,10 +16,6 @@
     href: string
     icon: string
     allowed: boolean
-  }
-
-  function encodeActivityName(activity: Activity | undefined): string {
-    return activity ? encodeURIComponent(activity.name.toLowerCase()) : '';
   }
 
   const routes: Route[] = [
