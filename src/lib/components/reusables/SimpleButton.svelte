@@ -8,6 +8,7 @@
     onclick = () => {},
     type = 'button',
     disabled = false,
+    title = 'AAAAA',
     action,
   }: {
     href?: string
@@ -16,6 +17,7 @@
     children: Snippet<[]>
     type?: 'button' | 'submit' | 'reset'
     disabled?: boolean,
+    title?: string
     action?: string
   } = $props()
 
@@ -24,7 +26,7 @@
 
 <a {href}>
     <button
-        {type} {onclick}
+        {type} {onclick} {title}
         class:disabled
         onmouseenter={() => hovered = true}
         onmouseleave={() => hovered = false}
