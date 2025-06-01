@@ -2,7 +2,7 @@ import { pgTable, pgEnum, text, boolean, timestamp } from 'drizzle-orm/pg-core'
 import { relations } from 'drizzle-orm'
 import { timestamps } from './timestamps'
 import { organizers } from './activities'
-import { registrations, tickets } from './registrations'
+import { registrations, scans, tickets } from './registrations'
 
 export const roles = pgEnum('roles', [
   'studente', // Regular students can register to activities and view them
@@ -29,12 +29,9 @@ export const usersRelations = relations(users, ({ many, one }) => ({
   registrations: many(registrations),
   ticketOwner: one(tickets, {
     fields: [users.email],
-    references: [tickets.user],
-    relationName: 'ticketOwner'
+    references: [tickets.user]
   }),
-  ticketAuthenticator: many(tickets, {
-    relationName: 'ticketAuthenticator'
-  }),
+  ticketAuthenticator: many(scans),
 }))
 
 export const sessions = pgTable('sessions', {
