@@ -843,7 +843,7 @@
     }
 
     .registration h2 {
-        font-size: max(16px, 10px + 0.8vw);
+        font-size: max(20px, 10px + 1.2vw);
         color: var(--white);
         margin-bottom: 0;
     }
