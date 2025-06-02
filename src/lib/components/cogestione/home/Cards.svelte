@@ -23,6 +23,13 @@
     {/if}
 
     <Card
+        title="Attività"
+        description="Non hai la più pallida idea di che cosa fare? Scopri le attività di questa cogestione"
+        href="/activities"
+        buttonText="Scopri"
+    />
+
+    <Card
         title="Ticket"
         description="Visualizza il tuo ticket personale per l'ingresso alla cogestione"
         href="/cogestione/ticket"
@@ -30,16 +37,9 @@
     />
 
     <Card
-        title="Instagram"
-        description="Segui la nostra pagina su instagram per rimanere aggiornato sulla cogestione"
-        href="https://www.instagram.com/noidellesperia/"
-        buttonText="Seguici"
-    />
-
-    <Card
         title="Assistenza"
         description="Hai urgente bisogno di aiuto? Contattaci subito e ti salviamo noi"
-        href="mailto:bea@branila.it"
+        href="/contacts"
         buttonText="Contattaci"
     />
 </div>
