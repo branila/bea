@@ -1,8 +1,21 @@
 <script lang="ts">
+    import type { Activity } from '$types'
+    import Card from '$components/activities/activity/Card.svelte'
+    const { data } = $props()
 
+    const { activity }: { activity: Activity } = data
 </script>
 
 <div class="container">
+    {#if !activity}
+        <p>Attività non trovata</p>
+    {:else}
+    <Card
+        name={activity.name}
+        description={activity.description}
+        image={`/images/activities/${activity.image}`}
+    />
+    {/if}
 
 </div>
 
@@ -18,4 +31,6 @@
         }
         
     }
+
+
 </style>
