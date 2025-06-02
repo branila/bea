@@ -1,24 +1,21 @@
 <script lang="ts">
   import SimpleButton from '$components/reusables/SimpleButton.svelte'
 
-  const { name, description, href, image }: {
+  const { name, description, image }: {
         name: string,
         description: string,
-        href: string,
         image?: string | null
     } = $props()
 </script>
 
 <div class="card">
-    <a {href} class="image">
-        <img src={image} alt={name} />
-    </a>
+    <img src={image} alt={name} />
     <div class="content">
         <h1>{name}</h1>
         <p>{description}</p>
     </div>
     <div class="button-container">
-      <SimpleButton {href} accent="var(--red)">Visualizza</SimpleButton>
+      <SimpleButton accent="var(--red)" href={"/cogestione/registration"}>Iscriviti</SimpleButton>
     </div>
     
 </div>
@@ -29,9 +26,9 @@
         border-radius: 15px;
         display: flex;
         gap: 20px;
-        flex-direction: column;
+        flex-direction: row;
         justify-content: space-between;
-        width: calc(100% / 4 - 15px);
+        width: 100%;
         background-color: var(--grey);
     }
 
@@ -49,8 +46,20 @@
         margin-bottom: auto;
     }
 
+    img {
+        width: 35%;
+        height: auto;
+        border-radius: 10px;
+        object-fit: cover;
+        object-position: center center;
+    }
+
     @media (max-width: 900px) {
         .card {
+            flex-direction: column;
+        }
+
+        img {
             width: 100%;
         }
     }
@@ -59,11 +68,5 @@
         margin-left: auto;
     }
 
-    img {
-        width: 100%;
-        height: auto;
-        border-radius: 10px;
-        object-fit: cover;
-        object-position: center center;
-    }
+    
 </style>

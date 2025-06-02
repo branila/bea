@@ -9,6 +9,11 @@
   
 </script>
 
+<svelte:head>
+    <meta name="description" content="Better Esperia Access activity page"/>
+    <title>Bea - Attività 📑</title>
+</svelte:head>
+
 <div class="container">
     <Header />
 
