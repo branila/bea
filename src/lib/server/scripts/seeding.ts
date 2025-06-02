@@ -13,7 +13,8 @@ import {
   tournaments,
   turns,
   organizers,
-  opening
+  opening,
+  registrations
 } from '../../schema'
 
 dotenv.config()
@@ -36,7 +37,7 @@ const tables = [
   activities,
   tournaments,
   turns,
-  organizers
+  organizers,
 ]
 
 seedDatabase()
@@ -152,6 +153,49 @@ async function assignRoles() {
     // Extracts emails from the 'organizers.json' file
     if (file == 'organizers.json') {
       emails = emails.map((email: Organizer) => email.user)
+
+      console.log("Setting up organizers' registrations...")
+      // Set organizer as registered for the activity they are organizing
+      for (const email of emails) {
+        // Find all turns for the activity the organizer is associated with
+        const activityTurns = await db
+          .select({id: turns.id})
+          .from(turns)
+          .innerJoin(activities, eq(turns.activity, activities.name))
+          .innerJoin(organizers, eq(turns.activity, organizers.activity))
+          .where(eq(organizers.user, email))
+
+        // Insert registrations for each turn
+        for (const turn of activityTurns) {
+          await db
+          .insert(registrations)
+          .values({
+            user: email,
+            turn: turn.id
+          })
+        }
+      }
+    } else if (file == 'security.json') {
+      // For security, we need to ensure they are registered for all turns
+      console.log("Setting up security's registrations...")
+      
+      const securityTurns = await db
+        .select({id: turns.id})
+        .from(turns)
+        .innerJoin(activities, eq(turns.activity, activities.name))
+        .where(eq(activities.name, 'Security'))
+
+        for (const email of emails) {
+          // Insert registrations for each turn
+          for (const turn of securityTurns) {
+            await db
+              .insert(registrations)
+              .values({
+                user: email,
+                turn: turn.id
+              })
+          }
+        }
     }
 
     for (const email of emails) {

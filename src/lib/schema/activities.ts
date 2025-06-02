@@ -22,6 +22,7 @@ export const activityType = pgEnum('activity_type', [
 export const activities = pgTable('activities', {
   name: text('name').primaryKey().notNull(),
   description: text('description').notNull(),
+  details: text('details').notNull(),
   type: activityType().notNull(),
   image: text('image'),
   ...timestamps
