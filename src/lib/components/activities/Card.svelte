@@ -63,5 +63,7 @@
         width: 100%;
         height: auto;
         border-radius: 10px;
+        object-fit: cover;
+        object-position: center center;
     }
 </style>
