@@ -1,7 +1,8 @@
 <script lang="ts">
-    import type { PageData } from "../../../../routes/cogestione/registration/$types"
-    import SimpleButton from "$components/reusables/SimpleButton.svelte"
-    import { isRegistered } from "$lib/utils/is-registered"
+    import type { PageData } from '../../../../routes/cogestione/registration/$types'
+    import SimpleButton from '$components/reusables/SimpleButton.svelte'
+    import { isRegistered } from '$lib/utils/is-registered'
+    import { fade, fly, slide, crossfade } from 'svelte/transition'
 
     const {
         activitiesTurns,
@@ -9,22 +10,22 @@
         userRegistrations,
         user,
     }: {
-        activitiesTurns: PageData["activitiesTurns"]
-        eventDays: PageData["eventDays"]
-        userRegistrations: PageData["userRegistrations"]
-        user: PageData["user"]
+        activitiesTurns: PageData['activitiesTurns']
+        eventDays: PageData['eventDays']
+        userRegistrations: PageData['userRegistrations']
+        user: PageData['user']
     } = $props()
 
-    console.log(activitiesTurns.find(turn => turn.activity == "Assente" ))
+    console.log(activitiesTurns.find(turn => turn.activity == 'Assente' ))
 
     // Turn start time type
-    type StartTime = (typeof activitiesTurns)[number]["start"]
+    type StartTime = (typeof activitiesTurns)[number]['start']
 
     // Group of turns by start time
     type TurnsByStartTime = Record<StartTime, typeof activitiesTurns>
 
     // Event day date type
-    type EventDay = (typeof eventDays)[number]["date"]
+    type EventDay = (typeof eventDays)[number]['date']
 
     // Turns grouped by start time for each event day
     type GroupedTurns = Record<EventDay, TurnsByStartTime>
@@ -79,9 +80,9 @@
     }
 
     function formatDate(date: string): string {
-        return new Date(date).toLocaleDateString("it-IT", {
-            day: "numeric",
-            month: "long",
+        return new Date(date).toLocaleDateString('it-IT', {
+            day: 'numeric',
+            month: 'long',
         })
     }
 
@@ -116,11 +117,13 @@
             const selectedTurn = activitiesTurns.find(
                 (turn) => turn.id === selectedTurnId,
             )
+
             if (selectedTurn) {
                 const duration = getActivityDuration(
                     selectedTurn.start,
                     selectedTurn.end,
                 )
+
                 currentSlotIndex += duration
             } else {
                 currentSlotIndex += 1
@@ -155,122 +158,118 @@
         }
     }
 
-    function isTeamActivity(
-        turnId: (typeof activitiesTurns)[number]["id"] | undefined,
-    ) {
+    function isTeamActivity(turnId: (typeof activitiesTurns)[number]['id'] | undefined) {
         if (!turnId) return false
-        return (
-            activitiesTurns.find((turn) => turn.id === turnId)?.type === "team"
-        )
+        return activitiesTurns.find((turn) => turn.id === turnId)?.type === 'team'
     }
 
-    function getSelectedTurn(
-        turnId: (typeof activitiesTurns)[number]["id"] | undefined,
-    ) {
+    function getSelectedTurn(turnId: (typeof activitiesTurns)[number]['id'] | undefined) {
         if (!turnId) return null
         return activitiesTurns.find((turn) => turn.id === turnId) || null
     }
 
     // Email validation function
     function isValidEmail(email: string): boolean {
-        const emailRegex =
-            /^[a-zA-Z]+\.[a-zA-Z]+\.studente[0-9]*@itispaleocapa\.it$/
+        const emailRegex = /^[a-zA-Z]+\.[a-zA-Z]+\.studente[0-9]*@itispaleocapa\.it$/
         return emailRegex.test(email)
     }
 
     // Initialize team registration for a specific day and slot
     function initializeTeamRegistration(
         day: EventDay,
-        slotIndex: number,
-        minMembers: number,
+        minMembers: number
     ): TeamRegistration {
         const members: TeamMember[] = []
         // Create slots for additional members (minMembers - 1 because current user is already included)
-        const additionalMembersNeeded = Math.max(0, minMembers - 1);
+        const additionalMembersNeeded = Math.max(0, minMembers - 1)
 
         for (let i = 0; i < additionalMembersNeeded; i++) {
             members.push({
-                email: "",
+                email: '',
                 isValid: false,
-                error: null,
-            });
+                error: null
+            })
         }
 
         return {
-            name: "",
+            name: '',
             members,
-            nameError: null,
-        };
+            nameError: null
+        }
     }
 
     // Check if user exists and is not already registered
     async function checkUserAvailability(
         email: string,
-        day: EventDay,
+        day: EventDay
     ): Promise<{ exists: boolean; available: boolean; message?: string }> {
         try {
-            const response = await fetch("/api/check-user", {
-                method: "POST",
+            const response = await fetch('/api/check-user', {
+                method: 'POST',
                 headers: {
-                    "Content-Type": "application/json",
+                    'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ email, day }),
-            });
+                body: JSON.stringify({ email, day })
+            })
 
             if (!response.ok) {
-                throw new Error("Network response was not ok");
+                throw new Error('Network response was not ok')
             }
 
-            return await response.json();
+            return await response.json()
         } catch (error) {
-            console.error("Error checking user:", error);
+            console.error('Error checking user:', error)
             return {
                 exists: false,
                 available: false,
-                message: "Errore nel controllo utente",
-            };
+                message: 'Errore nel controllo utente'
+            }
         }
     }
 
     // Check if team name is available
     async function checkTeamNameAvailability(
         teamName: string,
-        day: EventDay,
+        day: EventDay
     ): Promise<{ available: boolean; message?: string }> {
         try {
-            const response = await fetch("/api/check-team", {
-                method: "POST",
+            const response = await fetch('/api/check-team', {
+                method: 'POST',
                 headers: {
-                    "Content-Type": "application/json",
+                    'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ teamName, day }),
-            });
+                body: JSON.stringify({ teamName, day })
+            })
 
             if (!response.ok) {
-                throw new Error("Network response was not ok");
+                throw new Error('Network response was not ok')
             }
 
-            return await response.json();
+            return await response.json()
         } catch (error) {
-            console.error("Error checking team name:", error);
+            console.error('Error checking team name:', error)
+
             return {
                 available: false,
-                message: "Errore nel controllo nome squadra",
-            };
+                message: 'Errore nel controllo nome squadra'
+            }
         }
     }
 
     // Debounce function
     function debounce(func: Function, wait: number) {
-        let timeout: ReturnType<typeof setTimeout>;
+        let timeout: ReturnType<typeof setTimeout>
+
         return function executedFunction(...args: any[]) {
             const later = () => {
-                clearTimeout(timeout);
-                func(...args);
-            };
+                clearTimeout(timeout)
+                func(...args)
+            }
+
             clearTimeout(timeout);
-            timeout = setTimeout(later, wait);
-        };
+
+            timeout = setTimeout(later, wait)
+        }
     }
 
     // Check if email is already used in the current team
@@ -278,17 +277,17 @@
         day: EventDay,
         slotIndex: number,
         memberIndex: number,
-        email: string,
+        email: string
     ): boolean {
-        const teamReg = teamRegistrations[day][slotIndex];
-        if (!teamReg) return false;
+        const teamReg = teamRegistrations[day][slotIndex]
+        if (!teamReg) return false
 
         // Check against other members (excluding the current one being edited)
         return teamReg.members.some(
             (member, index) =>
                 index !== memberIndex &&
                 member.email.toLowerCase() === email.toLowerCase(),
-        );
+        )
     }
 
     // Handle member email change with debounced validation
@@ -297,147 +296,132 @@
             day: EventDay,
             slotIndex: number,
             memberIndex: number,
-            email: string,
+            email: string
         ) => {
             if (!email.trim()) {
-                teamRegistrations[day][slotIndex].members[memberIndex].error =
-                    null;
-                teamRegistrations[day][slotIndex].members[memberIndex].isValid =
-                    false;
-                return;
+                teamRegistrations[day][slotIndex].members[memberIndex].error = null
+                teamRegistrations[day][slotIndex].members[memberIndex].isValid = false
+                return
             }
 
             // Check if it's the user's own email
             if (email.toLowerCase() === user.email.toLowerCase()) {
-                teamRegistrations[day][slotIndex].members[memberIndex].error =
-                    "Inserisci soltanto le email degli altri membri!";
-                teamRegistrations[day][slotIndex].members[memberIndex].isValid =
-                    false;
-                return;
+                teamRegistrations[day][slotIndex].members[memberIndex].error = 'Inserisci soltanto le email degli altri membri!'
+                teamRegistrations[day][slotIndex].members[memberIndex].isValid = false
+                return
             }
 
             // Check if email is already used in this team
             if (isEmailDuplicateInTeam(day, slotIndex, memberIndex, email)) {
-                teamRegistrations[day][slotIndex].members[memberIndex].error =
-                    "Ma ce la fai? Questo utente è già nella squadra...";
-                teamRegistrations[day][slotIndex].members[memberIndex].isValid =
-                    false;
-                return;
+                teamRegistrations[day][slotIndex].members[memberIndex].error = 'Ma ce la fai? Questo utente è già nella squadra...'
+                teamRegistrations[day][slotIndex].members[memberIndex].isValid = false
+                return
             }
 
             // Check if email is valid
             if (!isValidEmail(email.toLowerCase())) {
-                teamRegistrations[day][slotIndex].members[memberIndex].error =
-                    "Email non valida";
-                teamRegistrations[day][slotIndex].members[memberIndex].isValid =
-                    false;
-                return;
+                teamRegistrations[day][slotIndex].members[memberIndex].error = 'Email non valida'
+                teamRegistrations[day][slotIndex].members[memberIndex].isValid = false
+                return
             }
 
             // Check if user exists and is available
-            const result = await checkUserAvailability(email, day);
+            const result = await checkUserAvailability(email, day)
 
             if (!result.exists) {
-                teamRegistrations[day][slotIndex].members[memberIndex].error =
-                    "Utente non trovato";
-                teamRegistrations[day][slotIndex].members[memberIndex].isValid =
-                    false;
+                teamRegistrations[day][slotIndex].members[memberIndex].error = 'Utente non trovato'
+                teamRegistrations[day][slotIndex].members[memberIndex].isValid = false
             } else if (!result.available) {
-                teamRegistrations[day][slotIndex].members[memberIndex].error =
-                    result.message || "Ops, questo utente è già registrato";
-                teamRegistrations[day][slotIndex].members[memberIndex].isValid =
-                    false;
+                teamRegistrations[day][slotIndex].members[memberIndex].error = result.message || 'Ops, questo utente è già registrato'
+                teamRegistrations[day][slotIndex].members[memberIndex].isValid = false
             } else {
-                teamRegistrations[day][slotIndex].members[memberIndex].error =
-                    null;
-                teamRegistrations[day][slotIndex].members[memberIndex].isValid =
-                    true;
+                teamRegistrations[day][slotIndex].members[memberIndex].error = null
+                teamRegistrations[day][slotIndex].members[memberIndex].isValid = true
             }
         },
-        1000,
-    );
+        1000
+    )
 
     // Handle team name change with debounced validation
     const debouncedTeamNameCheck = debounce(
         async (day: EventDay, slotIndex: number, teamName: string) => {
             if (!teamName.trim()) {
-                teamRegistrations[day][slotIndex].nameError = null;
-                return;
+                teamRegistrations[day][slotIndex].nameError = null
+                return
             }
 
-            const result = await checkTeamNameAvailability(teamName, day);
+            const result = await checkTeamNameAvailability(teamName, day)
 
             if (!result.available) {
                 teamRegistrations[day][slotIndex].nameError =
-                    result.message || "Nome squadra già esistente";
+                    result.message || 'Nome squadra già esistente'
             } else {
-                teamRegistrations[day][slotIndex].nameError = null;
+                teamRegistrations[day][slotIndex].nameError = null
             }
         },
-        1000,
-    );
+        1000
+    )
 
     // Handle member email input
     function handleMemberEmailChange(
         day: EventDay,
         slotIndex: number,
         memberIndex: number,
-        email: string,
+        email: string
     ) {
-        teamRegistrations[day][slotIndex].members[memberIndex].email = email;
-        debouncedEmailCheck(day, slotIndex, memberIndex, email);
+        teamRegistrations[day][slotIndex].members[memberIndex].email = email
+        debouncedEmailCheck(day, slotIndex, memberIndex, email)
     }
 
     // Handle team name input
     function handleTeamNameChange(
         day: EventDay,
         slotIndex: number,
-        teamName: string,
+        teamName: string
     ) {
-        teamRegistrations[day][slotIndex].name = teamName;
-        debouncedTeamNameCheck(day, slotIndex, teamName);
+        teamRegistrations[day][slotIndex].name = teamName
+        debouncedTeamNameCheck(day, slotIndex, teamName)
     }
 
     // Add a new member to the team
     function addTeamMember(day: EventDay, slotIndex: number) {
         teamRegistrations[day][slotIndex].members.push({
-            email: "",
+            email: '',
             isValid: false,
-            error: null,
-        });
+            error: null
+        })
     }
 
     // Remove a member from the team
     function removeTeamMember(
         day: EventDay,
         slotIndex: number,
-        memberIndex: number,
+        memberIndex: number
     ) {
-        teamRegistrations[day][slotIndex].members.splice(memberIndex, 1);
+        teamRegistrations[day][slotIndex].members.splice(memberIndex, 1)
     }
 
     function handleSelectionChange(day: EventDay, slotIndex: number) {
-        clearInvalidSelections(day, slotIndex);
+        clearInvalidSelections(day, slotIndex)
 
-        const selectedTurnId = selectedActivities[day][slotIndex];
-        const selectedTurn = getSelectedTurn(selectedTurnId);
+        const selectedTurnId = selectedActivities[day][slotIndex]
+        const selectedTurn = getSelectedTurn(selectedTurnId)
 
         // Initialize team registration if it's a team activity
         if (
             selectedTurn &&
-            selectedTurn.type === "team" &&
+            selectedTurn.type === 'team' &&
             selectedTurn.minTeamMembers
         ) {
             if (!teamRegistrations[day]) {
-                teamRegistrations[day] = {};
+                teamRegistrations[day] = {}
             }
             // Always reinitialize team registration when selection changes
             // This resets the form to the base state with minimum required members
             teamRegistrations[day][slotIndex] = initializeTeamRegistration(
                 day,
-                slotIndex,
-                selectedTurn.minTeamMembers,
-            );
+                selectedTurn.minTeamMembers
+            )
         } else {
             // Clean up team registration if switching away from team activity
             if (teamRegistrations[day] && teamRegistrations[day][slotIndex]) {
@@ -448,111 +432,107 @@
 
     // Check if selected activities cover the entire event day period
     function checkEventDayCoverage(day: EventDay): boolean {
-        const eventDayData = eventDays.find((ed) => ed.date === day);
-        if (!eventDayData) return false;
+        const eventDayData = eventDays.find((ed) => ed.date === day)
+        if (!eventDayData) return false
 
         const daySelections = selectedActivities[day];
         const selectedTurns = daySelections
-            .map((turnId) =>
+            .map(turnId =>
                 turnId !== undefined
                     ? activitiesTurns.find((turn) => turn.id === turnId)
-                    : null,
+                    : null
             )
-            .filter((turn) => turn !== null);
+            .filter(turn => turn !== null)
 
-        if (selectedTurns.length === 0) return false;
+        if (selectedTurns.length === 0) return false
 
         // Sort selected turns by start time
-        selectedTurns.sort((a, b) => a!.start.localeCompare(b!.start));
+        selectedTurns.sort((a, b) => a!.start.localeCompare(b!.start))
 
         // Check if first turn starts at eventDay.start
-        const firstTurn = selectedTurns[0]!;
+        const firstTurn = selectedTurns[0]!
         if (firstTurn.start !== eventDayData.start) {
-            return false;
+            return false
         }
 
         // Check if last turn ends at eventDay.end
-        const lastTurn = selectedTurns[selectedTurns.length - 1]!;
+        const lastTurn = selectedTurns[selectedTurns.length - 1]!
         if (lastTurn.end !== eventDayData.end) {
-            return false;
+            return false
         }
 
         // Check if there are no gaps between consecutive turns
         for (let i = 0; i < selectedTurns.length - 1; i++) {
-            const currentTurn = selectedTurns[i]!;
-            const nextTurn = selectedTurns[i + 1]!;
+            const currentTurn = selectedTurns[i]!
+            const nextTurn = selectedTurns[i + 1]!
 
             if (currentTurn.end !== nextTurn.start) {
-                return false;
+                return false
             }
         }
 
-        return true;
+        return true
     }
 
     // Check if all required fields are filled and valid
     function checkCanSubmit(): boolean {
         // Check if at least one activity is selected for each day
-        let hasSelectionForEachDay = true;
+        let hasSelectionForEachDay = true
 
         for (const day of eventDays) {
             if (isRegistered(userRegistrations, activitiesTurns, [day])) {
-                continue; // Skip days where user is already registered
+                continue // Skip days where user is already registered
             }
 
             const daySelections = selectedActivities[day.date];
             const hasSelection = daySelections.some(
-                (selection) => selection !== undefined,
-            );
+              (selection) => selection !== undefined
+            )
 
             if (!hasSelection) {
-                hasSelectionForEachDay = false;
-                break;
+                hasSelectionForEachDay = false
+                break
             }
 
             // Check if selected activities cover the entire event day period
             if (!checkEventDayCoverage(day.date)) {
-                return false;
+                return false
             }
         }
 
         if (!hasSelectionForEachDay) {
-            return false;
+            return false
         }
 
         // Check team registrations validity
         for (const day of eventDays) {
             if (isRegistered(userRegistrations, activitiesTurns, [day])) {
-                continue; // Skip days where user is already registered
+                continue // Skip days where user is already registered
             }
 
-            const daySelections = selectedActivities[day.date];
+            const daySelections = selectedActivities[day.date]
 
-            for (
-                let slotIndex = 0;
-                slotIndex < daySelections.length;
-                slotIndex++
-            ) {
-                const selectedTurnId = daySelections[slotIndex];
+            for ( let slotIndex = 0; slotIndex < daySelections.length; slotIndex++ ) {
+                const selectedTurnId = daySelections[slotIndex]
 
-                if (selectedTurnId === undefined) continue;
+                if (selectedTurnId === undefined) continue
 
-                const selectedTurn = getSelectedTurn(selectedTurnId);
+                const selectedTurn = getSelectedTurn(selectedTurnId)
 
-                if (selectedTurn && selectedTurn.type === "team") {
-                    const teamReg = teamRegistrations[day.date]?.[slotIndex];
+                if (selectedTurn && selectedTurn.type === 'team') {
+                    const teamReg = teamRegistrations[day.date]?.[slotIndex]
 
-                    if (!teamReg) return false;
+                    if (!teamReg) return false
 
                     // Check team name
                     if (!teamReg.name.trim() || teamReg.nameError) {
-                        return false;
+                        return false
                     }
 
                     // Check minimum members (accounting for current user)
-                    const totalMembers = teamReg.members.length + 1; // +1 for current user
+                    const totalMembers = teamReg.members.length + 1 // +1 for current user
                     if (totalMembers < selectedTurn.minTeamMembers!) {
-                        return false;
+                        return false
                     }
 
                     // Check that all members are valid
@@ -562,7 +542,7 @@
                             !member.isValid ||
                             member.error
                         ) {
-                            return false;
+                            return false
                         }
                     }
                 }
@@ -572,40 +552,36 @@
         return true;
     }
 
-    const groupedTurns = getGroupedTurns();
+    const groupedTurns = getGroupedTurns()
 
-    let canSubmit = $state(false);
+    let canSubmit = $state(false)
 
-    let selectedActivities: Record<EventDay, (number | undefined)[]> = $state(
-        {},
-    );
+    let selectedActivities: Record<EventDay, (number | undefined)[]> = $state({})
 
     // Team registrations state
     let teamRegistrations: Record<
         EventDay,
         Record<number, TeamRegistration>
-    > = $state({});
+    > = $state({})
 
     eventDays.forEach((day) => {
         const timeSlots = getTimeSlots(day.date);
         // Initialize with enough slots for all possible time slots
         selectedActivities[day.date] = new Array(timeSlots.length).fill(
             undefined,
-        );
+        )
         teamRegistrations[day.date] = {};
-    });
+    })
 
     // Update canSubmit whenever selections or team registrations change
     $effect(() => {
         canSubmit = checkCanSubmit();
-    });
+    })
 
     $effect(() => {
-        console.log(
-            "Selected activities: " + JSON.stringify(selectedActivities),
-        );
-        console.log("Team registrations: " + JSON.stringify(teamRegistrations));
-    });
+        console.log('Selected activities: ' + JSON.stringify(selectedActivities))
+        console.log('Team registrations: ' + JSON.stringify(teamRegistrations))
+    })
 </script>
 
 <div class="container">
@@ -647,8 +623,8 @@
             type="submit"
             disabled={!canSubmit}
             title={canSubmit
-                ? ""
-                : "Compila tutti i campi per inviare la registrazione"}
+                ? ''
+                : 'Compila tutti i campi per inviare la registrazione'}
         >
             Registrati
         </SimpleButton>
@@ -661,13 +637,12 @@
     day: EventDay,
     timeSlot: string,
 )}
-    <div class="turn-registration">
+    <div class="turn-registration" transition:slide={{ duration: 250 }}>
         <h3>
             Attività {getVisibleSlotIndices(day).indexOf(slotIndex) + 1}
             <span class="unbold">
                 ({formatTime(timeSlot)}{#if selectedActivities[day][slotIndex]}
-                  &nbsp;-
-                    {formatTime(getSelectedTurn(selectedActivities[day][slotIndex])!.end)}
+                  &nbsp;- {formatTime(getSelectedTurn(selectedActivities[day][slotIndex])!.end)}
                 {/if}):
             </span>
         </h3>
@@ -691,11 +666,13 @@
         </select>
 
         {#if isTeamActivity(selectedActivities[day][slotIndex])}
-            {@render teamRegistrationForm(
-                day,
-                slotIndex,
-                getSelectedTurn(selectedActivities[day][slotIndex]),
-            )}
+            <div class="team-registration" transition:slide={{ duration: 600 }}>
+                {@render teamRegistrationForm(
+                    day,
+                    slotIndex,
+                    getSelectedTurn(selectedActivities[day][slotIndex]),
+                )}
+            </div>
         {/if}
     </div>
 {/snippet}
@@ -706,97 +683,96 @@
     selectedTurn: any,
 )}
     {#if selectedTurn && teamRegistrations[day] && teamRegistrations[day][slotIndex]}
-        <div class="team-registration">
-            <!-- Team name section -->
-            <div class="team-name-section">
-                <h4>Nome Squadra:</h4>
+        <!-- Team name section -->
+        <div class="team-name-section">
+            <h4>Nome Squadra:</h4>
 
-                {#if teamRegistrations[day][slotIndex].nameError}
-                    <div class="error-message">
-                        {teamRegistrations[day][slotIndex].nameError}
-                    </div>
-                {/if}
+            {#if teamRegistrations[day][slotIndex].nameError}
+                <div class="error-message" transition:slide={{ duration: 250 }}>
+                    {teamRegistrations[day][slotIndex].nameError}
+                </div>
+            {/if}
 
-                <input
-                    id="team-name-{day}-{slotIndex}"
-                    type="text"
-                    placeholder="Inserisci il nome della squadra"
-                    value={teamRegistrations[day][slotIndex].name}
-                    oninput={(e) =>
-                        handleTeamNameChange(
-                            day,
-                            slotIndex,
-                            (e.target as HTMLInputElement).value,
-                        )}
-                />
+            <input
+                id="team-name-{day}-{slotIndex}"
+                type="text"
+                placeholder="Inserisci il nome della squadra"
+                value={teamRegistrations[day][slotIndex].name}
+                oninput={(e) =>
+                    handleTeamNameChange(
+                        day,
+                        slotIndex,
+                        (e.target as HTMLInputElement).value,
+                    )}
+            />
+        </div>
+
+        <!-- Team Members Section -->
+        <div class="team-members-section">
+            <!-- Current user (captain) -->
+            <div class="member-input-group captain">
+                <h5>Membro 1 (tu):</h5>
+                <div class="captain-email">
+                    {user.email}
+                </div>
             </div>
 
-            <!-- Team Members Section -->
-            <div class="team-members-section">
-                <!-- Current user (captain) -->
-                <div class="member-input-group captain">
-                    <h5>Membro 1 (tu):</h5>
-                    <div class="captain-email">
-                        {user.email}
-                    </div>
-                </div>
+            <!-- Additional team members -->
+            {#each teamRegistrations[day][slotIndex].members as member, memberIndex}
+                <div class="member-input-group" transition:slide={{ duration: 300 }}>
+                    <h5>Membro {memberIndex + 2}:</h5>
 
-                <!-- Additional team members -->
-                {#each teamRegistrations[day][slotIndex].members as member, memberIndex}
-                    <div class="member-input-group">
-                        <h5>Membro {memberIndex + 2}:</h5>
+                    {#if member.error}
+                        <div class="error-message" transition:slide={{ duration: 250 }}>
+                            {member.error}
+                        </div>
+                    {/if}
 
-                        {#if member.error}
-                            <div class="error-message">
-                                {member.error}
-                            </div>
-                        {/if}
+                    <div class="member-input-container">
+                        <input
+                            type="email"
+                            placeholder="Email istituzionale"
+                            bind:value={member.email}
+                            class:valid={member.isValid}
+                            class:invalid={member.error !== null}
+                            oninput={(e) => {
+                                handleMemberEmailChange(
+                                    day,
+                                    slotIndex,
+                                    memberIndex,
+                                    (e.target as HTMLInputElement).value,
+                                );
+                            }}
+                        />
 
-                        <div class="member-input-container">
-                            <input
-                                type="email"
-                                placeholder="Email istituzionale"
-                                bind:value={member.email}
-                                class:valid={member.isValid}
-                                class:invalid={member.error !== null}
-                                oninput={(e) => {
-                                    handleMemberEmailChange(
+                        {#if teamRegistrations[day][slotIndex].members.length > Math.max(0, selectedTurn.minTeamMembers - 1)}
+                            <button
+                                transition:fade={{ duration: 300 }}
+                                type="button"
+                                class="remove-member-btn"
+                                onclick={() =>
+                                    removeTeamMember(
                                         day,
                                         slotIndex,
                                         memberIndex,
-                                        (e.target as HTMLInputElement).value,
-                                    );
-                                }}
-                            />
-
-                            {#if teamRegistrations[day][slotIndex].members.length > Math.max(0, selectedTurn.minTeamMembers - 1)}
-                                <button
-                                    type="button"
-                                    class="remove-member-btn"
-                                    onclick={() =>
-                                        removeTeamMember(
-                                            day,
-                                            slotIndex,
-                                            memberIndex,
-                                        )}
-                                >
-                                    ✕
-                                </button>
-                            {/if}
-                        </div>
+                                    )}
+                            >
+                                ✕
+                            </button>
+                        {/if}
                     </div>
-                {/each}
+                </div>
+            {/each}
 
-                {#if teamRegistrations[day][slotIndex].members.length < selectedTurn.maxTeamMembers - 1}
-                    <button
-                        type="button"
-                        class="add-member-btn"
-                        onclick={() => addTeamMember(day, slotIndex)}
-                    >
-                        Aggiungi Membro
-                    </button>
-                {/if}
-            </div>
+            {#if teamRegistrations[day][slotIndex].members.length < selectedTurn.maxTeamMembers - 1}
+                <button
+                    type="button"
+                    class="add-member-btn"
+                    onclick={() => addTeamMember(day, slotIndex)}
+                >
+                    Aggiungi Membro
+                </button>
+            {/if}
         </div>
     {/if}
 {/snippet}
@@ -843,7 +819,7 @@
     }
 
     .registration h2 {
-        font-size: max(20px, 10px + 1.2vw);
+        font-size: max(16px, 10px + 0.8vw);
         color: var(--white);
         margin-bottom: 0;
     }
@@ -961,14 +937,18 @@
         margin: 0;
     }
 
+    .member-input-group.captain h5 {
+        color: var(--white);
+    }
+
     .member-input-container {
         display: flex;
-        flex-direction: row;
         gap: 10px;
         align-items: center;
     }
 
     .member-input-container input {
+        flex: 1;
         padding: max(10px, 5px + 0.6vw);
         background-color: var(--white);
         color: var(--black);
@@ -977,7 +957,6 @@
         font-weight: bold;
         font-size: max(12px, 10px + 0.3vw);
         transition: 0.2s;
-        width: 100%;
     }
 
     .member-input-container input:focus {
@@ -985,8 +964,15 @@
         outline-offset: 2px;
     }
 
-    .member-input-container {
+    .member-input-container input:hover:not(:disabled) {
         color: var(--red);
+    }
+
+    .member-input-container input:disabled {
+        background-color: var(--grey);
+        color: var(--white);
+        opacity: 0.6;
+        cursor: not-allowed;
     }
 
     .member-input-container input.valid {
@@ -998,37 +984,38 @@
     }
 
     .captain-email {
-        padding: max(12px, 5px + 0.8vw);
-        background-color: var(--white);
-        color: var(--black);
-        border-radius: 10px;
+        padding: max(10px, 5px + 0.6vw);
+        padding-right: 45px;
+        background-color: var(--grey);
+        color: var(--white);
         font-weight: bold;
         width: 100%;
         border: 0;
         font-size: max(13px, 10px + 0.4vw);
+        opacity: 0.6;
+        padding-left: 0;
     }
 
     .remove-member-btn {
-        padding-inline: max(12px, 8px + 0.6vw);
-        padding-block: max(12px, 5px + 0.8vw);
+        padding: max(12px, 5px + 0.8vw);
         background-color: var(--red);
         color: var(--white);
         border: 0;
         border-radius: 6px;
         font-weight: bold;
-        font-size: max(13px, 10px + 0.4vw);
+        font-size: max(11px, 8px + 0.3vw);
         cursor: pointer;
         transition: 0.2s;
+        white-space: nowrap;
     }
 
     .remove-member-btn:hover {
         background-color: var(--red);
         filter: brightness(1.2);
-        transform: translateY(-1px);
     }
 
     .add-member-btn {
-        padding: max(8px, 6px + 0.5vw) max(15px, 10px + 0.8vw);
+        padding: max(10px, 5px + 0.6vw);
         background-color: var(--white);
         color: var(--black);
         border: 0;
@@ -1038,19 +1025,18 @@
         cursor: pointer;
         transition: 0.2s;
         align-self: flex-start;
+        margin-top: 6px;
     }
 
     .add-member-btn:hover {
         color: var(--red);
-        transform: translateY(-1px);
     }
 
     .error-message {
         color: var(--red);
-        font-size: max(11px, 8px + 0.3vw);
+        font-size: max(16px, 10px + 0.4vw);
         filter: brightness(1.3);
         margin-top: 4px;
-        font-weight: normal;
     }
 
     /* Mobile Responsiveness */
@@ -1102,7 +1088,7 @@
         }
 
         .registration h2 {
-            font-size: max(14px, 10px + 0.6vw);
+            font-size: max(16px, 10px + 0.6vw);
         }
 
         .turn-registration {
@@ -1127,27 +1113,27 @@
         .captain-email {
             padding: max(10px, 5px + 0.6vw);
             padding-right: 40px;
-            background-size: 7px auto;
         }
 
         .team-name-section input {
-            padding: max(8px, 5px + 0.5vw);
+            padding: max(10px, 5px + 0.6vw);
         }
 
         .member-input-container {
-            flex-direction: row;
+            flex-direction: column;
             align-items: stretch;
             gap: 8px;
         }
 
         .member-input-container input {
-            padding: max(8px, 5px + 0.5vw);
-            width: 100%;
+            padding: max(10px, 5px + 0.6vw);
         }
 
         .remove-member-btn {
-            padding: max(5px, 3px + 0.3vw) max(10px, 6px + 0.5vw);
+            align-self: flex-end;
+            padding: max(10px, 5px + 0.6vw);
             font-size: max(10px, 8px + 0.2vw);
+            height: 100%;
         }
 
         .add-member-btn {
