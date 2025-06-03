@@ -45,10 +45,12 @@
                     {formatDate(eventDay.date)}
                 </div>
 
-                <div class="row">
-                    <div class="name">Appello</div>
-                    <div class="time">08:00 - 08:30</div>
-                </div>
+                {#if getRegistrationsForDay(eventDay.date)[0].activity != 'Assente'}
+                    <div class="row">
+                        <div class="name">Appello</div>
+                        <div class="time">08:00 - 08:30</div>
+                    </div>
+                {/if}
 
                 {#each getRegistrationsForDay(eventDay.date) as registration}
                     <div class="row">
@@ -57,10 +59,12 @@
                     </div>
                 {/each}
 
-                <div class="row">
-                    <div class="name">Contrappello</div>
-                    <div class="time">11:30 - 12:00</div>
-                </div>
+                {#if getRegistrationsForDay(eventDay.date)[0].activity != 'Assente'}
+                    <div class="row">
+                        <div class="name">Contrappello</div>
+                        <div class="time">11:30 - 12:00</div>
+                    </div>
+                {/if}
             </div>
         {/each}
     </div>
@@ -124,7 +128,7 @@
     }
 
     .row {
-        min-height: 70px;
+        min-height: 50px;
         display: flex;
         justify-content: space-between;
         align-items: center;

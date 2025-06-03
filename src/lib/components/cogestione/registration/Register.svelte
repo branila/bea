@@ -4,7 +4,7 @@
     import { isRegistered } from '$lib/utils/is-registered'
     import { fade, slide } from 'svelte/transition'
 
-    const {
+    let {
         activitiesTurns,
         eventDays,
         userRegistrations,
@@ -553,7 +553,7 @@
         return true;
     }
 
-    const groupedTurns = getGroupedTurns()
+    let groupedTurns = $state(getGroupedTurns())
 
     let canSubmit = $state(false)
 
@@ -631,6 +631,32 @@
       return cleanedUpSelectedActivities
     }
 
+    // Aggiungi questa funzione dopo la funzione cleanUpSelectedActivities:
+    function handleFullTurns(fullTurnIds: number[]) {
+        // Rimuovi i turni pieni dalle attività selezionate
+        for (const day in selectedActivities) {
+            for (let slotIndex = 0; slotIndex < selectedActivities[day].length; slotIndex++) {
+                const selectedTurnId = selectedActivities[day][slotIndex]
+
+                if (selectedTurnId !== null && fullTurnIds.includes(selectedTurnId)) {
+                    // Reset della selezione per questo slot
+                    selectedActivities[day][slotIndex] = null
+
+                    // Pulisci anche le registrazioni del team se era un'attività di squadra
+                    if (teamRegistrations[day] && teamRegistrations[day][slotIndex]) {
+                        delete teamRegistrations[day][slotIndex]
+                    }
+
+                    // Pulisci le selezioni successive per questo giorno
+                    clearInvalidSelections(day, slotIndex)
+                }
+            }
+        }
+
+        activitiesTurns = activitiesTurns.filter(turn => !fullTurnIds.includes(turn.id))
+        groupedTurns = getGroupedTurns()
+    }
+
     // Submit registration
     async function submitRegistration() {
         if (!canSubmit || isSubmitting) return
@@ -653,16 +679,30 @@
 
             const result = await response.json()
 
+            console.log(result)
+
             if (!response.ok || !result.success) {
+                // Gestisci i turni pieni
+                if (result.fullTurnIds && result.fullTurnIds.length > 0) {
+                    // Rimuovi i turni pieni dalle selezioni
+                    handleFullTurns(result.fullTurnIds)
+                    throw new Error(result.error || 'Alcune attività selezionate hanno esaurito i posti')
+                }
+
                 throw new Error(result.error || 'Errore durante la registrazione')
             }
 
             submitSuccess = result.message || 'Registrazione completata con successo!'
 
-            window.location.href = '/cogestione/registration'
+            // window.location.href = '/cogestione/registration'
         } catch (error) {
             console.error('Registration error:', error)
-            submitError = error instanceof Error ? error.message : 'Errore durante la registrazione'
+
+            if (error instanceof Error && error.message.includes('Posti esauriti')) {
+                submitError = `${error.message}. Le attività non più disponibili sono state rimosse dalla tua selezione.`
+            } else {
+                submitError = error instanceof Error ? error.message : 'Errore durante la registrazione'
+            }
         } finally {
             isSubmitting = false
         }

@@ -2,7 +2,7 @@ import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types'
 import { db } from '$db'
 import { activities, registrations, teamMembers, teams, turns, tickets } from '$schema'
-import { eq } from 'drizzle-orm'
+import { eq, sql } from 'drizzle-orm'
 import { generateUniqueTicketId } from '$db/utils'
 
 type TeamRegistrations = {
@@ -38,8 +38,40 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     }
 
     // Esegue tutto in una transazione
-    await db.transaction(async (tx) => {
-      // 1. Crea i ticket per tutti gli utenti che ne hanno bisogno
+    const result = await db.transaction(async (tx) => {
+      const fullTurns: number[] = []
+
+      // 2. Controlla la capacità per tutti i turni
+      for (const turnId of selectedActivities) {
+        const turnResult = await tx
+          .select({ capacity: turns.capacity })
+          .from(turns)
+          .where(eq(turns.id, turnId))
+          .limit(1)
+
+        if (turnResult.length === 0) {
+          throw new Error(`Turno ${turnId} non trovato`)
+        }
+
+        if (turnResult[0].capacity <= 0) {
+          fullTurns.push(turnId)
+        }
+      }
+
+      console.log('Full turns:', fullTurns.length)
+
+      // 3. Se ci sono turni pieni, restituisce errore con tutti gli ID
+      if (fullTurns.length > 0) {
+        return {
+          success: false,
+          error: fullTurns.length === 1
+            ? 'Posti esauriti per un\'attività selezionata'
+            : 'Posti esauriti per alcune attività selezionate',
+          fullTurnIds: fullTurns
+        }
+      }
+
+      // 4. Crea i ticket per tutti gli utenti che ne hanno bisogno
       for (const userEmail of usersNeedingTickets) {
         // Controlla se il ticket esiste già
         const existingTicket = await tx
@@ -60,14 +92,20 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         }
       }
 
-      // 2. Registra l'utente alle attività individuali selezionate
+      // 5. Registra l'utente alle attività individuali selezionate e decrementa la capacità
       for (const turn of selectedActivities) {
         await tx
           .insert(registrations)
           .values({ user: user.email.toLowerCase(), turn })
+
+        // Decrementa la capacità del turno
+        await tx
+          .update(turns)
+          .set({ capacity: sql`${turns.capacity} - 1` })
+          .where(eq(turns.id, turn))
       }
 
-      // 3. Gestisce le registrazioni dei team per i tornei
+      // 6. Gestisce le registrazioni dei team per i tornei
       for (const { team, tournamentTurn, members } of teamRegistrations) {
         // Ottiene il nome del torneo dall'attività
         const tournamentResult = await tx
@@ -111,10 +149,25 @@ export const POST: RequestHandler = async ({ request, locals }) => {
               turn: tournamentTurn
             })
         }
+
+        // Decrementa la capacità del turno del torneo (1 team registrato)
+        await tx
+          .update(turns)
+          .set({ capacity: sql`${turns.capacity} - 1` })
+          .where(eq(turns.id, tournamentTurn))
       }
+
+      // Se arriviamo qui, tutto è andato bene
+      return { success: true }
     })
 
+    // Controlla il risultato della transazione e restituisce la risposta appropriata
+    if (!result.success) {
+      return json(result, { status: 400 })
+    }
+
     return json({ success: true })
+
   } catch (error) {
     console.error('Registration error:', error)
 

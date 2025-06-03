@@ -1,21 +1,38 @@
 <script lang="ts">
-   const { name } = $props()
+  import { onMount } from 'svelte'
+
+  const { name } = $props()
+
+  let greetings = [
+    'Ci sei mancato',
+    'È bello rivederti',
+    'Ti stavamo aspettando',
+    'Dove sei stato fin\'ora?',
+    'Finalmente sei tornato',
+    'Caparezza o Frankie Hi-NRG?',
+    'È quel momento dell\'anno'
+  ]
+
+  let greeting = $state('.')
+
+  onMount(() => {
+    greeting = greetings[Math.floor(Math.random() * greetings.length)]
+  })
 </script>
 
 <header>
     <h2>Ciao {name},</h2>
-
-    <h1>Ci sei proprio mancato un sacco</h1>
+    <h1>{greeting}</h1>
 </header>
 
 <style>
     header {
         display: flex;
         flex-direction: column;
-        gap: 20px;
     }
 
     h2 {
+        margin-bottom: 20px;
         font-size: max(20px, 12px + 1.25vw);
     }
 
