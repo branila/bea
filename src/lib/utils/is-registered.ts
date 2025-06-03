@@ -1,8 +1,11 @@
 import type { EventDay, Registration } from '$types'
 
 // Checks if the user is fully registered to a list of event days
-export function isRegistered<T extends { id: number, day: string }[]>(
-  userRegistrations: Registration[],
+export function isRegistered<
+  T extends { id: number, day: string }[],
+  K extends { turn: number }[]
+>(
+  userRegistrations: K,
   activitiesTurns: T,
   eventDays: EventDay[]
 ) {

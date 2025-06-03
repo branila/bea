@@ -1,20 +1,35 @@
-<!-- <script lang="ts">
-    import type { Registration } from '$types/db'
-    import SimpleButton from '$components/reusables/SimpleButton.svelte'
+<script lang="ts">
+  import type { PageData } from '../../../../routes/cogestione/registration/$types'
+  import SimpleButton from '$components/reusables/SimpleButton.svelte'
 
-    const { registration }: {
-        registration: Registration | undefined
-    } = $props()
+  const { userRegistrations, eventDays } : {
+    userRegistrations: PageData['userRegistrations'],
+    eventDays: PageData['eventDays']
+  } = $props()
 
-    const activities = [
-        registration!.expand!.firstActivity!.name,
-        registration!.expand!.secondActivity!.name,
-        registration!.expand!.thirdActivity!.name,
-    ]
+  $effect(() => {
+    console.log(userRegistrations)
+  })
+
+  function formatTime(time: string): string {
+    return time.slice(0, -3)
+  }
+
+  function formatDate(date: string): string {
+    return new Date(date).toLocaleDateString('it-IT', {
+      day: 'numeric',
+      month: 'long',
+    })
+  }
+
+  function getRegistrationsForDay(day: string): typeof userRegistrations {
+    return userRegistrations.filter(registration => {
+      return registration.day === day
+    })
+  }
 </script>
 
 <div class="container">
-
     <div class="heading">
         <h1>La tua iscrizione</h1>
 
@@ -23,29 +38,38 @@
         </div>
     </div>
 
-    <div class="table">
-        <div class="row">
-            <div class="name">Appello</div>
-            <div class="time">8:00 - 8:30</div>
-        </div>
+    <div class="tables">
+        {#each eventDays as eventDay}
+            <div class="table">
+                <div class="row event-day">
+                    {formatDate(eventDay.date)}
+                </div>
 
-        {#each activities as activity, i}
-            <div class="row">
-                <div class="name">{activity}</div>
-                <div class="time">{8 + i}:30 - {8 + i + 1}:30</div>
+                <div class="row">
+                    <div class="name">Appello</div>
+                    <div class="time">08:00 - 08:30</div>
+                </div>
+
+                {#each getRegistrationsForDay(eventDay.date) as registration}
+                    <div class="row">
+                        <div class="name">{registration.activity}</div>
+                        <div class="time">{formatTime(registration.start)} - {formatTime(registration.end)}</div>
+                    </div>
+                {/each}
+
+                <div class="row">
+                    <div class="name">Contrappello</div>
+                    <div class="time">11:30 - 12:00</div>
+                </div>
             </div>
         {/each}
-
-        <div class="row">
-            <div class="name">Contrappello</div>
-            <div class="time">11:30 - 12:00</div>
-        </div>
     </div>
 
     <div class="btn-container">
         <SimpleButton href="/cogestione/ticket">Visualizza Ticket</SimpleButton>
     </div>
 </div>
+
 
 <style>
     .container {
@@ -83,9 +107,20 @@
         font-weight: bold;
     }
 
+    .tables {
+        display: flex;
+        flex-direction: column;
+        gap: 60px;
+    }
+
     .table {
         display: flex;
         flex-direction: column;
+    }
+
+    .event-day {
+        font-size: max(20px, 16px + 0.4vw) !important;
+        justify-content: center !important;
     }
 
     .row {
@@ -116,4 +151,4 @@
             gap: 20px;
         }
     }
-</style> -->
+</style>
