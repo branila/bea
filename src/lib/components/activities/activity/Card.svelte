@@ -52,6 +52,18 @@
         font-weight: normal;
     }
 
+    /* I'm sorry for this shit */
+    .text :global(.description),
+    .text :global(.location),
+    .text :global(.days),
+    .text :global(.days li) {
+        font-weight: normal;
+    }
+
+    .text :global(.days li) {
+        list-style-type: none;
+    }
+
     .content {
         margin-bottom: auto;
     }
@@ -79,8 +91,11 @@
             width: 100%;
         }
     }
-
     .button-container {
         margin-left: auto;
+        display: flex;
+        align-items: flex-end;
     }
+
+    
 </style>
