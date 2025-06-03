@@ -6,7 +6,9 @@ import { eq, and } from 'drizzle-orm'
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const { email, day } = await request.json()
+    let { email, day } = await request.json()
+
+    email = email.toLowerCase()
 
     // Validate input
     if (!email || !day) {
@@ -36,7 +38,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json({
         exists: true,
         available: false,
-        message: 'Utente sospeso'
+        message: 'Utente bannato'
       })
     }
 

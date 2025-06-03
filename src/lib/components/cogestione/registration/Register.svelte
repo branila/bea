@@ -16,8 +16,6 @@
         user: PageData['user']
     } = $props()
 
-    console.log(activitiesTurns.find(turn => turn.activity == 'Assente' ))
-
     // Turn start time type
     type StartTime = (typeof activitiesTurns)[number]['start']
 
@@ -31,15 +29,16 @@
     type GroupedTurns = Record<EventDay, TurnsByStartTime>
 
     // Team member interface
-    interface TeamMember {
+    type TeamMember = {
         email: string
         isValid: boolean
         error: string | null
     }
 
     // Team registration data
-    interface TeamRegistration {
+    type TeamRegistration = {
         name: string
+        tournamentTurn: number
         members: TeamMember[]
         nameError: string | null
     }
@@ -108,7 +107,7 @@
             visibleSlots.push(currentSlotIndex)
 
             const selectedTurnId = selectedActivities[day][currentSlotIndex]
-            if (selectedTurnId === undefined) {
+            if (selectedTurnId == null) {
                 // If no activity is selected, we can't determine what comes next
                 break
             }
@@ -143,10 +142,10 @@
     function clearInvalidSelections(day: EventDay, changedSlotIndex: number) {
         const selectedTurnId = selectedActivities[day][changedSlotIndex]
 
-        if (selectedTurnId === undefined) {
+        if (selectedTurnId === null) {
             // If deselecting, clear all subsequent selections
             for (let i = changedSlotIndex + 1; i < selectedActivities[day].length; i++) {
-                selectedActivities[day][i] = undefined
+                selectedActivities[day][i] = null
             }
             return
         }
@@ -154,16 +153,16 @@
         // Clear all selections in slots that would be occupied by this activity
         // and all subsequent selections
         for (let i = changedSlotIndex + 1; i < selectedActivities[day].length; i++) {
-            selectedActivities[day][i] = undefined
+            selectedActivities[day][i] = null
         }
     }
 
-    function isTeamActivity(turnId: (typeof activitiesTurns)[number]['id'] | undefined) {
+    function isTeamActivity(turnId: (typeof activitiesTurns)[number]['id'] | null) {
         if (!turnId) return false
         return activitiesTurns.find((turn) => turn.id === turnId)?.type === 'team'
     }
 
-    function getSelectedTurn(turnId: (typeof activitiesTurns)[number]['id'] | undefined) {
+    function getSelectedTurn(turnId: (typeof activitiesTurns)[number]['id'] | null) {
         if (!turnId) return null
         return activitiesTurns.find((turn) => turn.id === turnId) || null
     }
@@ -176,12 +175,12 @@
 
     // Initialize team registration for a specific day and slot
     function initializeTeamRegistration(
-        day: EventDay,
+        tournamentTurn: number,
         minMembers: number
     ): TeamRegistration {
         const members: TeamMember[] = []
         // Create slots for additional members (minMembers - 1 because current user is already included)
-        const additionalMembersNeeded = Math.max(0, minMembers - 1)
+        const additionalMembersNeeded = minMembers - 1
 
         for (let i = 0; i < additionalMembersNeeded; i++) {
             members.push({
@@ -193,6 +192,7 @@
 
         return {
             name: '',
+            tournamentTurn,
             members,
             nameError: null
         }
@@ -416,10 +416,11 @@
             if (!teamRegistrations[day]) {
                 teamRegistrations[day] = {}
             }
+
             // Always reinitialize team registration when selection changes
             // This resets the form to the base state with minimum required members
             teamRegistrations[day][slotIndex] = initializeTeamRegistration(
-                day,
+                selectedTurn.id,
                 selectedTurn.minTeamMembers
             )
         } else {
@@ -438,7 +439,7 @@
         const daySelections = selectedActivities[day];
         const selectedTurns = daySelections
             .map(turnId =>
-                turnId !== undefined
+                turnId !== null
                     ? activitiesTurns.find((turn) => turn.id === turnId)
                     : null
             )
@@ -486,7 +487,7 @@
 
             const daySelections = selectedActivities[day.date];
             const hasSelection = daySelections.some(
-              (selection) => selection !== undefined
+              (selection) => selection !== null
             )
 
             if (!hasSelection) {
@@ -515,7 +516,7 @@
             for ( let slotIndex = 0; slotIndex < daySelections.length; slotIndex++ ) {
                 const selectedTurnId = daySelections[slotIndex]
 
-                if (selectedTurnId === undefined) continue
+                if (selectedTurnId === null) continue
 
                 const selectedTurn = getSelectedTurn(selectedTurnId)
 
@@ -556,7 +557,7 @@
 
     let canSubmit = $state(false)
 
-    let selectedActivities: Record<EventDay, (number | undefined)[]> = $state({})
+    let selectedActivities: Record<EventDay, (number | null)[]> = $state({})
 
     // Team registrations state
     let teamRegistrations: Record<
@@ -565,17 +566,111 @@
     > = $state({})
 
     eventDays.forEach((day) => {
-        const timeSlots = getTimeSlots(day.date);
+        const timeSlots = getTimeSlots(day.date)
+
         // Initialize with enough slots for all possible time slots
-        selectedActivities[day.date] = new Array(timeSlots.length).fill(
-            undefined,
-        )
-        teamRegistrations[day.date] = {};
+        selectedActivities[day.date] = new Array(timeSlots.length).fill(null)
+        teamRegistrations[day.date] = {}
     })
 
     // Update canSubmit whenever selections or team registrations change
     $effect(() => {
-        canSubmit = checkCanSubmit();
+        canSubmit = checkCanSubmit()
+    })
+
+    // Registration state
+    let isSubmitting = $state(false)
+    let submitError = $state<string | null>(null)
+    let submitSuccess = $state<string | null>(null)
+
+    type CleanedUpTeamRegistrations = {
+      team: string,
+      tournamentTurn: number,
+      members: string[] // Members emails
+    }[]
+
+    function cleanUpTeamRegistrations(
+      rawTeamRegistrations: typeof teamRegistrations
+    ): CleanedUpTeamRegistrations {
+        const cleanedUpTeamRegistrations: CleanedUpTeamRegistrations = []
+
+        Object.keys(rawTeamRegistrations).forEach(day => {
+          Object.values(rawTeamRegistrations[day]).forEach(teamRegistration => {
+            const membersEmails: string[] = []
+
+            teamRegistration.members.forEach(member => {
+              membersEmails.push(member.email)
+            })
+
+            cleanedUpTeamRegistrations.push({
+              team: teamRegistration.name,
+              tournamentTurn: teamRegistration.tournamentTurn,
+              members: membersEmails
+            })
+          })
+        })
+
+        return cleanedUpTeamRegistrations
+    }
+
+    function cleanUpSelectedActivities(
+      rawSelectedActivities: typeof selectedActivities
+    ): number[] {
+      const cleanedUpSelectedActivities: number[] = []
+
+      for (const date in rawSelectedActivities) {
+        const activitiesForDate = rawSelectedActivities[date]
+
+        for (const activity of activitiesForDate) {
+          if (activity !== null) {
+            cleanedUpSelectedActivities.push(activity)
+          }
+        }
+      }
+
+      return cleanedUpSelectedActivities
+    }
+
+    // Submit registration
+    async function submitRegistration() {
+        if (!canSubmit || isSubmitting) return
+
+        isSubmitting = true
+        submitError = null
+        submitSuccess = null
+
+        try {
+            const response = await fetch('/api/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    selectedActivities: cleanUpSelectedActivities(selectedActivities),
+                    teamRegistrations: cleanUpTeamRegistrations(teamRegistrations)
+                })
+            })
+
+            const result = await response.json()
+
+            if (!response.ok || !result.success) {
+                throw new Error(result.error || 'Errore durante la registrazione')
+            }
+
+            submitSuccess = result.message || 'Registrazione completata con successo!'
+
+            window.location.href = '/cogestione/registration'
+        } catch (error) {
+            console.error('Registration error:', error)
+            submitError = error instanceof Error ? error.message : 'Errore durante la registrazione'
+        } finally {
+            isSubmitting = false
+        }
+    }
+
+    $effect(() => {
+        console.log('Selected activities: ' + JSON.stringify(selectedActivities))
+        console.log('Team registrations: ' + JSON.stringify(teamRegistrations))
     })
 
     $effect(() => {
@@ -587,10 +682,12 @@
 <div class="container">
     <h1>Iscriviti alla cogestione</h1>
 
+
+    <h2 style:color="var(--red)">{submitError}</h2>
+    <h2>{submitSuccess}</h2>
+
     <div class="registrations">
         {#each eventDays as eventDay, i}
-            {console.log(activitiesTurns)}
-
             {#if !isRegistered( userRegistrations, activitiesTurns, [eventDays[i]], )}
                 <div class="registration">
                     <h2>
@@ -625,8 +722,10 @@
             title={canSubmit
                 ? ''
                 : 'Compila tutti i campi per inviare la registrazione'}
+
+            onclick={submitRegistration}
         >
-            Registrati
+            { isSubmitting ? ' Caricamento' : 'Registrati' }
         </SimpleButton>
     </div>
 </div>
@@ -653,8 +752,8 @@
             bind:value={selectedActivities[day][slotIndex]}
             onchange={() => handleSelectionChange(day, slotIndex)}
         >
-            {#if selectedActivities[day][slotIndex] === undefined}
-                <option value={undefined}>Seleziona un'attività</option>
+            {#if selectedActivities[day][slotIndex] == null}
+                <option value={null}>Seleziona un'attività</option>
             {/if}
 
             {#each possibleTurns as turn}
@@ -731,7 +830,7 @@
                     <div class="member-input-container">
                         <input
                             type="email"
-                            placeholder="Email istituzionale"
+                            placeholder="Email Istituzionale"
                             bind:value={member.email}
                             class:valid={member.isValid}
                             class:invalid={member.error !== null}
