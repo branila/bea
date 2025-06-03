@@ -694,12 +694,12 @@
 
             submitSuccess = result.message || 'Registrazione completata con successo!'
 
-            // window.location.href = '/cogestione/registration'
+            window.location.href = '/cogestione/registration'
         } catch (error) {
             console.error('Registration error:', error)
 
             if (error instanceof Error && error.message.includes('Posti esauriti')) {
-                submitError = `${error.message}. Le attività non più disponibili sono state rimosse dalla tua selezione.`
+                submitError = error.message
             } else {
                 submitError = error instanceof Error ? error.message : 'Errore durante la registrazione'
             }
