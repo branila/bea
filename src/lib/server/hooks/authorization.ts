@@ -1,3 +1,5 @@
+import { db } from '$db'
+import { opening } from '$schema'
 import { type Handle, redirect } from '@sveltejs/kit'
 import { error } from '@sveltejs/kit'
 
@@ -19,6 +21,14 @@ const authorization: Handle = async ({ event, resolve }) => {
   // Allow access to public paths without authentication
   if (publicPaths.includes(path)) {
     return await resolve(event)
+  }
+
+  const registrationWindow = await db
+    .select()
+    .from(opening)
+
+  if (new Date(Date.now()) < registrationWindow[0].opening) {
+    redirect(302, '/maintenance')
   }
 
   // Redirect unauthenticated users to the login page

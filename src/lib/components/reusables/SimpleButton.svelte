@@ -8,7 +8,7 @@
     onclick = () => {},
     type = 'button',
     disabled = false,
-    title = 'AAAAA',
+    title = '',
     action,
   }: {
     href?: string
