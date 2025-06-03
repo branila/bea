@@ -6,7 +6,7 @@ import postgres from 'postgres'
 import dotenv from 'dotenv'
 import * as schema from '../../schema'
 import type { Organizer, Role } from '../../types'
-import { generateUniqueTicketId } from '$lib/server/db/utils'
+import { generateUniqueTicketId } from '../db/utils'
 
 import {
   users,
