@@ -6,7 +6,6 @@ import postgres from 'postgres'
 import dotenv from 'dotenv'
 import * as schema from '../../schema'
 import type { Organizer, Role } from '../../types'
-import { generateUniqueTicketId } from '../db/utils'
 
 import {
   users,
@@ -31,6 +30,7 @@ const client = postgres(process.env.DATABASE_URL, {
     options: '-c client_min_messages=warning'
   }
 })
+
 const db = drizzle(client, { schema })
 
 const tables = [
@@ -42,6 +42,25 @@ const tables = [
   turns,
   organizers,
 ]
+
+export async function generateUniqueTicketId() {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789'
+  let attempts = 0
+  const maxAttempts = 100
+
+  while (attempts < maxAttempts) {
+    const id = Array.from({ length: 4 }, () =>
+      chars.charAt(Math.floor(Math.random() * chars.length))
+    ).join('')
+
+    const existing = await db.select().from(tickets).where(eq(tickets.id, id))
+    if (existing.length === 0) return id
+
+    attempts++
+  }
+
+  throw new Error('Impossibile generare un ID unico dopo diversi tentativi')
+}
 
 seedDatabase()
 
