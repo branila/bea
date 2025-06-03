@@ -1,4 +1,5 @@
 import { db } from '$db'
+import hasRoles from '$lib/utils/has-roles'
 import { opening } from '$schema'
 import { type Handle, redirect } from '@sveltejs/kit'
 import { error } from '@sveltejs/kit'
@@ -36,22 +37,21 @@ const authorization: Handle = async ({ event, resolve }) => {
     redirect(302, '/login')
   }
 
-  // const routePermissions = Object.entries({
-  //   '/cogestione/registration': !hasRole(user, Roles.Docente),
-  //   '/cogestione/ticket': !hasRole(user, Roles.Docente),
-  //   '/cogestione/admin': hasRole(user, Roles.Admin),
-  //   '/cogestione/classes': hasRole(user, Roles.Rappresentante, Roles.Admin),
-  //   '/cogestione/activities': hasRole(user, Roles.Organizzatore, Roles.Admin, Roles.Docente),
-  //   '/security': hasRole(user, Roles.Security, Roles.Admin, Roles.Docente),
-  //   '/cogestione/staff': hasRole(user, Roles.Admin),
-  // })
+  const routePermissions = Object.entries({
+    '/cogestione/registration': !hasRoles(user, 'docente'),
+    '/cogestione/ticket': !hasRoles(user, 'docente'),
+    '/cogestione/admin': hasRoles(user, 'amministratore'),
+    '/cogestione/classes': hasRoles(user, 'rappresentante', 'amministratore', 'docente'),
+    '/cogestione/activities': hasRoles(user, 'organizzatore', 'amministratore', 'docente'),
+    '/security': hasRoles(user, 'sicurezza', 'amministratore', 'docente'),
+  })
 
-  // // Redirect unauthorized users to the login page
-  // for (const [route, permission] of routePermissions) {
-  //   if (path.startsWith(route) && !permission) {
-  //     redirect(302, '/login')
-  //   }
-  // }
+  // Redirect unauthorized users to the login page
+  for (const [route, permission] of routePermissions) {
+    if (path.startsWith(route) && !permission) {
+      redirect(302, '/login')
+    }
+  }
 
   return await resolve(event)
 }
