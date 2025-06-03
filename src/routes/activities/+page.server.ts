@@ -9,7 +9,7 @@ export const load: PageServerLoad = async () => {
   const activitiesList = await db
     .select()
     .from(activities)
-    .where(and(ne(activities.name, 'Assente'), ne(activities.name, 'In classe'))) 
+    .where(and(ne(activities.name, 'Assente'), ne(activities.name, 'In classe'), ne(activities.name, 'Security'))) 
     .orderBy(activities.name);
 
   return {
