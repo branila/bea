@@ -922,6 +922,9 @@
         display: flex;
         flex-direction: column;
         gap: 20px;
+        width: 100%;
+        max-width: 100%;
+        overflow-x: hidden;
     }
 
     h1 {
@@ -948,6 +951,7 @@
     .registration {
         height: 100%;
         width: 100%;
+        max-width: 100%;
         padding: 25px;
         display: flex;
         flex-direction: column;
@@ -955,6 +959,7 @@
         border-radius: 15px;
         gap: 20px;
         overflow-y: auto;
+        box-sizing: border-box;
     }
 
     .registration h2 {
@@ -994,10 +999,12 @@
         border-radius: 10px;
         font-weight: bold;
         width: 100%;
+        max-width: 100%;
         border: 0;
         cursor: pointer;
         font-size: max(13px, 10px + 0.4vw);
         transition: 0.2s;
+        box-sizing: border-box;
 
         /* Arrow */
         appearance: none;
@@ -1047,6 +1054,9 @@
         font-weight: bold;
         font-size: max(13px, 10px + 0.4vw);
         transition: 0.2s;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
     }
 
     .team-name-section input:focus {
@@ -1084,11 +1094,16 @@
         display: flex;
         gap: 10px;
         align-items: center;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+        position: relative;
     }
 
     .member-input-container input {
         flex: 1;
         padding: max(10px, 5px + 0.6vw);
+        padding-right: 50px; /* Space for the X button */
         background-color: var(--white);
         color: var(--black);
         border: 0;
@@ -1096,6 +1111,10 @@
         font-weight: bold;
         font-size: max(12px, 10px + 0.3vw);
         transition: 0.2s;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+        min-width: 0;
     }
 
     .member-input-container input:focus {
@@ -1124,28 +1143,38 @@
 
     .captain-email {
         padding: max(10px, 5px + 0.6vw);
-        padding-right: 45px;
         background-color: var(--grey);
         color: var(--white);
         font-weight: bold;
         width: 100%;
+        max-width: 100%;
         border: 0;
         font-size: max(13px, 10px + 0.4vw);
         opacity: 0.6;
-        padding-left: 0;
+        box-sizing: border-box;
+        border-radius: 8px;
+
+        /* Ellipsis for long emails */
+        word-break: break-all
     }
 
     .remove-member-btn {
-        padding: max(12px, 5px + 0.8vw);
+        position: absolute;
+        right: 8px;
+        top: 50%;
+        transform: translateY(-50%);
+        padding: 6px 8px;
         background-color: var(--red);
         color: var(--white);
         border: 0;
-        border-radius: 6px;
+        border-radius: 4px;
         font-weight: bold;
         font-size: max(11px, 8px + 0.3vw);
         cursor: pointer;
         transition: 0.2s;
         white-space: nowrap;
+        line-height: 1;
+        z-index: 1;
     }
 
     .remove-member-btn:hover {
@@ -1206,6 +1235,8 @@
         .container {
             min-height: calc(100svh - 140px);
             padding-top: 15px;
+            padding: 15px 10px 0 10px;
+            box-sizing: border-box;
         }
 
         h1 {
@@ -1224,6 +1255,9 @@
         .registration {
             padding: 15px;
             gap: 15px;
+            margin: 0;
+            width: 100%;
+            max-width: 100%;
         }
 
         .registration h2 {
@@ -1242,6 +1276,7 @@
             padding: max(10px, 5px + 0.6vw);
             padding-right: 40px;
             background-size: 7px auto;
+            min-width: 0;
         }
 
         .team-registration {
@@ -1251,13 +1286,14 @@
 
         .captain-email {
             padding: max(10px, 5px + 0.6vw);
-            padding-right: 40px;
-            text-transform: lowercase !important;
+            padding-left: 0;
+            text-transform: lowercase;
         }
 
         .team-name-section input {
             padding: max(10px, 5px + 0.6vw);
             text-transform: none;
+            min-width: 0;
         }
 
         input {
@@ -1265,21 +1301,20 @@
         }
 
         .member-input-container {
-            flex-direction: column;
-            align-items: stretch;
-            gap: 8px;
+            gap: 0;
         }
 
         .member-input-container input {
             padding: max(10px, 5px + 0.6vw);
+            padding-right: 40px;
             text-transform: none;
+            min-width: 0;
         }
 
         .remove-member-btn {
-            align-self: flex-end;
-            padding: max(10px, 5px + 0.6vw);
+            right: 6px;
+            padding: 4px 6px;
             font-size: max(10px, 8px + 0.2vw);
-            height: 100%;
         }
 
         .add-member-btn {
