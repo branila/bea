@@ -6,6 +6,8 @@ import postgres from 'postgres'
 import dotenv from 'dotenv'
 import * as schema from '../../schema'
 import type { Organizer, Role } from '../../types'
+import { generateUniqueTicketId } from '$lib/server/db/utils'
+
 import {
   users,
   eventDays,
@@ -14,7 +16,8 @@ import {
   turns,
   organizers,
   opening,
-  registrations
+  registrations,
+  tickets
 } from '../../schema'
 
 dotenv.config()
@@ -159,7 +162,7 @@ async function assignRoles() {
       for (const email of emails) {
         // Find all turns for the activity the organizer is associated with
         const activityTurns = await db
-          .select({id: turns.id})
+          .select({ id: turns.id })
           .from(turns)
           .innerJoin(activities, eq(turns.activity, activities.name))
           .innerJoin(organizers, eq(turns.activity, organizers.activity))
@@ -168,34 +171,38 @@ async function assignRoles() {
         // Insert registrations for each turn
         for (const turn of activityTurns) {
           await db
-          .insert(registrations)
-          .values({
-            user: email,
-            turn: turn.id
-          })
+            .insert(registrations)
+            .values({
+              user: email,
+              turn: turn.id
+            })
         }
+        // Create a ticket for the organizer
+        await createTicket(email)
       }
     } else if (file == 'security.json') {
       // For security, we need to ensure they are registered for all turns
       console.log("Setting up security's registrations...")
-      
+
       const securityTurns = await db
-        .select({id: turns.id})
+        .select({ id: turns.id })
         .from(turns)
         .innerJoin(activities, eq(turns.activity, activities.name))
         .where(eq(activities.name, 'Security'))
 
-        for (const email of emails) {
-          // Insert registrations for each turn
-          for (const turn of securityTurns) {
-            await db
-              .insert(registrations)
-              .values({
-                user: email,
-                turn: turn.id
-              })
-          }
+      for (const email of emails) {
+        // Insert registrations for each turn
+        for (const turn of securityTurns) {
+          await db
+            .insert(registrations)
+            .values({
+              user: email,
+              turn: turn.id
+            })
         }
+        // Create a ticket for the security personnel
+        await createTicket(email)
+      }
     }
 
     for (const email of emails) {
@@ -206,6 +213,14 @@ async function assignRoles() {
   }
 
   console.log('\nRole assignment completed successfully!')
+}
+
+async function createTicket(userEmail: string) {
+  const ticketId = await generateUniqueTicketId()
+  await db.insert(schema.tickets).values({
+    id: ticketId,
+    user: userEmail
+  })
 }
 
 async function setRole(userEmail: string, role: Role) {
