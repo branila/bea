@@ -1,23 +1,32 @@
 <script lang="ts">
-  import SimpleButton from '$components/reusables/SimpleButton.svelte'
+    import SimpleButton from "$components/reusables/SimpleButton.svelte";
 
-  const { name, description, image }: {
-        name: string,
-        description: string,
-        image?: string | null
-    } = $props()
+    const {
+        name,
+        details,
+        image,
+    }: {
+        name: string;
+        details: string;
+        image?: string | null;
+    } = $props();
 </script>
 
 <div class="card">
-    <img src={image} alt={name} />
+    <div class="image-container">
+        <img src={image} alt={name} />
+    </div>
     <div class="content">
         <h1>{name}</h1>
-        <p>{description}</p>
+        <div class="text">
+            {@html details}
+        </div>
     </div>
     <div class="button-container">
-      <SimpleButton accent="var(--red)" href={"/cogestione/registration"}>Iscriviti</SimpleButton>
+        <SimpleButton accent="var(--red)" href={"/cogestione/registration"}>
+            Iscriviti
+        </SimpleButton>
     </div>
-    
 </div>
 
 <style>
@@ -28,6 +37,7 @@
         gap: 20px;
         flex-direction: row;
         justify-content: space-between;
+        flex-wrap: nowrap;
         width: 100%;
         background-color: var(--grey);
     }
@@ -37,7 +47,7 @@
         margin-bottom: max(15px, 10px + 0.25vh);
     }
 
-    p {
+    .text {
         font-size: max(16px, 10px + 0.75vw);
         font-weight: normal;
     }
@@ -46,8 +56,13 @@
         margin-bottom: auto;
     }
 
+    .image-container {
+        width: 30%; /* Takes up 40% of the card width */
+        flex-shrink: 0;
+    }
+
     img {
-        width: 35%;
+        width: 100%;
         height: auto;
         border-radius: 10px;
         object-fit: cover;
@@ -57,9 +72,10 @@
     @media (max-width: 900px) {
         .card {
             flex-direction: column;
+            flex-wrap: wrap;
         }
 
-        img {
+        .image-container {
             width: 100%;
         }
     }
@@ -67,6 +83,4 @@
     .button-container {
         margin-left: auto;
     }
-
-    
 </style>

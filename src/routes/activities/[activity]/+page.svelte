@@ -12,7 +12,7 @@
     {:else}
     <Card
         name={activity.name}
-        description={activity.description}
+        details={activity.details}
         image={`/images/activities/${activity.image}`}
     />
     {/if}
