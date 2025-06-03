@@ -14,8 +14,15 @@ export const load: LayoutServerLoad = async ({ locals }) => {
 
   // The turns of the activities that already registered users have signed up for
   const userRegistrations = await db
-    .select()
+    .select({
+      turn: registrations.turn,
+      activity: turns.activity,
+      day: turns.day,
+      start: turns.start,
+      end: turns.end
+    })
     .from(registrations)
+    .innerJoin(turns, eq(turns.id, registrations.turn))
     .where(eq(registrations.user, user.email))
 
   // Retrieves activity turns including the type of activity (individual or team)

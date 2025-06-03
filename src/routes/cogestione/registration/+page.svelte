@@ -11,7 +11,7 @@
 <div class="container">
     <!-- Checks if the user is fully registered to every event day -->
     {#if isRegistered(userRegistrations, activitiesTurns, eventDays)}
-        <Registration />
+        <Registration {...data} />
     {:else}
         <Register {...data} />
     {/if}

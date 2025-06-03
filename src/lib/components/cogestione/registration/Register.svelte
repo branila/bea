@@ -2,7 +2,7 @@
     import type { PageData } from '../../../../routes/cogestione/registration/$types'
     import SimpleButton from '$components/reusables/SimpleButton.svelte'
     import { isRegistered } from '$lib/utils/is-registered'
-    import { fade, fly, slide, crossfade } from 'svelte/transition'
+    import { fade, slide } from 'svelte/transition'
 
     const {
         activitiesTurns,
