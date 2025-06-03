@@ -1212,10 +1212,16 @@
         .captain-email {
             padding: max(10px, 5px + 0.6vw);
             padding-right: 40px;
+            text-transform: lowercase !important;
         }
 
         .team-name-section input {
             padding: max(10px, 5px + 0.6vw);
+            text-transform: none;
+        }
+
+        input {
+            text-transform: none;
         }
 
         .member-input-container {
@@ -1226,6 +1232,7 @@
 
         .member-input-container input {
             padding: max(10px, 5px + 0.6vw);
+            text-transform: none;
         }
 
         .remove-member-btn {
