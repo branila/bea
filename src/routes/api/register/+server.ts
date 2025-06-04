@@ -126,12 +126,6 @@ export const POST: RequestHandler = async ({ request, locals }) => {
               turn: tournamentTurn
             })
         }
-
-        // Decrementa la capacità del turno del torneo (1 team registrato)
-        await tx
-          .update(turns)
-          .set({ capacity: sql`${turns.capacity} - 1` })
-          .where(eq(turns.id, tournamentTurn))
       }
 
       // Se arriviamo qui, tutto è andato bene
