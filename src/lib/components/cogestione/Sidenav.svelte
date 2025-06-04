@@ -1,15 +1,14 @@
 <script lang='ts'>
-  import type {Registration, User, Activity} from '$types/db'
-  import {Roles} from '$types/db'
-  import hasRole from '$lib/utils/hasRole'
+  import type {User, Activity} from '$types'
+  import hasRoles from '$lib/utils/has-roles'
   import {page} from '$app/stores'
 
   let {
     user,
-    activity,
+    organizerActivity,
   }: {
     user: User
-    activity: Activity | undefined
+    organizerActivity: Activity | undefined
   } = $props()
 
   interface Route {
@@ -23,63 +22,68 @@
     {
       name: 'Home',
       href: '/cogestione',
-      icon: '/images/cogestione/sidenav/home.svg',
+      icon: '/home.svg',
       allowed: !!user,
     },
     {
       name: 'Iscrizione',
       href: '/cogestione/registration',
-      icon: '/images/cogestione/sidenav/registration.svg',
-      allowed: !hasRole(user, Roles.Staff, Roles.Docente),
+      icon: '/registration.svg',
+      allowed: !hasRoles(user, 'docente'),
     },
     {
       name: 'Ticket',
       href: '/cogestione/ticket',
-      icon: '/images/cogestione/sidenav/ticket.svg',
-      allowed: !hasRole(user, Roles.Staff, Roles.Docente),
+      icon: '/ticket.svg',
+      allowed: !hasRoles(user, 'docente'),
     },
     {
       name: 'Admin',
       href: '/cogestione/admin',
-      icon: '/images/cogestione/sidenav/admin.svg',
-      allowed: hasRole(user, Roles.Admin),
+      icon: '/admin.svg',
+      allowed: hasRoles(user, 'amministratore'),
     },
     {
       name: `Classe ${user.class}`,
       href: `/cogestione/classes/${user.class}`,
-      icon: '/images/cogestione/sidenav/class.svg',
-      allowed: hasRole(user, Roles.Rappresentante, Roles.Admin),
+      icon: '/class.svg',
+      allowed: hasRoles(user, 'rappresentante', 'amministratore'),
     },
     {
-      name: activity?.name || '',
-      href: `/cogestione/activities/${activity?.id}`,
-      icon: '/images/cogestione/sidenav/activity.svg',
-      allowed: !!activity && hasRole(user, Roles.Organizzatore),
+      name: organizerActivity?.name || '',
+      href: `/cogestione/activities/${organizerActivity?.name.toLowerCase().replace(/\s+/g, '-')}`,
+      icon: '/activity.svg',
+      allowed: !!organizerActivity && hasRoles(user, 'organizzatore'),
     },
     {
       name: 'Sicurezza',
       href: '/security',
-      icon: '/images/cogestione/sidenav/security.svg',
-      allowed: hasRole(user, Roles.Security, Roles.Staff, Roles.Admin),
+      icon: '/security.svg',
+      allowed: hasRoles(user, 'sicurezza', 'amministratore'),
     },
     {
-      name: 'Staff',
-      href: '/cogestione/staff',
-      icon: '/images/cogestione/sidenav/staff.svg',
-      allowed: hasRole(user, Roles.Staff, Roles.Admin),
+      name: 'Classi',
+      href: '/cogestione/classes',
+      icon: '/classes.svg',
+      allowed: hasRoles(user, 'amministratore', 'docente'),
     },
   ]
 
-  function logout() {
-    document.cookie = 'pb_auth=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'
+  async function logout() {
+    const response = await fetch('/api/logout', {
+      method: 'POST',
+      credentials: 'include'
+    })
 
-    window.location.href = '/'
+    if (response.ok) {
+      window.location.href = '/login'
+    }
   }
 </script>
 
 {#snippet route(name: string, href: string, icon: string)}
   <a {href} class="route" class:active={$page.url.pathname === href}>
-    <img src={icon} alt="Route {name} icon" />
+    <img src={`/images/cogestione/sidenav${icon}`} alt="Route {name} icon" />
     <div class="name">{name}</div>
   </a>
 {/snippet}

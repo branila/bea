@@ -1,15 +1,12 @@
 <script lang="ts">
   import Card from '$components/cogestione/home/Card.svelte'
-  import { type Registration } from '$types/db'
 
-  const { registration }: {
-    registration: Registration | undefined
-  } = $props()
+  const { isRegistered }: { isRegistered: boolean } = $props()
 </script>
 
 <div class="cards">
 
-    {#if registration}
+    {#if isRegistered}
         <Card
             title="Iscrizione"
             description="Visualizza le attività a cui ti sei iscritto alla cogestione"
@@ -19,11 +16,18 @@
     {:else}
         <Card
             title="Iscriviti"
-            description="Iscriviti alle attività della cogestione. È gratis, lo giuriamo"
+            description="A nessuno piace dover rimanere in classe durante la cogestione. Iscriviti dai."
             href="/cogestione/registration"
             buttonText="Iscriviti"
         />
     {/if}
+
+    <Card
+        title="Attività"
+        description="Non hai la più pallida idea di che cosa fare? Scopri le attività di questa cogestione"
+        href="/activities"
+        buttonText="Scopri"
+    />
 
     <Card
         title="Ticket"
@@ -33,16 +37,9 @@
     />
 
     <Card
-        title="Instagram"
-        description="Segui la nostra pagina su instagram per rimanere aggiornato sulla cogestione"
-        href="https://www.instagram.com/noidellesperia/"
-        buttonText="Seguici"
-    />
-
-    <Card
         title="Assistenza"
         description="Hai urgente bisogno di aiuto? Contattaci subito e ti salviamo noi"
-        href="mailto:bea@branila.it"
+        href="/contacts"
         buttonText="Contattaci"
     />
 </div>

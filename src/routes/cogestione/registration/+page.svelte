@@ -1,15 +1,19 @@
 <script lang="ts">
   import Register from '$components/cogestione/registration/Register.svelte'
+  import type { PageServerData } from './$types'
   import Registration from '$components/cogestione/registration/Registration.svelte'
+  import { isRegistered } from '$lib/utils/is-registered'
 
-  const { data, form } = $props()
+  const { data }: { data: PageServerData } = $props()
+  const { userRegistrations, activitiesTurns, eventDays } = data
 </script>
 
 <div class="container">
-    {#if data.registration && !form?.error}
-        <Registration {...data}/>
+    <!-- Checks if the user is fully registered to every event day -->
+    {#if isRegistered(userRegistrations, activitiesTurns, eventDays)}
+        <Registration {...data} />
     {:else}
-        <Register activities={data.activities} {form}/>
+        <Register {...data} />
     {/if}
 </div>
 

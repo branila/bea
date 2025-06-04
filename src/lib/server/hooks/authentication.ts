@@ -1,38 +1,43 @@
 import { redirect, type Handle } from '@sveltejs/kit'
-import type { User } from '$types/db'
+import { sessions, users } from '$lib/schema'
+import { db } from '$db'
+import { eq } from 'drizzle-orm'
+import type { Session, User } from '$types'
 
 // Authentication middleware for handling user sessions
-const authentication: Handle = async ({event, resolve}) => {
-  const pb = event.locals.pb
+const authentication: Handle = async ({ event, resolve }) => {
+  const { cookies, locals } = event
 
-  // Load existing authentication state from cookies
-  pb.authStore.loadFromCookie(event.request.headers.get('cookie') || '')
+  const sessionId = event.cookies.get('session_id') || null
 
-  if (pb.authStore.isValid) {
-    // Attempt to refresh the authentication token
-    const [error] = await goCatch(
-      pb.collection('users').authRefresh()
-    )
-
-    // Clear auth store if token refresh fails
-    if (error) {
-      pb.authStore.clear()
-    }
-
-    // Attach user information to the event locals
-    event.locals.user = pb.authStore.record as unknown as User || undefined
+  if (!sessionId) {
+    return await resolve(event)
   }
 
-  const response = await resolve(event)
+  const [userWithSession] =
+    await db.select({
+      user: users,
+      session: sessions,
+    })
+    .from(sessions)
+    .innerJoin(users, eq(sessions.user, users.email))
+    .where(eq(sessions.id, sessionId))
+    .limit(1) as [{ user: User, session: Session }]
 
-  // Send back the pb_auth cookie with the latest store state
-  response.headers.append('set-cookie', pb.authStore.exportToCookie({
-    httpOnly: false,
-    secure: true,
-    sameSite: 'strict'
-  }))
+  const { user, session } = userWithSession || {}
 
-  return response
+  // If the session is invalid or expired
+  if (!user || !session || session.expiration < new Date()) {
+    cookies.delete('session_id', { path: '/' })
+
+    redirect(302, '/login')
+  }
+
+  if (user && session) {
+    locals.user = user
+  }
+
+  return await resolve(event)
 }
 
 export default authentication

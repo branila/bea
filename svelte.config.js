@@ -13,8 +13,9 @@ const config = {
 
 		alias: {
 			$db: './src/lib/server/db',
+			$schema: './src/lib/schema',
+			$types: './src/lib/types',
 			$components: './src/lib/components',
-			$types: './src/lib/types'
 		}
 	}
 }

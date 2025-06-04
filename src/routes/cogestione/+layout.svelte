@@ -1,13 +1,13 @@
 <script lang="ts">
-  import Sidenav from "$components/cogestione/Sidenav.svelte";
+  import Sidenav from '$components/cogestione/Sidenav.svelte'
 
-  const {children, data} = $props();
+  const { children, data } = $props()
 
-  const {user, activity} = data;
+  let { user, organizerActivity } = data
 </script>
 
 <main>
-  <Sidenav {user} {activity} />
+    <Sidenav {user} {organizerActivity} />
 
   <div class="container">
     {@render children()}
