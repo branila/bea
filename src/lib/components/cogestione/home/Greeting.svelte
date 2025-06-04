@@ -23,7 +23,7 @@
 </script>
 
 <header>
-    <h2>Ciao bamba,</h2>
+    <h2>Ciao {name},</h2>
     <h1>{greeting}</h1>
 </header>
 
