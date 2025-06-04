@@ -4,12 +4,14 @@
   const { name } = $props()
 
   let greetings = [
-    'Ci sei mancato',
     'È bello rivederti',
     'Ti stavamo aspettando',
     'Dove sei stato fin\'ora?',
     'Finalmente sei tornato',
     'Caparezza o Frankie Hi-NRG?',
+    'Vieni a ballare in puglia',
+    'Alla fine si fa la cogestione',
+    'Non c\'è esperia senza cogestione',
     'È quel momento dell\'anno'
   ]
 
@@ -21,7 +23,7 @@
 </script>
 
 <header>
-    <h2>Ciao {name},</h2>
+    <h2>Ciao bamba,</h2>
     <h1>{greeting}</h1>
 </header>
 
