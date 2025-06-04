@@ -1,7 +1,7 @@
 import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types'
 import { db } from '$db'
-import { activities, registrations, teamMembers, teams, turns, tickets } from '$schema'
+import { activities, registrations, teamMembers, teams, turns } from '$schema'
 import { eq, sql } from 'drizzle-orm'
 import { generateUniqueTicketId } from '$db/utils'
 
@@ -66,27 +66,6 @@ export const POST: RequestHandler = async ({ request, locals }) => {
             ? 'Posti esauriti per un\'attività selezionata'
             : 'Posti esauriti per alcune attività selezionate',
           fullTurnIds: fullTurns
-        }
-      }
-
-      // 4. Crea i ticket per tutti gli utenti che ne hanno bisogno
-      for (const userEmail of usersNeedingTickets) {
-        // Controlla se il ticket esiste già
-        const existingTicket = await tx
-          .select()
-          .from(tickets)
-          .where(eq(tickets.user, userEmail))
-          .limit(1)
-
-        // Se non esiste, crea un nuovo ticket
-        if (existingTicket.length === 0) {
-          const ticketId = await generateUniqueTicketId()
-          await tx
-            .insert(tickets)
-            .values({
-              id: ticketId,
-              user: userEmail
-            })
         }
       }
 

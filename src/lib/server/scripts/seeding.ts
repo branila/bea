@@ -77,6 +77,15 @@ async function seedDatabase() {
     // Assign roles to users
     await assignRoles()
 
+    console.log('Creating tickets for all students...\n')
+
+    const users = await db.select().from(schema.users)
+    const students = users.filter(user => !user.roles.includes('docente'))
+
+    for (const student of students) {
+      await createTicket(student.email)
+    }
+
     console.log('\nDatabase seeding completed successfully!')
   } catch (error) {
     console.error('\nDatabase seeding failed:', error)
@@ -196,8 +205,6 @@ async function assignRoles() {
               turn: turn.id
             })
         }
-        // Create a ticket for the organizer
-        await createTicket(email)
       }
     } else if (file == 'security.json') {
       // For security, we need to ensure they are registered for all turns
@@ -219,8 +226,6 @@ async function assignRoles() {
               turn: turn.id
             })
         }
-        // Create a ticket for the security personnel
-        await createTicket(email)
       }
     }
 
