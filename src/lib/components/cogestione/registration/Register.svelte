@@ -44,13 +44,13 @@
     }
 
     // Groups turns by their start time for each event day
-    function getGroupedTurns(): GroupedTurns {
+    function getGroupedTurns(activitiesTurnsLocal: typeof activitiesTurns): GroupedTurns {
         // Maps each date to its corresponding turns grouped by start time
         const groupedTurns: GroupedTurns = {}
 
         eventDays.forEach((eventDay) => {
             // Filters turns for the current event day
-            const turnsForDay = activitiesTurns.filter(
+            const turnsForDay = activitiesTurnsLocal.filter(
                 (turn) => turn.day === eventDay.date,
             )
 
@@ -139,21 +139,16 @@
     }
 
     // Clear selections that are no longer valid due to duration changes
-    function clearInvalidSelections(day: EventDay, changedSlotIndex: number) {
-        const selectedTurnId = selectedActivities[day][changedSlotIndex]
+    function clearFollowingSelections(day: EventDay, changedSlotIndex: number) {
+        const currentSelection = getSelectedTurn(selectedActivities[day][changedSlotIndex])!
 
-        if (selectedTurnId === null) {
-            // If deselecting, clear all subsequent selections
-            for (let i = changedSlotIndex + 1; i < selectedActivities[day].length; i++) {
-                selectedActivities[day][i] = null
-            }
-            return
-        }
-
-        // Clear all selections in slots that would be occupied by this activity
-        // and all subsequent selections
         for (let i = changedSlotIndex + 1; i < selectedActivities[day].length; i++) {
+          if (
+            getSelectedTurn(selectedActivities[day][i]) !== null &&
+            getSelectedTurn(selectedActivities[day][i])!.start < currentSelection.end
+          ) {
             selectedActivities[day][i] = null
+          }
         }
     }
 
@@ -402,7 +397,7 @@
     }
 
     function handleSelectionChange(day: EventDay, slotIndex: number) {
-        clearInvalidSelections(day, slotIndex)
+        clearFollowingSelections(day, slotIndex)
 
         const selectedTurnId = selectedActivities[day][slotIndex]
         const selectedTurn = getSelectedTurn(selectedTurnId)
@@ -553,7 +548,7 @@
         return true;
     }
 
-    let groupedTurns = $state(getGroupedTurns())
+    let groupedTurns = $state(getGroupedTurns(activitiesTurns))
 
     let canSubmit = $state(false)
 
@@ -648,13 +643,13 @@
                     }
 
                     // Pulisci le selezioni successive per questo giorno
-                    clearInvalidSelections(day, slotIndex)
+                    clearFollowingSelections(day, slotIndex)
                 }
             }
         }
-
-        activitiesTurns = activitiesTurns.filter(turn => !fullTurnIds.includes(turn.id))
-        groupedTurns = getGroupedTurns()
+        groupedTurns = getGroupedTurns(
+          activitiesTurns.filter(turn => !fullTurnIds.includes(turn.id))
+        )
     }
 
     // Submit registration
@@ -728,7 +723,7 @@
 
     <div class="registrations">
         {#each eventDays as eventDay, i}
-            {#if !isRegistered( userRegistrations, activitiesTurns, [eventDays[i]], )}
+            {#if !isRegistered( userRegistrations, activitiesTurns, [eventDay] )}
                 <div class="registration">
                     <h2>
                         {formatDate(eventDay.date)}

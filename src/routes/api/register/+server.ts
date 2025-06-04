@@ -58,8 +58,6 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         }
       }
 
-      console.log('Full turns:', fullTurns.length)
-
       // 3. Se ci sono turni pieni, restituisce errore con tutti gli ID
       if (fullTurns.length > 0) {
         return {
