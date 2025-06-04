@@ -174,7 +174,7 @@ const emailTemplate = `
   <body>
     <div class="ticket">
       <div class="ticket-header">
-        <h1 style="margin: 0">Cogestione Invernale 2024</h1>
+        <h1 style="margin: 0">Cogestione Estiva 2025</h1>
         <p style="margin: 10px 0 0 0">Without cogestione there is no esperia</p>
       </div>
 

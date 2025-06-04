@@ -55,7 +55,7 @@
 <div class="container">
     <div class="ticket">
         <div class="header">
-            <h1>Cogestione Invernale 2024</h1>
+            <h1>Cogestione Estiva 2025</h1>
             <h3>Without cogestione there is no Esperia</h3>
         </div>
 
