@@ -6,23 +6,11 @@
 
   const { data }: { data: PageServerData } = $props()
   const { userRegistrations, activitiesTurns, eventDays } = data
-
-  let allActivitiesTurns: typeof activitiesTurns = $state([])
-
-  $effect(() => {
-    const setAllActivitiesTurns = async () => {
-      allActivitiesTurns = await fetch('/api/activities')
-        .then(response => response.json())
-        .then(data => data.activitiesTurns)
-    }
-
-    setAllActivitiesTurns()
-  })
 </script>
 
 <div class="container">
     <!-- Checks if the user is fully registered to every event day -->
-    {#if isRegistered(userRegistrations, allActivitiesTurns, eventDays)}
+    {#if isRegistered(userRegistrations, activitiesTurns, eventDays)}
         <Registration {...data} />
     {:else}
         <Register {...data}/>
