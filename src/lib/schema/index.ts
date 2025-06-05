@@ -1,6 +1,6 @@
 export { users, roles, sessions, usersRelations, sessionsRelations } from './users'
 
-export { registrations, tickets, registrationsRelations, ticketsRelations } from './registrations'
+export { registrations, tickets, registrationsRelations, ticketsRelations, scans, scansRelations } from './registrations'
 
 export { opening } from './opening'
 

@@ -14,6 +14,7 @@ import {
   tickets,
   opening,
   activityType,
+  scans
 } from '$lib/schema'
 
 export type User = InferSelectModel<typeof users>
@@ -28,6 +29,7 @@ export type Organizer = InferSelectModel<typeof organizers>
 export type Registration = InferSelectModel<typeof registrations>
 export type Ticket = InferSelectModel<typeof tickets>
 export type Opening = InferSelectModel<typeof opening>
+export type Scan = InferSelectModel<typeof scans>
 
 export type NewUser = InferInsertModel<typeof users>
 export type NewSession = InferInsertModel<typeof sessions>
@@ -41,6 +43,7 @@ export type NewOrganizer = InferInsertModel<typeof organizers>
 export type NewRegistration = InferInsertModel<typeof registrations>
 export type NewTicket = InferInsertModel<typeof tickets>
 export type NewTimespan = InferInsertModel<typeof opening>
+export type NewScan = InferInsertModel<typeof scans>
 
 export type Role = typeof roles.enumValues[number]
 export type ActivityType = typeof activityType.enumValues[number]
