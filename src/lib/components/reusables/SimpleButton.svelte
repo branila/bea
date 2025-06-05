@@ -9,7 +9,6 @@
     type = 'button',
     disabled = false,
     title = '',
-    action,
   }: {
     href?: string
     accent?: string
