@@ -4,10 +4,9 @@
   const { name } = $props()
 
   let greetings = [
-    'È bello rivederti',
     'Ti stavamo aspettando',
     'Dove sei stato fin\'ora?',
-    'Finalmente sei tornato',
+    'Without cogestione there is no esperia',
     'Caparezza o Frankie Hi-NRG?',
     'Vieni a ballare in puglia',
     'Alla fine si fa la cogestione',
