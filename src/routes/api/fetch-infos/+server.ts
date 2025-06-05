@@ -15,7 +15,9 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     })
   }
 
-  if (!user.roles.includes('organizzatore')) {
+  let allowedRoles = ['organizzatore', 'sicurezza', 'amministratore', 'docente']
+
+  if (!user.roles.some(role => allowedRoles.includes(role))) {
     return json({
       success: false,
       error: 'Utente non autorizzato'

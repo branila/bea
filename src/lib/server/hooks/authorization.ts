@@ -19,7 +19,7 @@ const authorization: Handle = async ({ event, resolve }) => {
     redirect(302, '/cogestione')
   }
 
-  if (user && path == '/cogestione/classes') {
+  if (user?.roles.includes('rappresentante') && path == '/cogestione/classes') {
     redirect(302, `/cogestione/classes/${user.class}`)
   }
 
