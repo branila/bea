@@ -13,10 +13,14 @@ const authorization: Handle = async ({ event, resolve }) => {
     error(403, `You don't have access to the system :(`)
   }
 
-  const publicPaths = ['/', '/contacts', '/login', '/maintenance', '/login/callback']
+  const publicPaths = ['/', '/contacts', '/login', '/maintenance', '/activities', '/login/callback']
 
   if (user && path == '/login') {
     redirect(302, '/cogestione')
+  }
+
+  if (user && path == '/cogestione/classes') {
+    redirect(302, `/cogestione/classes/${user.class}`)
   }
 
   // Allow access to public paths without authentication

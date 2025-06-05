@@ -40,6 +40,7 @@ export const scans = pgTable('scans', {
   ticket: varchar('ticket', { length: 4 }).references(() => tickets.id).notNull(),
   date: date('date').notNull(),
   authenticator: text('authenticator').references(() => users.email),
+  ...timestamps
 }, (table) => [
   primaryKey({ columns: [table.ticket, table.date] })
 ])
