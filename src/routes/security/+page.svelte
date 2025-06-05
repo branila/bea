@@ -219,7 +219,7 @@
                         {#if scanResponse.registrations?.length !== 0}
                             {#each scanResponse.registrations! as registration, index}
                                 {registration.activity}
-                                {formatTime(registration.start)} - {formatTime(registration.end)}){#if index !== scanResponse.registrations!.length - 1},&nbsp;{/if}
+                                ({formatTime(registration.start)} - {formatTime(registration.end)}){#if index !== scanResponse.registrations!.length - 1},&nbsp;{/if}
                             {/each}
                         {:else}
                             Il bro non si è registrato
