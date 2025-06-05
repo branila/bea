@@ -20,7 +20,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
   )
   
   if (studentsQueryError || students.length == 0) {
-    error(400, 'Errore nel caricamento degli studenti')
+    error(400, `Classe ${queriedClass} non trovata`)
   }
 
   // Get all registrations with activity details including day and time
