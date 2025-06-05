@@ -3,9 +3,9 @@
  
   const { data }: { data: PageData } = $props();
   const { students, registrations, eventDays } = data;
-  
+ 
   // Create a map of user email to their activities grouped by day
-  const userActivitiesByDay = new Map<string, Map<string, Array<{name: string, startTime: string}>>>();
+  const userActivitiesByDay = new Map<string, Map<string, Array<{name: string, startTime: string, endTime: string}>>>();
  
   registrations.forEach((reg) => {
     if (!userActivitiesByDay.has(reg.userEmail)) {
@@ -21,17 +21,18 @@
    
     userDays.get(dayKey)!.push({
       name: reg.activityName,
-      startTime: reg.startTime
+      startTime: reg.startTime,
+      endTime: reg.endTime
     });
   });
-  
+ 
   // Sort activities within each day by start time
   userActivitiesByDay.forEach((dayMap) => {
     dayMap.forEach((activities) => {
       activities.sort((a, b) => a.startTime.localeCompare(b.startTime));
     });
   });
-  
+ 
   // Function to get activities for a student on a specific day
   function getStudentActivitiesForDay(studentEmail: string, day: string): string {
     const dayActivities = userActivitiesByDay.get(studentEmail);
@@ -40,9 +41,14 @@
     }
    
     const activities = dayActivities.get(day)!;
-    return activities.map(a => a.name).join(', ');
+    return activities.map(a => `${a.name} (${formatTime(a.startTime)} - ${formatTime(a.endTime)})`).join(', ');
   }
-  
+ 
+  // Function to format time from HH:MM:SS to HH:MM
+  function formatTime(timeString: string): string {
+    return timeString.substring(0, 5); // Extract HH:MM from HH:MM:SS
+  }
+ 
   // Function to format date for table headers
   function formatDayHeader(day: string): string {
     return new Date(day).toLocaleDateString('it-IT', {
@@ -63,7 +69,7 @@
 
 <div class="container">
   <h1>Classe {students[0]?.class || ''}</h1>
-  
+ 
   {#each eventDays as day}
     <div class="day-table">
       <h2>{formatDayHeader(day)}</h2>
@@ -84,22 +90,22 @@
   h1 {
     margin-bottom: 40px;
   }
-  
+ 
   h2 {
     margin-bottom: 20px;
     font-size: max(18px, 12px + 0.5vw);
   }
-  
+ 
   .day-table {
     margin-bottom: 40px;
   }
-  
+ 
   .table {
     width: 100%;
     display: flex;
     flex-direction: column;
   }
-  
+ 
   .row {
     display: flex;
     flex-direction: row;
@@ -110,27 +116,27 @@
     min-height: calc(20px + 2vw);
     padding: 20px;
   }
-  
+ 
   .cell {
     font-weight: normal;
   }
-  
+ 
   .head-row .cell {
     font-weight: bold;
   }
-  
+ 
   .name-cell {
     width: 50%;
   }
-  
+ 
   .activity-cell {
     width: 50%;
   }
-  
+ 
   .row:nth-child(odd) {
     background-color: var(--grey);
   }
-  
+ 
   .row:nth-child(even) {
     background-color: var(--black);
   }
