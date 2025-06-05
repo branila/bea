@@ -104,7 +104,7 @@
   .cell {
     font-weight: normal;
     width: calc(100% / (1 + var(--day-count, 2))); /* Dynamic width based on number of columns */
-    min-width: 80px; /* Minimum width to prevent too narrow columns */
+    min-width: 60px; /* Minimum width to prevent too narrow columns */
   }
   .cell:last-child {
     text-align: left;
