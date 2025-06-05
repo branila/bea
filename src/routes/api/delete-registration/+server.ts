@@ -2,7 +2,7 @@ import { db } from "$db"
 import { registrations, turns, activities } from "$schema"
 import type { RequestHandler } from "./$types"
 import { json } from "@sveltejs/kit"
-import { and, eq } from "drizzle-orm"
+import { and, eq, sql } from "drizzle-orm"
 
 export const GET: RequestHandler = async ({ locals }) => {
   const user = locals.user
@@ -34,6 +34,11 @@ export const GET: RequestHandler = async ({ locals }) => {
           eq(registrations.user, user.email)
         )
       )
+
+    await db
+      .update(turns)
+      .set({ capacity: sql`${turns.capacity} + 1`})
+      .where(eq(turns.id, userRegistration.turn))
   }
 
   return json({ ok: true })
