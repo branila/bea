@@ -1,6 +1,8 @@
 <script lang="ts">
   import type { PageData } from '../../../../routes/cogestione/registration/$types'
   import SimpleButton from '$components/reusables/SimpleButton.svelte'
+    import OutlinedButton from '$components/reusables/OutlinedButton.svelte';
+    import { goto } from '$app/navigation';
 
   const { userRegistrations, eventDays } : {
     userRegistrations: PageData['userRegistrations'],
@@ -27,6 +29,41 @@
       return registration.day === day
     })
   }
+
+  let showPopup = $state(false)
+  let passphrase = $state('')
+
+  function openPopup() {
+    showPopup = true
+    passphrase = ''
+  }
+
+  function closePopup() {
+    showPopup = false;
+    passphrase = ''
+  }
+
+  function handleBackdropClick(event: MouseEvent) {
+    // Chiude il popup solo se si clicca sullo sfondo, non sul contenuto
+    if (event.target === event.currentTarget) {
+      closePopup()
+    }
+  }
+
+  async function handleSubmit() {
+    closePopup()
+
+    const response = await fetch('/api/delete-registration')
+      .then(res => res.json())
+
+      if (!response.ok) {
+        alert('Errore durante l\'eliminazione della registrazione. Riprova più tardi.')
+        return
+      }
+
+      window.location.href = "/cogestione/registration"
+  }
+
 </script>
 
 <div class="container">
@@ -39,7 +76,7 @@
     </div>
 
     <div class="tables">
-        {#each eventDays as eventDay}
+        {#each eventDays as eventDay, index}
             <div class="table">
                 <div class="row event-day">
                     {formatDate(eventDay.date)}
@@ -62,7 +99,12 @@
                 {#if getRegistrationsForDay(eventDay.date)[0].activity != 'Assente'}
                     <div class="row">
                         <div class="name">Contrappello</div>
-                        <div class="time">11:30 - 12:00</div>
+
+                        {#if index == 0}
+                            <div class="time">12:30 - 13:00</div>
+                        {:else}
+                            <div class="time">11:30 - 12:00</div>
+                        {/if}
                     </div>
                 {/if}
             </div>
@@ -70,10 +112,43 @@
     </div>
 
     <div class="btn-container">
+        <OutlinedButton onclick={openPopup}>Elimina</OutlinedButton>
         <SimpleButton href="/cogestione/ticket">Visualizza Ticket</SimpleButton>
     </div>
 </div>
 
+{#if showPopup}
+<!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions -->
+  <div class="popup-backdrop" onclick={handleBackdropClick}>
+    <div class="popup-content">
+      <h2 class="popup-title">Elimina registrazione</h2>
+
+      <p class="popup-description">
+          Sicuro di voler eliminare la tua registrazione? Scrivi "trecento lettere letteratura fine" per confermare.
+      </p>
+
+      <div class="input-section">
+        <input
+          type="text"
+          bind:value={passphrase}
+          placeholder="Passphrase"
+          class="popup-input"
+        />
+
+        {#if passphrase.toLowerCase() == 'trecento lettere letteratura fine'}
+        <button class="submit-button" onclick={handleSubmit}>
+          Invia
+        </button>
+        {/if}
+      </div>
+
+      <!-- Bottone chiudi -->
+      <button class="close-button" onclick={closePopup}>
+        ✕
+      </button>
+    </div>
+  </div>
+{/if}
 
 <style>
     .container {
@@ -146,6 +221,7 @@
         display: flex;
         justify-content: flex-end;
         margin-top: 20px;
+        gap: 20px;
     }
 
     @media (max-width: 600px) {
@@ -154,5 +230,106 @@
             padding-top: 15px;
             gap: 20px;
         }
+
+        .btn-container {
+            flex-direction: column-reverse;
+            align-items: end;
+        }
     }
+
+      .popup-backdrop {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+      }
+
+      .popup-content {
+        background: var(--grey);
+        border-radius: 8px;
+        padding: 24px;
+        width: 90%;
+        max-width: 400px;
+        position: relative;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+      }
+
+      .popup-title {
+        margin: 0 0 16px 0;
+        font-size: 24px;
+        font-weight: bold;
+        color: var(--red);
+        filter: brightness(1.2);
+      }
+
+      .popup-description {
+        margin: 0 0 20px 0;
+        color: var(--white);
+        line-height: 1.5;
+      }
+
+      .input-section {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 16px;
+      }
+
+      .popup-input {
+        flex: 1;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+      }
+
+      .popup-input:focus {
+        outline: none;
+        border-color: #007bff;
+        box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+      }
+
+      .submit-button {
+        background-color: var(--red);
+        filter: brightness(1.1);
+        color: white;
+        border: none;
+        padding: 10px 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background-color 0.2s;
+      }
+
+      .submit-button:hover {
+        filter: brightness(1);
+      }
+
+      .close-button {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        background: none;
+        border: none;
+        font-size: 20px;
+        cursor: pointer;
+        color: #999;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        transition: background-color 0.2s;
+      }
+
+      .close-button:hover {
+        background-color: #f0f0f0;
+        color: #333;
+      }
 </style>
