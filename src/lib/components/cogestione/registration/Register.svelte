@@ -16,6 +16,7 @@
         user: PageData['user']
     } = $props()
 
+
     // Turn start time type
     type StartTime = (typeof activitiesTurns)[number]['start']
 
@@ -548,7 +549,9 @@
         return true;
     }
 
-    let groupedTurns = $state(getGroupedTurns(activitiesTurns))
+    let remainingActivitiesTurns = activitiesTurns.filter(turn => turn.capacity > 0)
+
+    let groupedTurns = $state(getGroupedTurns(remainingActivitiesTurns))
 
     let canSubmit = $state(false)
 
@@ -648,7 +651,7 @@
             }
         }
         groupedTurns = getGroupedTurns(
-          activitiesTurns.filter(turn => !fullTurnIds.includes(turn.id))
+          remainingActivitiesTurns.filter(turn => !fullTurnIds.includes(turn.id))
         )
     }
 
@@ -716,7 +719,6 @@
 
 <div class="container">
     <h1>Iscriviti alla cogestione</h1>
-
 
     <h2 style:color="var(--red)">{submitError}</h2>
     <h2>{submitSuccess}</h2>

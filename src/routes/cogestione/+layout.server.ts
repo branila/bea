@@ -42,7 +42,6 @@ export const load: LayoutServerLoad = async ({ locals }) => {
     .from(turns)
     .innerJoin(activities, eq(turns.activity, activities.name))
     .leftJoin(tournaments, eq(turns.activity, tournaments.activity))
-    .where(gt(turns.capacity, 0))
     .orderBy(turns.start, turns.day)
 
   // Activity organized by the user (if they are an organizer)
