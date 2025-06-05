@@ -13,7 +13,7 @@
     {#if isRegistered(userRegistrations, activitiesTurns, eventDays)}
         <Registration {...data} />
     {:else}
-        <Register {...data} />
+        <Register {...data}/>
     {/if}
 </div>
 

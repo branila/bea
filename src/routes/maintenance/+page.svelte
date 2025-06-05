@@ -80,8 +80,7 @@
     </div>
 
     <p class="inline">
-      Per eventuali problematiche contattare il
-      <a class="link" href="/contacts">supporto</a>.
+        Seguite <a class="link" href="https://www.instagram.com/branilaa?igsh=bDI0bnhmbzFtaGM4">@branilaa</a> su instagram 🫶
     </p>
   </div>
 </main>
@@ -102,6 +101,7 @@
 
   .inline {
     display: inline;
+    font-size: max(16px, 10px + 0.6vw)
   }
 
   .header {
@@ -124,7 +124,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 20px;
+    gap: 10px;
     margin: 20px 0;
     flex-wrap: wrap;
   }
@@ -142,11 +142,11 @@
     color: var(--red, #ff4444);
     filter: brightness(1.2);
     line-height: 1;
+    filter: brightness(1.2);
   }
 
   .label {
     font-size: 0.9rem;
-    opacity: 0.8;
     text-transform: uppercase;
     letter-spacing: 1px;
   }
