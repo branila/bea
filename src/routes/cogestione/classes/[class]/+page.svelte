@@ -104,12 +104,15 @@
   .cell {
     font-weight: normal;
     width: calc(100% / (1 + var(--day-count, 2))); /* Dynamic width based on number of columns */
-    min-width: 150px; /* Minimum width to prevent too narrow columns */
+    min-width: 80px; /* Minimum width to prevent too narrow columns */
   }
   .cell:last-child {
     text-align: left;
   }
   .row:nth-child(odd) {
     background-color: var(--grey);
+  }
+  .row:nth-child(even) {
+    background-color: var(--black);
   }
 </style>
