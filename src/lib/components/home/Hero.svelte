@@ -21,7 +21,7 @@
           <br />
         {/if}
 
-        Access
+        Access v3
       </div>
     {/key}
   </div>
