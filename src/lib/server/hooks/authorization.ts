@@ -13,7 +13,7 @@ const authorization: Handle = async ({ event, resolve }) => {
     error(403, `You don't have access to the system :(`)
   }
 
-  const publicPaths = ['/', '/contacts', '/login', '/maintenance', '/activities', '/login/callback']
+  const publicPaths = ['/', '/contacts', '/login', '/maintenance', '/activities', '/login/callback', '/about']
 
   if (user && path == '/login') {
     redirect(302, '/cogestione')
