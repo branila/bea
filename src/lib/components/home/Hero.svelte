@@ -21,7 +21,7 @@
           <br />
         {/if}
 
-        Access v3
+        Access
       </div>
     {/key}
   </div>
@@ -37,13 +37,9 @@
     </div>
 
     <!-- <SimpleButton onclick={auth}> -->
-    <SimpleButton
-      onclick={() => {
-        document.location.href = "/cogestione"
-      }}
-    >
-      Accedi alla piattaforma</SimpleButton
-    >
+    <SimpleButton onclick={() => { document.location.href = "/cogestione" }}>
+      Accedi alla piattaforma
+    </SimpleButton>
   </div>
 </main>
 
