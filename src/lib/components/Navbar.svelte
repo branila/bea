@@ -35,6 +35,7 @@
                 <a class:accent={$page.url.pathname == '/contacts'} href="/contacts">Contatti</a>
                 <a class:accent={$page.url.pathname == '/activities'} href="/activities">Attività</a>
                 <a class:accent={$page.url.pathname == '/cogestione'} href="/cogestione">Cogestione</a>
+                <a class:accent={$page.url.pathname == '/about'} href="/about">Chi siamo</a>
             </div>
         {/key}
     </div>

@@ -13,7 +13,7 @@ const authorization: Handle = async ({ event, resolve }) => {
     error(403, `You don't have access to the system :(`)
   }
 
-  const publicPaths = ['/', '/contacts', '/login', '/maintenance', '/activities', '/login/callback']
+  const publicPaths = ['/', '/contacts', '/login', '/maintenance', '/activities', '/login/callback', '/about']
 
   if (user && path == '/login') {
     redirect(302, '/cogestione')
@@ -32,13 +32,13 @@ const authorization: Handle = async ({ event, resolve }) => {
     .select()
     .from(opening)
 
-  if (new Date(Date.now()) < registrationWindow[0].opening) {
-    redirect(302, '/maintenance')
-  }
-
   // Redirect unauthenticated users to the login page
   if (!user) {
     redirect(302, '/login')
+  }
+
+  if (new Date(Date.now()) < registrationWindow[0].opening && !hasRoles(user, 'amministratore')) {
+    redirect(302, '/maintenance')
   }
 
   const routePermissions = Object.entries({
