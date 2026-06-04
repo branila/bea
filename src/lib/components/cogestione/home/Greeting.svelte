@@ -5,13 +5,14 @@
 
   let greetings = [
     'Ti stavamo aspettando',
-    'Dove sei stato fin\'ora?',
     'Without cogestione there is no esperia',
     'Caparezza o Frankie Hi-NRG?',
-    'Vieni a ballare in puglia',
-    'Alla fine si fa la cogestione',
+    'Bar Mediterranoe o People of the Moon?',
     'Non c\'è esperia senza cogestione',
-    'È quel momento dell\'anno'
+    'È quel momento dell\'anno',
+    'Ci vuole un po\' di cogestione',
+    'È da un po\' che non ti si vede',
+    'Come la va?'
   ]
 
   let greeting = $state('.')

@@ -7,16 +7,16 @@
         <Card
             title="Problemi"
             description="Segnala problemi o malfunzionamenti della piattaforma. Rispondiamo in ordine di gravità, dando la precedenza alle catastrofi."
-            contact="bea@branila.it"
-            href="mailto:bea@branila.it"
+            contact="cogestione@itispaleocapa.it"
+            href="mailto:cogestione@itispaleocapa.it"
             src="/images/contacts/alert.svg"
         />
 
         <Card
             title="Instagram"
             description="Dai un'occhiata al nostro profilo instagram per ricevere aggiornamenti e per ricordarci che dobbiamo ancora rispondere alla tua domanda."
-            contact="@noidellesperia"
-            href="https://www.instagram.com/noidellesperia/"
+            contact="@_noidellesperia_"
+            href="https://www.instagram.com/_noidellesperia_/"
             src="/images/contacts/instagram.svg"
         />
     </div>
