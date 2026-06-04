@@ -7,8 +7,8 @@
         <Card
             title="Problemi"
             description="Segnala problemi o malfunzionamenti della piattaforma. Rispondiamo in ordine di gravità, dando la precedenza alle catastrofi."
-            contact="bea@branila.it"
-            href="mailto:bea@branila.it"
+            contact="cogestione@itispaleocapa.it"
+            href="mailto:cogestione@itispaleocapa.it"
             src="/images/contacts/alert.svg"
         />
 
