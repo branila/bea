@@ -24,7 +24,7 @@ const authorization: Handle = async ({ event, resolve }) => {
   }
 
   // Allow access to public paths without authentication
-  if (publicPaths.includes(path)) {
+  if (publicPaths.some(p => path === p || path.startsWith(p + '/'))) {
     return await resolve(event)
   }
 
