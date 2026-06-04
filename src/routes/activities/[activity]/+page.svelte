@@ -12,8 +12,10 @@
     {:else}
     <Card
         name={activity.name}
+        description={activity.description}
         details={activity.details}
-        image={`/images/activities/${activity.image}`}
+        image={activity.image ? `/images/activities/${activity.image}` : null}
+        activityType={activity.type}
     />
     {/if}
 
@@ -21,16 +23,6 @@
 
 <style>
     .container {
-        min-height: calc(100svh - 200px);
+        padding-block: 24px;
     }
-
-    @media (max-width: 600px) {
-        .container {
-            min-height: calc(100svh - 140px);
-            padding-top: 15px;
-        }
-        
-    }
-
-
 </style>
