@@ -59,7 +59,7 @@
       name: 'Sicurezza',
       href: '/security',
       icon: '/security.svg',
-      allowed: hasRoles(user, 'sicurezza', 'amministratore'),
+      allowed: hasRoles(user, 'sicurezza', 'amministratore', 'docente'),
     },
     {
       name: 'Classi',
